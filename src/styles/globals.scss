@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.input {
+  @apply shadow-none outline-none h-full focus:outline-transparent;
+}
+.btn-ghost {
+  @apply hover:bg-white hover:text-primary;
+}
+.btn {
+  @apply min-h-0 min-w-0 h-auto;
+}
+.container {
+  @apply px-4 md:px-10 max-w-7xl;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  min-width: 100vw;
+}
+// * {
+//   outline: red;
+//   outline-style: dashed;
+//   outline-width: 1px;
+// }
+
+.right-sidebar-head {
+  @apply text-slate-850 font-semibold text-xl pb-[20px] mb-[40px] relative border-b border-b-gray-350 after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:bg-primary after:w-[60px] after:h-[2px];
+}
+
+.cart-table {
+  thead {
+    tr {
+      @apply border-gray-350 bg-slate-250;
+    }
+    th {
+      @apply text-slate-850 text-sm font-bold px-[45px] py-[22px] uppercase align-middle text-center whitespace-nowrap;
+    }
+  }
+}
+
+.collapse-arrow .collapse-title:after {
+  opacity: 0;
+}
+
+.active-location {
+  position: relative;
+  @apply border-primary;
+  &::after {
+    content: "";
+    border-color: #00ad4e transparent transparent transparent;
+    border-width: 50px 0 0 50px;
+    right: 0;
+    top: 0;
+    position: absolute;
+  }
+}
+
+.blog-content {
+  @apply text-sm;
+  p {
+    @apply mb-5;
+  }
+
+  h4 {
+    @apply font-bold text-xl md:text-2xl  mb-4;
+  }
+
+  h5 {
+    @apply font-bold text-base md:text-lg mb-1;
+  }
+
+  ol {
+    @apply list-decimal pl-6 mb-5;
+  }
+  ul {
+    @apply list-disc pl-6 mb-5;
+  }
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield !important;
+}
+
+.remove-focus {
+  &:active {
+    &:focus {
+      @apply transform-none;
+    }
+  }
+}
+
+// .dropdown-content, .dropdown:not(.dropdown-hover):focus .dropdown-content, .dropdown:focus-within .dropdown-content {
+//   visibility: hidden;
+//   opacity: 0;
+// }
+.tooltip::before {
+  @apply bg-white text-slate-850 border border-gray-300 ;
+}
+
+.tooltip:hover::after {
+  content: none;
+}

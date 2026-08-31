@@ -1,0 +1,10 @@
+{
+    "editor.defaultFormatterOptions": {
+        "[javascript]": {
+          "quote": "single"
+        },
+        "[typescript]": {
+          "quote": "single"
+        }
+      }
+}
