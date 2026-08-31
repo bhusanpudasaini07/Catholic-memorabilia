@@ -158,7 +158,7 @@ const Home: NextPageWithLayout = () => {
           </>
         }
         {
-          bannerPopupData?.data.length > 0 && showPopupModal && (bannerPop !== (undefined || true)) &&
+          bannerPopupData?.data.length > 0 && showPopupModal && (bannerPop !== undefined && bannerPop !== true) &&
           <BannerPopup
             setShowPopupModal={setShowPopupModal}
             popupData={bannerPopupData?.data[0]!}
