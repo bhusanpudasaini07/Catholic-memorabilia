@@ -39,7 +39,7 @@ const Footer = () => {
               <div>
                 <p className="text-xs opacity-60">Call AnyTime</p>
                 {/* <button className="p-0 footer-link">{config?.data?.pageData["section1 mobile2"]}</button> */}
-                <button  className="p-0 footer-link">thakuri374@gmail.com</button>
+                <button  className="p-0 footer-link"></button>
               </div>
             </div>
             <div className="flex items-start justify-start gap-4 mb-3">
@@ -48,7 +48,7 @@ const Footer = () => {
                 <p className="text-xs opacity-60">Send Email</p>
                 <button className="p-0 footer-link">
                   {/* {config?.data?.pageData["section1 email"]} */}
-                  thakuri374@gmail.com
+                 
                 </button>
               </div>
             </div>

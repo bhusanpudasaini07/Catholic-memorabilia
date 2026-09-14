@@ -96,10 +96,10 @@ const Drawer = () => {
                 <div className="collapse-title font-normal leading-[25px] after:!top-0 after:!right-1 pe-4 after:text-lg">
                   Our Services
                 </div>
-                <div className="collapse-content">
+                {/* <div className="collapse-content">
                   <p className="font-normal collapse-text"><Link href="/plant-consultation" aria-label="plant-consultant">Plant Consultant</Link></p>
                   <p className="font-normal collapse-text"><Link href="/gift-a-plant" aria-label="gift a plant">Gift a Plant</Link></p>
-                </div>
+                </div> */}
               </div>
               <Link href={'/our-outlets'} className="block font-normal collapse-title leading-[25px]" aria-label="our outlets">Our Outlets</Link>
               <div className="collapse collapse-plus">
@@ -107,7 +107,7 @@ const Drawer = () => {
                 <div className="collapse-title font-normal leading-[25px] after:!top-0 after:!right-1 pe-4 after:text-lg">
                   About Us
                 </div>
-                <div className="collapse-content">
+                {/* <div className="collapse-content">
                   <p className="font-normal collapse-text"><Link href="/tree-installation" aria-label="tree intsallations">Tree Installation</Link></p>
                   <p className="font-normal collapse-text"><Link href="/about-us" aria-label="our story">Our Story</Link></p>
                   <p className="font-normal collapse-text">
@@ -116,7 +116,7 @@ const Drawer = () => {
                     </Link>
                   </p>
                   <p className="font-normal collapse-text"><Link href="/csr-projects" aria-label="cssr-project">Our CSR Projects</Link> </p>
-                </div>
+                </div> */}
               </div>
               <Link href={'/blogs'} className="block font-normal collapse-title leading-[25px]">Blog</Link>
               <div className="mt-6">

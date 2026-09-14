@@ -10,7 +10,11 @@ interface IProps {
     loading: boolean;
     categories: any;
 }
+
+
 const Categories: React.FC<IProps> = ({ loading, categories }) => {
+
+    console.log("asdasd", categories)
     const [swiperRef, setSwiperRef] = useState<SwiperClass>();
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)

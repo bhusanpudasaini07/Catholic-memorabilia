@@ -466,7 +466,7 @@ const Header = () => {
                     <BsCaretDownFill />
                   </span>
                 </label>
-                <ul
+                {/* <ul
                   tabIndex={0}
                   className="dropdown-content z-[1] menu  px-0 pt-2.5 pb-0 shadow bg-base-100 w-[252px]"
                 >
@@ -486,7 +486,7 @@ const Header = () => {
                       Gift a plant
                     </Link>
                   </li>
-                </ul>
+                </ul> */}
               </div>
               {/* <Link href="/page/our-outlets" aria-label="our-outlets" className="!bg-white border-0 text-gray-550 font-bold text-sm">  OUTLET</Link> */}
               {/* <Button
@@ -506,7 +506,7 @@ const Header = () => {
                     <BsCaretDownFill />
                   </span>
                 </label>
-                <ul
+                {/* <ul
                   tabIndex={0}
                   className="dropdown-content z-[1] menu pt-2.5 pb-0 shadow bg-base-100 w-[252px]"
                 >
@@ -550,7 +550,7 @@ const Header = () => {
                       Our CSR Project
                     </Link>
                   </li>
-                </ul>
+                </ul> */}
               </div>
               <Link href="/blogs" aria-label="header-blogs">
                 <Button
