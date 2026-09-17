@@ -29,11 +29,14 @@ export const signUp = async (data: any) => {
 };
 
 export const login = async (data: any) => {
-  const grantType = "password";
+  // const grantType = "password";
+  const data1 = {
+    email: data.account,
+    password: data.password,
+  };
   try {
     const response = await axiosInstance.post(`/auth/login`, {
-      ...data,
-      grantType,
+      ...data1,
     });
 
     if (response.status === 200) {
