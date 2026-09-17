@@ -15,6 +15,8 @@ const CategoriesPage: NextPageWithLayout = () => {
         }
     ]
 
+    console.log("categories", categories)
+
     return (
         <div className="text-lg font-bold ">
             <div className="container mt-6">

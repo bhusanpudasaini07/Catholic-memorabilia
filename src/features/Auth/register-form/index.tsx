@@ -10,7 +10,7 @@ import { handleKeyDownAlphabet, handleKeyDownNumber } from '@/shared/utils/form-
 
 const RegisterForm = () => {
     const router = useRouter()
-    const [passwordMatch, setPasswordMatch] = useState<boolean>(true); // Track password match status
+    // const [passwordMatch, setPasswordMatch] = useState<boolean>(true); // Track password match status
 
     const mutation = useMutation({
         mutationFn: signUp,
@@ -32,15 +32,15 @@ const RegisterForm = () => {
         mutation.mutate(data)
     }
 
-    useEffect(() => {
-        if (getValues("password_confirmation") !== '') {
-            // Update password match status whenever password or password_confirmation values change
-            if (isDirty) {
-                setPasswordMatch(watch("password") === watch("password_confirmation"));
-            }
+    // useEffect(() => {
+    //     if (getValues("password") !== '') {
+    //         // Update password match status whenever password or password_confirmation values change
+    //         if (isDirty) {
+    //             setPasswordMatch(watch("password") === watch("password"));
+    //         }
 
-        }
-    }, [watch("password"), watch("password_confirmation"), isDirty]);
+    //     }
+    // }, [watch("password"), watch("password"), isDirty]);
 
     return (
         <form onSubmit={handleSubmit(registerSubmit)} autoComplete='off'>
@@ -48,7 +48,7 @@ const RegisterForm = () => {
                 <input
                     type="text"
                     placeholder='Enter Your First Name'
-                    {...register("first_name", {
+                    {...register("firstName", {
                         required: 'First name is required',
                         pattern: {
                             value: /^[A-Za-z]+$/,
@@ -56,19 +56,40 @@ const RegisterForm = () => {
                         },
                     })}
                     maxLength={20}
-                    onKeyUp={() => trigger("first_name")}
+                    onKeyUp={() => trigger("firstName")}
                     onKeyDown={handleKeyDownAlphabet}
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.first_name ? 'border-error' : 'border-gray-350'}`}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.firstName ? 'border-error' : 'border-gray-350'}`}
                 />
                 {
-                    errors.first_name &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.first_name.message}</p>
+                    errors.firstName &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.firstName.message}</p>
                 }
             </div>
             <div className='flex flex-col mb-[20px]'>
                 <input
                     type="text"
-                    {...register("last_name", {
+                    placeholder='Enter Your Middle Name'
+                    {...register("middleName", {
+                        required: 'Middle name is required',
+                        pattern: {
+                            value: /^[A-Za-z]+$/,
+                            message: "Only alphabetical characters are allowed",
+                        },
+                    })}
+                    maxLength={20}
+                    onKeyUp={() => trigger("middleName")}
+                    onKeyDown={handleKeyDownAlphabet}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.middleName ? 'border-error' : 'border-gray-350'}`}
+                />
+                {
+                    errors.middleName &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.middleName.message}</p>
+                }
+            </div>
+            <div className='flex flex-col mb-[20px]'>
+                <input
+                    type="text"
+                    {...register("lastName", {
                         required: 'Last name is required',
                         pattern: {
                             value: /^[A-Za-z]+$/,
@@ -76,38 +97,38 @@ const RegisterForm = () => {
                         },
                     })}
                     placeholder='Enter Your Last Name'
-                    onKeyUp={() => trigger('last_name')}
+                    onKeyUp={() => trigger('lastName')}
                     maxLength={20}
                     onKeyDown={() => { handleKeyDownAlphabet }}
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.last_name ? 'border-error' : 'border-gray-350'}`}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.lastName ? 'border-error' : 'border-gray-350'}`}
                 />
                 {
-                    errors.last_name &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.last_name.message}</p>
+                    errors.lastName &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.lastName.message}</p>
                 }
             </div>
             <div className='flex flex-col mb-[20px]'>
                 <input
                     type="text"
-                    {...register("mobile_number",
+                    {...register("contactNumber",
                         {
                             required: "Phone number is required",
                             pattern: {
-                                value: /^98\d*$/,
+                                value: /^61\d*$/,
                                 message: "Incorrect phone number format",
                             },
                         })}
-                    onKeyUp={() => trigger('mobile_number')}
-                    pattern="^[1-9]\d*$"
+                    onKeyUp={() => trigger('contactNumber')}
+                    // pattern="^[1-10]\d*$"
                     maxLength={10}
                     inputMode='numeric'
                     placeholder='Enter Your Phone Number'
                     onKeyDown={handleKeyDownNumber}
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.mobile_number ? 'border-error' : 'border-gray-350'}`}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.contactNumber ? 'border-error' : 'border-gray-350'}`}
                 />
                 {
-                    errors.mobile_number &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.mobile_number.message}</p>
+                    errors.contactNumber &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.contactNumber.message}</p>
                 }
             </div>
             <div className='flex flex-col mb-[20px]'>
@@ -151,27 +172,7 @@ const RegisterForm = () => {
                     <p className='text-error text-xs leading-[24px] mt-1'>{errors.password.message}</p>
                 }
             </div>
-            <div className='flex flex-col mb-[20px]'>
-                <input type="password"
-                    placeholder='Confirm Password'
-                    {...register("password_confirmation",
-                        {
-                            required: "Confirm Password is required.",
-                            validate: (value) => value === watch("password") || "Passwords do not match",
-                        },
-                    )}
-                    onKeyUp={() => trigger('password_confirmation')}
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.password_confirmation && !passwordMatch ? 'border-error' : 'border-gray-350'}`}
-                />
-                {
-                    errors.password_confirmation && !passwordMatch &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.password_confirmation.message}</p>
-                }
-                {
-                    !errors.password_confirmation && !passwordMatch && // Display error message when passwords don't match
-                    <p className='text-error text-xs leading-[24px] mt-1'>Passwords do not match</p>
-                }
-            </div>
+           
             <div className='flex items-center justify-between'>
                 <button
                     type='submit'

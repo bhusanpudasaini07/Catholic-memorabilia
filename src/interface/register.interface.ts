@@ -1,8 +1,9 @@
 export interface IRegister {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   email: string;
-  mobile_number: string;
+  contactNumber: string;
+  address: string;
   password: string;
-  password_confirmation: string;
 }

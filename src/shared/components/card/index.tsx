@@ -15,7 +15,6 @@ import { useWishlists } from "@/hooks/wishlist.hooks";
 import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
-import { ICartProduct } from "@/interface/product.interface";
 
 const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
 
@@ -165,12 +164,12 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
         }
         <figure className="relative">
           {
-            product && product?.webpImages && product?.webpImages?.length > 0 ? (
+            product && product?.images && product?.images?.length === 0 ? (
               <Image
                 src={product?.webpImages[0]?.imageName}
-                alt="Plant"
-                width={216}
-                height={270}
+                alt="products"
+                width={116}
+                height={170}
                 quality={100}
                 style={{
                   maxWidth: '100%',
@@ -180,10 +179,10 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               />
             ) : (
               <Image
-                src={product?.images[0]?.imageName}
-                alt="Plant"
-                width={216}
-                height={270}
+                src={product?.images &&product?.images[0]?.imageName}
+                alt="products"
+                width={116}
+                height={170}
                 quality={100}
                 style={{
                   maxWidth: '100%',
@@ -194,7 +193,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             )
           }
           {
-            product?.variants[0]?.hasOffer &&
+            product?.variants && product?.variants[0]?.hasOffer &&
             <p className="absolute px-2 py-1 text-xs font-medium text-white rounded-md bottom-2 left-3 bg-red-250">Offer</p>
           }
         </figure>
@@ -229,19 +228,19 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               </button>
             ) : ( */}
             {
-              product?.variants[0]?.hasOffer ? (
+              product?.variants && product?.variants[0]?.hasOffer ? (
                 <div className="flex flex-col ">
                   <p className="flex-grow-0 mr-2 text-sm text-primary">
-                    NPR {product?.variants[0]?.newPrice}
+                    NPR {product?.variants &&product?.variants[0]?.newPrice}
                   </p>
                   <p className="flex-grow-0 mr-2 text-xs font-semibold line-through text-gray-1450">
                     NPR {' '}
-                    {product?.variants[0]?.oldPrice}
+                    {product?.variants && product?.variants[0]?.oldPrice}
                   </p>
                 </div>
               ) : (
                 <p className="text-sm font-semibold text-primary">
-                  NPR {product?.variants[0]?.sellingPrice}
+                  NPR { product?.variants &&product?.variants[0]?.sellingPrice}
                 </p>
               )
             }

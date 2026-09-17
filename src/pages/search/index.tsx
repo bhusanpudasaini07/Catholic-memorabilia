@@ -111,7 +111,7 @@ const SearchPage: NextPageWithLayout = () => {
                           </div>
                         ) : (
                           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                            {updatedData.map((product: any, index: any) => (
+                            {updatedData && updatedData?.map((product: any, index: any) => (
                               <Card
                                 setProductModalId={setProductModalId}
                                 product={product}
@@ -143,7 +143,7 @@ const SearchPage: NextPageWithLayout = () => {
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                          {updatedData.map((item: any, index: number) => (
+                          {updatedData && updatedData?.map((item: any, index: number) => (
                             <CategoryCard
                               key={`categories-${index}`}
                               title={item?.name}

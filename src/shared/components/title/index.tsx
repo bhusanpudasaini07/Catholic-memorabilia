@@ -13,7 +13,7 @@ const Title: React.FC<Props> = ({ type, text, className, subTitle , subClassName
         if (type === 'title-section')
             return (
                 <div>
-                    <h3 className={className ? `${className}` : 'text-slate-850 text-2xl capitalize font-semibold mb-[15px]'}>
+                    <h3 className={className ? `${className}` : 'text-slate-850 text-2xl capitalize font-semibold mb-[10px]'}>
                         {text}
                     </h3>
                     {

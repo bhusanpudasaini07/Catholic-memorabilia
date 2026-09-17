@@ -1,12 +1,10 @@
 import axios from "axios";
-// import { clearLocalStorage } from "../utils/localStorage.util";
 import { config } from "../../config";
 import {
   getCartNumber,
   getToken,
   getWareId,
 } from "@/shared/utils/cookies-utils/cookies.utils";
-import { getCookie } from "cookies-next";
 // import { getCoupon } from "@/shared/utils/local-storage-utils/local-storage.utils";
 
 const apiURL = config.gateway.apiURL;
@@ -16,9 +14,10 @@ const axiosInstance = axios.create({
     Accept: "application/json",
     ...(getCartNumber() && { "Cart-Number": getCartNumber() }),
     // ...(getCoupon() && { Coupon: getCoupon() }),
-    "Api-Key": config.gateway.apiKey,
-    "Warehouse-Id": getWareId() || 4,
+    // "Api-Key": config.gateway.apiKey,
+    // "Warehouse-Id": getWareId() || 4,
   },
+  withCredentials: true,
 });
 
 // Function to set the Authorization header dynamically

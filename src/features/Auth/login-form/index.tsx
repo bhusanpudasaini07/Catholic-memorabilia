@@ -10,7 +10,6 @@ import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
 import ButtonLoader from '@/shared/components/btn-loading';
 import { ICartData, ICartItem } from '@/interface/cart.interface';
 import { associateCart, getCartData } from '@/services/cart.service';
-import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 
 interface LoginFormProps {
   closeModal?: () => void;
@@ -75,14 +74,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ closeModal , setAssociateCartModa
         <input
           type="text"
           autoComplete="off"
-          placeholder='Phone Number/Email'
-          {...register("account", { required: 'Phone Number Or Email is required' })}
-          onBlur={() => trigger('account')}
-          className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.account ? 'border-error' : 'border-gray-350'}`}
+          placeholder='Email'
+          {...register("email", { required: 'Phone Number Or Email is required' })}
+          onBlur={() => trigger('email')}
+          className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.email ? 'border-error' : 'border-gray-350'}`}
         />
         {
-          errors.account &&
-          <p className='text-error text-xs leading-[24px] mt-1'>{errors.account.message}</p>
+          errors.email &&
+          <p className='text-error text-xs leading-[24px] mt-1'>{errors.email.message}</p>
         }
       </div>
       <div className='flex flex-col mb-[20px]'>
