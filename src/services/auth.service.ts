@@ -6,7 +6,10 @@ import {
   IResetPassword,
 } from "@/interface/password.interface";
 import axios from "axios";
-import { getCartNumber, getWareId } from "@/shared/utils/cookies-utils/cookies.utils";
+import {
+  getCartNumber,
+  getWareId,
+} from "@/shared/utils/cookies-utils/cookies.utils";
 const apiURL = config.gateway.apiURL;
 const apiEndpoint1 = config.gateway.apiEndPoint1;
 
@@ -14,7 +17,7 @@ export const signUp = async (data: any) => {
   try {
     const response = await axiosInstance.post(
       `/${apiEndpoint1}/register`,
-      data
+      data,
     );
 
     if (response.status === 201) {
@@ -26,14 +29,9 @@ export const signUp = async (data: any) => {
 };
 
 export const login = async (data: any) => {
-  const details = {
-    ...data,
-  }
-  // const grantType = "password";
   try {
-    const response = await axiosInstance.post(`/login`, {
-      ...details,
-      // grantType,
+    const response = await axiosInstance.post(`/auth/login`, {
+      data,
     });
 
     if (response.status === 200) {
@@ -62,7 +60,7 @@ export const forgotPassword = async (account: IForgotPassword) => {
   try {
     const response = await axiosInstance.post(
       `/${apiEndpoint1}/forget-password`,
-      account
+      account,
     );
     return response?.data?.data;
   } catch (error) {
@@ -74,7 +72,7 @@ export const resetPassword = async (resetPasswordBody: IResetPassword) => {
   try {
     const response = await axiosInstance.post(
       `/${apiEndpoint1}/reset-password`,
-      resetPasswordBody
+      resetPasswordBody,
     );
     return response?.data?.data;
   } catch (error) {
@@ -86,7 +84,7 @@ export const changePassword = async (changePasswordBody: IChangePassword) => {
   try {
     const response = await axiosInstance.post(
       `/${apiEndpoint1}/change-password`,
-      changePasswordBody
+      changePasswordBody,
     );
     return response;
   } catch (error) {
@@ -129,17 +127,13 @@ export const registerGuestUser = async (data: any, isInitialSubmit: any) => {
   }
 
   try {
-    const response = await axios.post(
-      `${registerGuestUserUrl}`,
-      payload,
-      {
-        headers: {
-          "Cart-Number": getCartNumber(),
-          "Api-Key": config.gateway.apiKey,
-          "Warehouse-Id": getWareId(),
-        },
-      }
-    );
+    const response = await axios.post(`${registerGuestUserUrl}`, payload, {
+      headers: {
+        "Cart-Number": getCartNumber(),
+        "Api-Key": config.gateway.apiKey,
+        "Warehouse-Id": getWareId(),
+      },
+    });
     return response;
   } catch (error) {
     throw error;
