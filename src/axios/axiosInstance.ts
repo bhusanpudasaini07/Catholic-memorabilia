@@ -14,11 +14,12 @@ const axiosInstance = axios.create({
   baseURL: apiURL,
   headers: {
     Accept: "application/json",
-    ...(getCartNumber() && { "Cart-Number": getCartNumber() }),
-    // ...(getCoupon() && { Coupon: getCoupon() }),
-    "Api-Key": config.gateway.apiKey,
-    "Warehouse-Id": getWareId() || 4,
+    // ...(getCartNumber() && { "Cart-Number": getCartNumber() }),
+    // // ...(getCoupon() && { Coupon: getCoupon() }),
+    // "Api-Key": config.gateway.apiKey,
+    // "Warehouse-Id": getWareId() || 4,
   },
+  withCredentials: true,
 });
 
 // Function to set the Authorization header dynamically
@@ -71,7 +72,7 @@ axiosInstance.interceptors.response.use(
                 JSON.stringify({
                   message: "Your session has expired!",
                   type: "error",
-                })
+                }),
               );
               history.pushState(null, "", "/login");
             }
@@ -82,7 +83,7 @@ axiosInstance.interceptors.response.use(
       return {
         ...originalConfig,
         cancelToken: new axios.CancelToken((cancel) =>
-          cancel("Cancel repeated request")
+          cancel("Cancel repeated request"),
         ),
       };
     }
@@ -93,7 +94,7 @@ axiosInstance.interceptors.response.use(
       message: error?.message,
       status: error.response.status,
     });
-  }
+  },
 );
 
 export default axiosInstance;
