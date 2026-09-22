@@ -14,9 +14,9 @@ export const getSearchResults = async (
     let apiUrl = "";
 
     if (type === "category") {
-      apiUrl = `${apiEndPoint1}/categories`;
+      apiUrl = `/categories`;
     } else if (type === "product") {
-      apiUrl = `${apiEndPoint1}/products`;
+      apiUrl = `/products`;
     } else {
       throw new Error("Invalid search type");
     }

@@ -30,7 +30,6 @@ const Home: NextPageWithLayout = () => {
   const { data: home, isInitialLoading: homeLoading } = useQuery<IHome>({
     queryKey: ["getHomeData"],
   });
-  // const { data: cart } = useQuery<ICartItem>(['getCart'], () => getCartData({ coupon }))
   const { data: categories, isInitialLoading: loadingCategories }: any = useQuery({ queryKey: ['getCategoriesList'] });
 
   // useEffect(() => {
@@ -62,7 +61,6 @@ const Home: NextPageWithLayout = () => {
   ]
 
   const  newArrival = newProducts
-  console.log("newArrival", newArrival)
 
   return (
     <>

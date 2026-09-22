@@ -1,12 +1,12 @@
 export interface IProfile {
-  first_name: string;
-  last_name: string;
-  mobile_number: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: number;
 }
 export interface IProfileSubmit {
-  first_name: string;
-  last_name: string;
-  mobile_number: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: number;
 }
 
 export interface IProfileImage {

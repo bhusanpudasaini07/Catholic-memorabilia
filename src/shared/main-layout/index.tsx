@@ -6,12 +6,12 @@ import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: config }: any = useQuery(['getConfig']);
+  // const { data: config }: any = useQuery(['getConfig']);
   return (
     <>
       <Head>
         <title></title>
-        <meta name="description"
+        {/* <meta name="description"
           content={config ? config?.meta?.socialTags.description : ''}
           key={config ? config?.meta?.socialTags.keywords : ''}
         />
@@ -32,7 +32,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <meta
           property="twitter:image"
           content={config ? config?.meta?.socialTags['twitter:image'] : ''}
-        />
+        /> */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 

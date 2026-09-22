@@ -12,7 +12,7 @@ const apiEndPoint1 = config.gateway.apiEndPoint1;
 export const getProfile = async () => {
   try {
     setAuthorizationHeader();
-    const response = await axiosInstance.get(`/${apiEndPoint1}/profile`);
+    const response = await axiosInstance.get(`/users/me`);
     return response.data;
   } catch (error) {
     throw error;

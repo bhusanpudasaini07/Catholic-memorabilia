@@ -8,8 +8,8 @@ import { ILogin } from '../../../interface/login.interface';
 import { setCookie } from 'cookies-next';
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
 import ButtonLoader from '@/shared/components/btn-loading';
-import { ICartData, ICartItem } from '@/interface/cart.interface';
-import { associateCart, getCartData } from '@/services/cart.service';
+import { ICartData } from '@/interface/cart.interface';
+import { associateCart } from '@/services/cart.service';
 
 interface LoginFormProps {
   closeModal?: () => void;
@@ -26,21 +26,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ closeModal , setAssociateCartModa
       setCookie('token', data?.data?.accessToken);
       setCookie('isLoggedIn', true)
       showToast(TOAST_TYPES.success, 'You have been successfully logged in.');
-      if (cart && cart.cartProducts?.length > 0) {
-        const { response: associateCartResponse, error }: any = await associateCart(data?.data?.accessToken, '');
-          if(associateCartResponse){
-            queryClient.invalidateQueries(['getCart'])
-            queryClient.invalidateQueries(['getCartList'])
-            queryClient.invalidateQueries(['getProfile'])
-            router.push('/checkout');
-            closeModal && closeModal();
-          } else{
-            closeModal && closeModal();
-            setAssociateCartModal(true);
-          }
-      } else {
-        router.push('/');
-      }
+      // if (cart && cart.cartProducts?.length > 0) {
+      //   const { response: associateCartResponse, error }: any = await associateCart(data?.data?.accessToken, '');
+      //     if(associateCartResponse){
+      //       queryClient.invalidateQueries(['getCart'])
+      //       queryClient.invalidateQueries(['getCartList'])
+      //       queryClient.invalidateQueries(['getProfile'])
+      //       router.push('/checkout');
+      //       closeModal && closeModal();
+      //     } else{
+      //       closeModal && closeModal();
+      //       setAssociateCartModal(true);
+      //     }
+      // } else {
+      //   router.push('/');
+      // }
+      router.push('/');
     },
     onError: (error: any) => {
       const errors = error?.response?.data?.errors

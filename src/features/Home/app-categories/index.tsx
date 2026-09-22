@@ -1,10 +1,7 @@
 import { ICartData, ICartItem } from "@/interface/cart.interface";
 import { IAppCategories } from "@/interface/home.interface";
-import { getCartData } from "@/services/cart.service";
 import Card from "@/shared/components/card";
-import SkeletonLoadingCard from "@/shared/components/skeleton/products";
 import Title from "@/shared/components/title";
-import { CardImg } from "@/shared/lib/image-config";
 import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useRef, useState } from "react";

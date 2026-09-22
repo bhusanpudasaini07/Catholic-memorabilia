@@ -4,20 +4,22 @@ import SkeletonInput from '@/shared/components/skeleton/input'
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils'
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { getCookie } from 'cookies-next'
 import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 const ProfileForm = () => {
     const queryClient = useQueryClient();
-    const token = getToken()
+    const token = getCookie('token')
+    const loggedIn = getCookie('isLoggedIn');
     const { data: profile, initialLoading: profileLoading }: any = useQuery({
         queryKey: ['getProfile', token]
     })
     const { register, handleSubmit, formState: { errors }, trigger, reset } = useForm<IProfile>({
         defaultValues: {
-            first_name: profile && profile?.data?.firstName,
-            last_name: profile && profile?.data?.lastName,
-            mobile_number: profile && profile?.data?.mobileNumber,
+            firstName: profile && profile?.firstName,
+            lastName: profile && profile?.lastName,
+            phoneNumber: profile && profile?.data?.mobileNumber,
         }
     })
 
@@ -40,9 +42,9 @@ const ProfileForm = () => {
 
     useEffect(() => {
         profile && reset({
-            first_name: profile?.data?.firstName,
-            last_name: profile?.data?.lastName,
-            mobile_number: profile?.data?.mobileNumber,
+            firstName: profile?.firstName,
+            lastName: profile?.lastName,
+            phoneNumber: profile?.mobileNumber,
         })
     }, [profile])
 
@@ -62,13 +64,13 @@ const ProfileForm = () => {
                                     <input
                                         type="text"
                                         placeholder="First Name"
-                                        {...register('first_name', { required: 'FirstName is required' })}
-                                        onBlur={() => trigger('first_name')}
-                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.first_name ? 'border-error' : 'border-gray-350'} `}
+                                        {...register('firstName', { required: 'FirstName is required' })}
+                                        onBlur={() => trigger('firstName')}
+                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.firstName ? 'border-error' : 'border-gray-350'} `}
                                     />
                                     {
-                                        errors.first_name &&
-                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.first_name.message}</p>
+                                        errors.firstName &&
+                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.firstName.message}</p>
                                     }
                                 </>
                             )
@@ -88,13 +90,13 @@ const ProfileForm = () => {
                                     <input
                                         type="text"
                                         placeholder="Last Name"
-                                        {...register("last_name", { required: "LastName is required" })}
-                                        onBlur={() => trigger('last_name')}
-                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.last_name ? 'border-error' : 'border-gray-350'}`}
+                                        {...register("lastName", { required: "LastName is required" })}
+                                        onBlur={() => trigger('lastName')}
+                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.lastName ? 'border-error' : 'border-gray-350'}`}
                                     />
                                     {
-                                        errors.last_name &&
-                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.last_name.message}</p>
+                                        errors.lastName &&
+                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.lastName.message}</p>
                                     }
                                 </>
                             )
@@ -133,20 +135,20 @@ const ProfileForm = () => {
                                 <>
                                     <input
                                         type="text"
-                                        placeholder="Phone Number"
-                                        {...register('mobile_number', {
+                                        {...register('phoneNumber', {
                                             required: 'Phone number is required.',
                                             pattern: {
-                                                value: /^[9]\d{9}$/,
+                                                value: /^\+614\d{8}$/,
                                                 message: "Phone number must start with 9 and have 10 digits.",
                                             }
                                         })}
-                                        onBlur={() => trigger('mobile_number')}
-                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.mobile_number ? 'border-error' : 'border-gray-350'}`}
+                                        placeholder="+61412345678"
+                                        onBlur={() => trigger('phoneNumber')}
+                                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.phoneNumber ? 'border-error' : 'border-gray-350'}`}
                                     />
                                     {
-                                        errors.mobile_number &&
-                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.mobile_number.message}</p>
+                                        errors.phoneNumber &&
+                                        <p className='text-error text-xs leading-[24px] mt-1'>{errors.phoneNumber.message}</p>
                                     }
                                 </>
                             )

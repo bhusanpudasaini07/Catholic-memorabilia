@@ -21,9 +21,7 @@ import Link from "next/link";
 import { getProfile } from "@/services/profile.service";
 import { deleteCookie, getCookie } from "cookies-next";
 import { FaChevronDown, FaUser } from "react-icons/fa";
-import {
-  getToken,
-} from "@/shared/utils/cookies-utils/cookies.utils";
+
 import { logout } from "@/services/auth.service";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import React, { useEffect, useState } from "react";
@@ -33,8 +31,6 @@ import { getSuggestionResults } from "@/services/search.service";
 import CartDropdown from "@/shared/components/cartDropdown";
 import { BsCaretDownFill } from "react-icons/bs";
 import { useDebounce } from "@/hooks/useDebounce.hooks";
-import { ICartItem } from "@/interface/cart.interface";
-import { getCartData } from "@/services/cart.service";
 import { useCart } from "@/store/cart";
 import { setAuthorizationHeader } from "@/axios/axiosInstance";
 
@@ -42,7 +38,7 @@ const Header = () => {
   const router = useRouter();
   const { pathname } = router
 
-  const token = getToken();
+  const token = getCookie('token');
   const loggedIn = getCookie('isLoggedIn');
   const { setCoupon, coupon } = useCart();
   const queryClient = useQueryClient();
@@ -56,7 +52,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
 
 
-  const { data: cart } = useQuery<ICartItem>(['getCart', logIn], () => getCartData({ coupon }));
+  // const { data: cart } = useQuery<ICartItem>(['getCart', logIn], () => getCartData({ coupon }));
 
   const { data: config, isInitialLoading } = useQuery({
     queryKey: ["getConfig"],
@@ -75,14 +71,14 @@ const Header = () => {
   });
 
   const { data: profile } = useQuery({
-    queryKey: ["getProfile", token],
+    queryKey: ["getProfile", logIn],
     queryFn: getProfile,
-    enabled: !!token,
+    enabled: logIn,
   });
 
-  const { data: favouriteList }: any = useQuery(["wishlistProducts", token], {
-    enabled: !!token
-  })
+  // const { data: favouriteList }: any = useQuery(["wishlistProducts", token], {
+  //   enabled: !!token
+  // })
 
 
   // const { data: favouriteList, isInitialLoading: loadingFavourite } = useQuery(
@@ -187,18 +183,18 @@ const Header = () => {
   }
 
   //setting input value to empty when page changed
-  useEffect(() => {
-    if (!pathname.includes('/search')) {
-      setSearchValue('')
-    }
-  }, [pathname])
+  // useEffect(() => {
+  //   if (!pathname.includes('/search')) {
+  //     setSearchValue('')
+  //   }
+  // }, [pathname])
 
 
-  useEffect(() => {
-    if (window && localStorage && localStorage.getItem("coupon") || coupon) {
-      setCoupon(localStorage.getItem('coupon') as string || coupon)
-    }
-  }, [window, localStorage, coupon])
+  // useEffect(() => {
+  //   if (window && localStorage && localStorage.getItem("coupon") || coupon) {
+  //     setCoupon(localStorage.getItem('coupon') as string || coupon)
+  //   }
+  // }, [window, localStorage, coupon])
 
   useEffect(() => {
     if (loggedIn !== undefined) {
@@ -222,13 +218,13 @@ const Header = () => {
               </div>
               <div className="flex-none">
                 <FaUser className="w-[13px] h-auto text-white me-2" />
-                {token && profile ? (
+                {profile ? (
                   <div className="dropdown dropdown-hover dropdown-end">
                     <label
                       tabIndex={0}
                       className="text-xs text-white py-1 m-1 px-0 capitalize bg-transparent border-0 hover:bg-transparent hover:transform hover:scale-[1.1] btn"
                     >
-                      {profile?.data?.firstName}
+                      {profile?.firstName}
                       <FaChevronDown />
                     </label>
                     <ul
@@ -401,7 +397,7 @@ const Header = () => {
                   type="primary"
                   badgePosition="top-right"
                 >
-                  {favouriteList ? favouriteList.data?.length : 0}
+                  {/* {favouriteList ? favouriteList.data?.length : 0} */}
                 </Badge>
               </Link>
             }

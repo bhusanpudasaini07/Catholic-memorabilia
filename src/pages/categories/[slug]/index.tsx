@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
-import 'react-range-slider-input/dist/style.css';
 import { NextPageWithLayout } from '@/pages/_app';
 import MainLayout from '@/shared/main-layout';
 import Card from '@/shared/components/card';

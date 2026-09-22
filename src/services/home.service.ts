@@ -6,7 +6,7 @@ const apiEndPoint1 = config.gateway.apiEndPoint1;
 
 export const getCategoriesList = async () => {
   try {
-    const response = await axiosInstance.get(`/${apiEndPoint1}/categories`);
+    const response = await axiosInstance.get(`/categories`);
     return response.data;
   } catch (error) {
     throw error;
@@ -24,7 +24,7 @@ export const getHomeData = async () => {
 
 export const getConfig = async () => {
   try {
-    const response = await axiosInstance.get(`/${apiEndPoint1}/configs`);
+    const response = await axiosInstance.get(`/configs`);
     addWareHouseToStorage(response?.data?.data?.warehouses);
     return response.data;
   } catch (error) {

@@ -114,15 +114,15 @@ const RegisterForm = () => {
                         {
                             required: "Phone number is required",
                             pattern: {
-                                value: /^61\d*$/,
-                                message: "Incorrect phone number format",
+                                value: /^\+614\d{8}$/,
+                                message: "Enter a valid Australian mobile number",
                             },
                         })}
                     onKeyUp={() => trigger('contactNumber')}
                     // pattern="^[1-10]\d*$"
-                    maxLength={10}
-                    inputMode='numeric'
-                    placeholder='Enter Your Phone Number'
+                    maxLength={12}
+                    inputMode='tel'
+                    placeholder="+61412345678"
                     onKeyDown={handleKeyDownNumber}
                     className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.contactNumber ? 'border-error' : 'border-gray-350'}`}
                 />

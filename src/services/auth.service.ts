@@ -16,8 +16,8 @@ const apiEndpoint1 = config.gateway.apiEndPoint1;
 export const signUp = async (data: any) => {
   try {
     const response = await axiosInstance.post(
-      `/${apiEndpoint1}/register`,
-      data,
+      `/auth/sign-up`,
+    data,
     );
 
     if (response.status === 201) {
@@ -30,9 +30,7 @@ export const signUp = async (data: any) => {
 
 export const login = async (data: any) => {
   try {
-    const response = await axiosInstance.post(`/auth/login`, {
-      data,
-    });
+    const response = await axiosInstance.post(`/auth/login`, data);
 
     if (response.status === 200) {
       return response.data;

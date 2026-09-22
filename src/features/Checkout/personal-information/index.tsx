@@ -39,7 +39,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
     const onSubmitRegisterGuestUser: SubmitHandler<IRegister> = async (data) => {
         const generatedPwd = generatePasswordValue();
         data.password = generatedPwd;
-        data.password_confirmation = generatedPwd;
         setGuestUserData(data);
         setSubmitLoading(true)
         setPersonalInfoSubmitted(false);
@@ -77,7 +76,6 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
             const password = generatePassword(8);
             setGeneratedPassword(password);
             setValue('password', password);
-            setValue('password_confirmation', password);
             return password;
         }
         return generatedPassword;
@@ -97,14 +95,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                         <input
                             type="text"
                             placeholder="Enter Your First Name"
-                            onKeyUp={() => trigger('first_name')}
+                            onKeyUp={() => trigger('firstName')}
                             onKeyDown={() => { handleKeyDownAlphabet }}
                             className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border rounded-e"
-                            {...register('first_name', { required: 'First name is required' })}
+                            {...register('firstName', { required: 'First name is required' })}
                         />
                         {
-                            errors.first_name &&
-                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.first_name.message}</p>
+                            errors.firstName &&
+                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.firstName.message}</p>
                         }
                     </div>
 
@@ -114,15 +112,15 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                         </label>
                         <input
                             type="text"
-                            {...register("last_name", { required: 'Last name is required' })}
+                            {...register("lastName", { required: 'Last name is required' })}
                             placeholder='Enter Your Last Name'
-                            onKeyUp={() => trigger('last_name')}
+                            onKeyUp={() => trigger('lastName')}
                             onKeyDown={() => { handleKeyDownAlphabet }}
                             className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border rounded-e"
                         />
                         {
-                            errors.last_name &&
-                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.last_name.message}</p>
+                            errors.lastName &&
+                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.lastName.message}</p>
                         }
                     </div>
 
@@ -132,7 +130,7 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                         </label>
                         <input
                             type="text"
-                            {...register("mobile_number",
+                                {...register("contactNumber",
                                 {
                                     required: "Phone number is required.",
                                     pattern: {
@@ -143,14 +141,14 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                             pattern="^[1-9]\d*$"
                             maxLength={10}
                             inputMode='numeric'
-                            onKeyUp={() => trigger('mobile_number')}
+                            onKeyUp={() => trigger('contactNumber')}
                             onKeyDown={handleKeyDownNumber}
                             placeholder='Enter Your Phone Number'
-                            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.mobile_number ? 'border-error' : 'border-gray-350'}`}
+                            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.contactNumber ? 'border-error' : 'border-gray-350'}`}
                         />
                         {
-                            errors.mobile_number &&
-                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.mobile_number.message}</p>
+                            errors.contactNumber &&
+                            <p className='text-error text-xs leading-[24px] mt-1'>{errors.contactNumber.message}</p>
                         }
                     </div>
 

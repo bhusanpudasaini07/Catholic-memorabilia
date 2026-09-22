@@ -144,15 +144,15 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     }
     const favId = genFavId() //setting generated fav id.
 
-    useEffect(() => {
-        if (cartData) {
-            cartList?.cartProducts?.map((item: any) => {
-                if (slug === item?.product?.slug) {
-                    setItemCartDetail(item)
-                }
-            })
-        }
-    }, [slug, cartData])
+    // useEffect(() => {
+    //     if (cartData) {
+    //         cartList?.cartProducts?.map((item: any) => {
+    //             if (slug === item?.product?.slug) {
+    //                 setItemCartDetail(item)
+    //             }
+    //         })
+    //     }
+    // }, [slug, cartData])
 
     useEffect(() => {
         if (productData) {
@@ -185,13 +185,13 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
 
     const selectedCartItems: ICartProduct | undefined = cartList?.cartProducts?.find((cart: any) => JSON.parse(cart?.selectedUnit?.id) === selectedSizeId);
 
-    useEffect(() => {
-        if (updatedCart) {
-            setValue(selectedCartItems?.quantity!)
-        } else {
-            setValue(1)
-        }
-    }, [selectedCartItems, selectedSizeId])
+    // useEffect(() => {
+    //     if (updatedCart) {
+    //         setValue(selectedCartItems?.quantity!)
+    //     } else {
+    //         setValue(1)
+    //     }
+    // }, [selectedCartItems, selectedSizeId])
 
     return (
         <>

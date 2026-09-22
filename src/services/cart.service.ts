@@ -12,8 +12,6 @@ import axios from "axios";
 import { getCookie, setCookie } from "cookies-next";
 import { config } from "../../config";
 
-const apiURL = config.gateway.apiURL;
-const apiEndPoint1 = config.gateway.apiEndPoint1;
 const apiEndPoint2 = config.gateway.apiEndPoint2;
 
 // export const setCartNumberCookie = async () => {
@@ -40,7 +38,7 @@ export const getCartData = async (params: { coupon?: string }) => {
       });
     }
     setAuthorizationHeader();
-    const response = await axiosInstance.get(`/${apiEndPoint2}/carts`);
+    const response = await axiosInstance.get(`/carts`);
     if (!getCookie(CookieKeys.CARTNUMBER)) {
       setCookie(CookieKeys.CARTNUMBER, response?.data?.data?.cartNumber);
     }
@@ -52,7 +50,7 @@ export const getCartData = async (params: { coupon?: string }) => {
 
 export const getCartProduct = async () => {
   try {
-    const response = await axiosInstance.get(`/${apiEndPoint2}/cart-products`);
+    const response = await axiosInstance.get(`/carts`);
     return response.data.data;
   } catch (error) {
     throw error;
@@ -62,7 +60,7 @@ export const getCartProduct = async () => {
 export const deleteCartItemById = async (id: number) => {
   try {
     const response = await axiosInstance.delete(
-      `/${apiEndPoint2}/cart-products/${id}`
+      `/carts/${id}`
     );
     return response;
   } catch (error) {
@@ -73,7 +71,7 @@ export const deleteCartItemById = async (id: number) => {
 export const addToCart = async (data: ICreateCartItem) => {
   try {
     const response = await axiosInstance.post(
-      `/${apiEndPoint2}/cart-products`,
+      `/carts/items`,
       data
     );
     return response.data;
@@ -100,7 +98,7 @@ export const addToCart = async (data: ICreateCartItem) => {
 
 export const bulkDeleteCart = async () => {
   try {
-    const response = await axiosInstance.delete(`/${apiEndPoint1}/carts`);
+    const response = await axiosInstance.delete(`/carts`);
     return response;
   } catch (error) {
     throw error;
@@ -108,7 +106,7 @@ export const bulkDeleteCart = async () => {
 };
 
 export const associateCart = async (auth: any, status: string) => {
-  const associateCartUrl = `${apiURL}/${apiEndPoint1}/cart/associate`;
+  const associateCartUrl = `/cart/associate`;
 
   const headers = {
     ...(getCartNumber() && { "Cart-Number": getCartNumber() }),
@@ -133,7 +131,7 @@ export const associateCart = async (auth: any, status: string) => {
 export const addCouponCode = async (code: string) => {
   try {
     const response = await axiosInstance.get(
-      `/${apiEndPoint1}/carts/coupon/${code}`
+      `/carts/coupon/${code}`
     );
     return response.data.data;
   } catch (error: any) {
