@@ -22,7 +22,6 @@ import { getCookie } from "cookies-next";
 import BannerPopup from "@/features/Home/banner-popup";
 import FeaturedProducts from "@/features/Home/featured-products";
 import NewArrival from "@/features/Home/new-arrival";
-import { updateProductInWishlist } from "@/services/wishlist.service";
 import { newProducts } from "@/services/newarrival.service";
 
 const Home: NextPageWithLayout = () => {

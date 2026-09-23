@@ -11,6 +11,9 @@ import "@/styles/components/pagination.scss";
 import "@/styles/components/auth.scss";
 import "@/styles/components/btn.scss";
 import "@/styles/components/slider.scss";
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextPage } from "next";
@@ -19,6 +22,7 @@ import type { AppProps } from "next/app";
 import { Open_Sans } from "next/font/google";
 import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
