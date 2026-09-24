@@ -4,6 +4,10 @@ export interface IRegister {
   lastName: string;
   email: string;
   contactNumber: string;
-  address: string;
+  addressLine1: string;
+  addressLine2?: string;
+  suburb: string;
+  state: string;
+  postcode: string;
   password: string;
 }
