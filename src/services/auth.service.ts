@@ -15,10 +15,7 @@ const apiEndpoint1 = config.gateway.apiEndPoint1;
 
 export const signUp = async (data: any) => {
   try {
-    const response = await axiosInstance.post(
-      `/auth/sign-up`,
-    data,
-    );
+    const response = await axiosInstance.post(`/auth/sign-up`, data);
 
     if (response.status === 201) {
       return response.data;
@@ -89,7 +86,14 @@ export const changePassword = async (changePasswordBody: IChangePassword) => {
     throw error;
   }
 };
-
+export async function verifyEmail(token: string) {
+  try {
+    const response = await axiosInstance.post(`auth/verify-email`, { token });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
 export const deleteAccount = async () => {
   try {
     const response = await axiosInstance.post(`/${apiEndpoint1}/user/delete`, {

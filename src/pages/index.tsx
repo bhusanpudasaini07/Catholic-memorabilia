@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { NextPageWithLayout } from "./_app";
 import MainLayout from "@/shared/main-layout";
 import Title from "@/shared/components/title";
-import {
-  DeliveryImg,
-  LockImg,
-  CallImg,
-} from "@/shared/lib/image-config";
+import { DeliveryImg, LockImg, CallImg } from "@/shared/lib/image-config";
 import Image from "next/image";
 import Banner from "@/shared/components/banner";
 import Categories from "@/features/Home/categories";
@@ -25,11 +21,12 @@ import NewArrival from "@/features/Home/new-arrival";
 import { newProducts } from "@/services/newarrival.service";
 
 const Home: NextPageWithLayout = () => {
-  const [showPopupModal, setShowPopupModal] = useState<boolean>(true)
+  const [showPopupModal, setShowPopupModal] = useState<boolean>(true);
   const { data: home, isInitialLoading: homeLoading } = useQuery<IHome>({
     queryKey: ["getHomeData"],
   });
-  const { data: categories, isInitialLoading: loadingCategories }: any = useQuery({ queryKey: ['getCategoriesList'] });
+  const { data: categories, isInitialLoading: loadingCategories }: any =
+    useQuery({ queryKey: ["getCategoriesList"] });
 
   // useEffect(() => {
   //   if (!getCookie(CookieKeys.CARTNUMBER)) {
@@ -37,45 +34,39 @@ const Home: NextPageWithLayout = () => {
   //   }
   // }, [])
   const adBanners = home?.data?.adBanners || [];
-  const { data: bannerPopupData, isLoading: bannerPopupLoading } = useQuery(['getBannerPopup'], getBannerPopup)
-  const bannerPop = getCookie("bannerPopup")
+  const { data: bannerPopupData, isLoading: bannerPopupLoading } = useQuery(
+    ["getBannerPopup"],
+    getBannerPopup,
+  );
+  const bannerPop = getCookie("bannerPopup");
 
-
-  const  featuredProductsList =[
+  const featuredProductsList = [
     {
       name: "hi ",
       productCount: 1,
-      items:[{
-
-        slug:"/1",
-        name:'sdasd'
-      }
-
+      items: [
+        {
+          slug: "/1",
+          name: "sdasd",
+        },
       ],
       webpBackgroundImage: "",
-      backgroundImage:""
+      backgroundImage: "",
+    },
+  ];
 
-    }
-
-  ]
-
-  const  newArrival = newProducts
+  const newArrival = newProducts;
 
   return (
     <>
       <Head>
         <title></title>
-
       </Head>
       <div className="text-lg font-bold">
-     
         <Banner />
         <div className="container my-10">
-           <NewArrival
-            loading={loadingCategories}
-            products={newArrival}
-          />
-            <FeaturedProducts
+          <NewArrival loading={loadingCategories} products={newArrival} />
+          <FeaturedProducts
             loading={loadingCategories}
             products={featuredProductsList}
           />
@@ -138,65 +129,65 @@ const Home: NextPageWithLayout = () => {
             loading={loadingCategories}
             categories={categories?.data}
           />
-          {adBanners.length > 0 &&
+          {adBanners.length > 0 && (
             <div className="grid grid-cols-12 gap-4 my-6">
               {adBanners?.slice(0, 2).map((bannerImg: IAdBanner) => (
-                <div className="col-span-12 overflow-hidden sm:col-span-6" key={bannerImg?.id}>
+                <div
+                  className="col-span-12 overflow-hidden sm:col-span-6"
+                  key={bannerImg?.id}
+                >
                   <AdBanner adBanner={bannerImg} />
                 </div>
               ))}
             </div>
-          }
-
+          )}
         </div>
-        {homeLoading ?
+        {homeLoading ? (
           <div className="container mb-6">
             <div className="w-20 h-5 mx-4 mb-5 bg-gray-300 rounded animate-pulse"></div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
               {[1, 2, 3, 4, 5].map((index) => (
-                <SkeletonLoadingCard
-                  key={`app-skeleton-${index}`}
-                />
+                <SkeletonLoadingCard key={`app-skeleton-${index}`} />
               ))}
             </div>
           </div>
-          :
+        ) : (
           <>
-            {home?.data?.appCategories?.map((prev: IAppCategories, index: number) => (
-              <React.Fragment
-                key={`appcatgories-${index}`}
-              >
-                <AppCategories
-                  prev={prev}
-                />
-                {
-                  index * 2 + 2 < home?.data?.adBanners.length &&
-                  <div className="container">
-                    <div className="grid grid-cols-12 gap-4 my-6">
-                      {home?.data?.adBanners
-                        .slice((index * 2) + 2, (index + 1) * 2 + 2) // Display 2 adBanners after each AppCategories set
-                        .map((adBanner: IAdBanner) => (
-                          <div className="relative col-span-12 overflow-hidden sm:col-span-6" key={adBanner?.id}>
-                            <AdBanner adBanner={adBanner} />
-                          </div>
-                        ))}
+            {home?.data?.appCategories?.map(
+              (prev: IAppCategories, index: number) => (
+                <React.Fragment key={`appcatgories-${index}`}>
+                  <AppCategories prev={prev} />
+                  {index * 2 + 2 < home?.data?.adBanners.length && (
+                    <div className="container">
+                      <div className="grid grid-cols-12 gap-4 my-6">
+                        {home?.data?.adBanners
+                          .slice(index * 2 + 2, (index + 1) * 2 + 2) // Display 2 adBanners after each AppCategories set
+                          .map((adBanner: IAdBanner) => (
+                            <div
+                              className="relative col-span-12 overflow-hidden sm:col-span-6"
+                              key={adBanner?.id}
+                            >
+                              <AdBanner adBanner={adBanner} />
+                            </div>
+                          ))}
+                      </div>
                     </div>
-
-                  </div>
-                }
-              </React.Fragment>
-            )
+                  )}
+                </React.Fragment>
+              ),
             )}
           </>
-        }
-        {
-          bannerPopupData?.data.length > 0 && showPopupModal && (bannerPop !== undefined && bannerPop !== true) &&
-          <BannerPopup
-            setShowPopupModal={setShowPopupModal}
-            popupData={bannerPopupData?.data[0]!}
-            bannerPopupLoading={bannerPopupLoading}
-          />
-        }
+        )}
+        {bannerPopupData?.data.length > 0 &&
+          showPopupModal &&
+          bannerPop !== undefined &&
+          bannerPop !== true && (
+            <BannerPopup
+              setShowPopupModal={setShowPopupModal}
+              popupData={bannerPopupData?.data[0]!}
+              bannerPopupLoading={bannerPopupLoading}
+            />
+          )}
       </div>
     </>
   );

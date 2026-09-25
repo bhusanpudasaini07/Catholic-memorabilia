@@ -11,8 +11,6 @@ import {
   handleKeyDownNumber,
 } from "@/shared/utils/form-validation-utils";
 
-
-
 const AU_STATES = [
   { label: "Australian Capital Territory", value: "ACT" },
   { label: "New South Wales", value: "NSW" },
@@ -31,7 +29,6 @@ interface AddressSuggestion {
   state: string;
   postcode: string;
 }
-
 
 const useAddressAutocomplete = () => {
   const [query, setQuery] = useState("");
@@ -191,7 +188,6 @@ const RegisterForm = () => {
           type="text"
           placeholder="Enter Your Middle Name"
           {...register("middleName", {
-            required: "Middle name is required",
             pattern: {
               value: /^[A-Za-z]+$/,
               message: "Only alphabetical characters are allowed",
