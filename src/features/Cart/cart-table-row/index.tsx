@@ -52,7 +52,6 @@ const CartTableRow = ({ item }: any) => {
 
     return (
         <>
-        {console.log(item.quantity, 'item')}
         <tr className="border-b-gray-350">
             <td className="w-[150px] text-gray-650 text-center py-[30px] font-medium">
                 <Image
