@@ -71,7 +71,7 @@ const SearchPage: NextPageWithLayout = () => {
         <title>Search | {keyword}</title>
       </Head>
       {
-        searchData?.data.length === 0 ? (
+        searchData?.data?.length === 0 ? (
           <div className="my-[60px]">
             <EmptyPage type={type} />
           </div>
