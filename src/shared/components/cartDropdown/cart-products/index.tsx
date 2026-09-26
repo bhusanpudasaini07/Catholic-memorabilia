@@ -46,8 +46,8 @@ const CartDropdownProducts = ({ item }: any) => {
                     {item?.product?.name}
                 </Link>
                 <p className="mt-1 text-sm gray-550">
-                    {/* <span>NPR</span> {item?.product?.unitPrice[0].hasOffer ? item.product?.unitPrice[0]?.newPrice * item?.quantity : item.product?.unitPrice[0]?.sellingPrice * item?.quantity} */}
-                    <span>NPR</span> {
+                    {/* <span>AUD</span> {item?.product?.unitPrice[0].hasOffer ? item.product?.unitPrice[0]?.newPrice * item?.quantity : item.product?.unitPrice[0]?.sellingPrice * item?.quantity} */}
+                    <span>AUD</span> {
                         checkOffer ? (checkOffer?.newPrice * item?.quantity) : (item?.selectedUnit?.sellingPrice * item?.quantity)
                     }
                 </p>

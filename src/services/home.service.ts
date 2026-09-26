@@ -32,13 +32,3 @@ export const getConfig = async () => {
   }
 };
 
-export const getBannerPopup = async () => {
-  try {
-    const response = await axiosInstance.get(
-      `${apiEndPoint1}/banner?type=popup`
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};

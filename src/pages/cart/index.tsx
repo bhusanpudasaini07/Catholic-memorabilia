@@ -198,7 +198,7 @@ const Cart: NextPageWithLayout = () => {
                 </div>
                 <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                   <p className="text-sm font-semibold">Total products</p>
-                  <p className="text-lg font-bold">NPR {couponData?.orderAmount ? couponData?.orderAmount : cart?.orderAmount}</p>
+                  <p className="text-lg font-bold">AUD {couponData?.orderAmount ? couponData?.orderAmount : cart?.orderAmount}</p>
                 </div>
                 {
 
@@ -206,21 +206,21 @@ const Cart: NextPageWithLayout = () => {
                   <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                     <p className="text-sm font-semibold">Coupon Discount</p>
                     <p className="text-lg font-bold">
-                      NPR {couponData?.couponDiscount}
+                      AUD {couponData?.couponDiscount}
                     </p>
                   </div>
                 }
                 <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                   <p className="text-sm font-semibold">Subtotal</p>
-                  <p className="text-lg font-bold">NPR {couponData?.subTotal ? couponData?.subTotal : cart?.subTotal}</p>
+                  <p className="text-lg font-bold">AUD {couponData?.subTotal ? couponData?.subTotal : cart?.subTotal}</p>
                 </div>
                 <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                   <p className="text-sm font-semibold">Delivery Charge</p>
-                  <p className="text-lg font-bold">NPR {couponData?.deliveryCharge ? couponData?.deliveryCharge : cart?.deliveryCharge}</p>
+                  <p className="text-lg font-bold">AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cart?.deliveryCharge}</p>
                 </div>
                 <div className="flex items-center justify-between w-full mb-[20px] text-primary">
                   <p className="text-xl font-bold">Grand Total</p>
-                  <p className="text-xl font-bold">NPR {couponData?.total ? couponData?.total : cart?.total}</p>
+                  <p className="text-xl font-bold">AUD {couponData?.total ? couponData?.total : cart?.total}</p>
                 </div>
                 <button
                   onClick={() => router.push('/checkout')}

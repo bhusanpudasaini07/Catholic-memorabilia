@@ -26,7 +26,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
             {cartData?.cartProducts.map((productData: any, index: any) => (
               <li className="flex justify-between" key={index}>
                 <span> {productData?.product?.name} X {productData?.quantity} </span>
-                <span>NPR {productData.selectedUnit.sellingPrice *
+                <span>AUD {productData.selectedUnit.sellingPrice *
                   productData.quantity} </span>
               </li>
 
@@ -37,25 +37,25 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
           <li className="font-semibold text-[16px] text-slate-850">
             Order Amount
           </li>
-          <li className="text-[14px]">NPR {cart?.orderAmount}</li>
+          <li className="text-[14px]">AUD {cart?.orderAmount}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">
             Cart Subtotal
           </li>
-          <li className="text-[14px]">NPR {cart?.subTotal}</li>
+          <li className="text-[14px]">AUD {cart?.subTotal}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">
             Delivery Charge
           </li>
-          <li className="text-[14px]">NPR {cart?.deliveryCharge
+          <li className="text-[14px]">AUD {cart?.deliveryCharge
           }</li>
         </ul>
         <div className="mt-[18px] mb-[33px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className=" flex justify-between mb-[20px]">
             <li className="font-bold text-[18px]">Total</li>
-            <li className="font-bold text-primary">NPR {cart?.total}</li>
+            <li className="font-bold text-primary">AUD {cart?.total}</li>
           </ul>
           <ul className="flex justify-between">
             <li className="font-bold text-[18px]">Payment method</li>

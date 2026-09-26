@@ -231,16 +231,16 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               product?.variants && product?.variants[0]?.hasOffer ? (
                 <div className="flex flex-col ">
                   <p className="flex-grow-0 mr-2 text-sm text-primary">
-                    NPR {product?.variants &&product?.variants[0]?.newPrice}
+                    AUD {product?.variants &&product?.variants[0]?.newPrice}
                   </p>
                   <p className="flex-grow-0 mr-2 text-xs font-semibold line-through text-gray-1450">
-                    NPR {' '}
+                    AUD {' '}
                     {product?.variants && product?.variants[0]?.oldPrice}
                   </p>
                 </div>
               ) : (
                 <p className="text-sm font-semibold text-primary">
-                  NPR { product?.variants &&product?.variants[0]?.sellingPrice}
+                  AUD { product?.variants &&product?.variants[0]?.sellingPrice}
                 </p>
               )
             }

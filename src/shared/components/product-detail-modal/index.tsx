@@ -318,14 +318,14 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                                 selectedPrice && selectedPrice?.hasOffer ? (
                                                     <>
                                                         <li className="mr-1 text-base text-red-250">
-                                                            NPR
+                                                            AUD
                                                             <span>
                                                                 {selectedPrice?.newPrice * value}
                                                             </span>
                                                         </li>
 
                                                         <li className="mr-1 text-base font-semibold line-through text-primary">
-                                                            NPR
+                                                            AUD
                                                             <span>
                                                                 {selectedPrice?.oldPrice}
                                                             </span>
@@ -333,7 +333,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                                     </>
                                                 ) : (
                                                     < li className="mr-1 text-base font-bold text-primary" >
-                                                        NPR
+                                                        AUD
                                                         <span className='ml-1'>
                                                             {selectedPrice?.sellingPrice * value}
                                                         </span>

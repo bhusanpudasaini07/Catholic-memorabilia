@@ -94,7 +94,7 @@ const CartTableRow = ({ item }: any) => {
                 }
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium text-[15px]">
-                NPR {item?.selectedUnit?.sellingPrice}
+                AUD {item?.selectedUnit?.sellingPrice}
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium">
                 <div className="flex justify-center m-auto h-[40px] max-w-[115px]">
@@ -122,7 +122,7 @@ const CartTableRow = ({ item }: any) => {
                 </div>
             </td>
             <td className="text-gray-650 text-center py-[30px] font-medium text-[15px]">
-                NPR {item?.selectedUnit?.sellingPrice * item?.quantity}
+                AUD {item?.selectedUnit?.sellingPrice * item?.quantity}
             </td>
             <td className="w-[100px] text-center py-[30px]">
                 <button

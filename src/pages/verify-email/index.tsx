@@ -34,11 +34,9 @@ const VerifyEmailPage: NextPageWithLayout = () => {
     onSuccess,
     onError,
   });
-  console.log(query);
 
   useEffect(() => {
     const token = query.token;
-    console.log("here");
     if (typeof token === "string") mutation.mutate(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);

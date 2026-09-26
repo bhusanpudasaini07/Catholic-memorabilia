@@ -155,7 +155,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                             </div>
                             <div className='mt-3.5'>
                                 <h4 className='mb-4 font-semibold text-slate-850 font-base'>Price</h4>
-                                <p className='text-sm leading-6 text-slate-850  mb-[20px] pricevalue'>NPR {value[0]} - NPR {value[1]}</p>
+                                <p className='text-sm leading-6 text-slate-850  mb-[20px] pricevalue'>AUD {value[0]} - AUD {value[1]}</p>
                                 <div>
                                     <div>
                                         <Slider
@@ -200,7 +200,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                                             />
                                         ))}
                                     </div> :
-                                    initialProductData.data?.length === 0 ? (
+                                    initialProductData?.data?.length === 0 ? (
                                         <EmptyPage />
                                     ) : (
                                         <>

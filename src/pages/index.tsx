@@ -13,32 +13,23 @@ import { IAdBanner, IAppCategories, IHome } from "@/interface/home.interface";
 import SkeletonLoadingCard from "@/shared/components/skeleton/products";
 import Head from "next/head";
 import AdBanner from "@/shared/components/ad-banner";
-import { getBannerPopup } from "@/services/home.service";
 import { getCookie } from "cookies-next";
-import BannerPopup from "@/features/Home/banner-popup";
 import FeaturedProducts from "@/features/Home/featured-products";
 import NewArrival from "@/features/Home/new-arrival";
 import { newProducts } from "@/services/newarrival.service";
+import { useCategoriesHooks } from "@/hooks/categories.hooks";
 
 const Home: NextPageWithLayout = () => {
   const [showPopupModal, setShowPopupModal] = useState<boolean>(true);
   const { data: home, isInitialLoading: homeLoading } = useQuery<IHome>({
     queryKey: ["getHomeData"],
   });
-  const { data: categories, isInitialLoading: loadingCategories }: any =
-    useQuery({ queryKey: ["getCategoriesList"] });
+ 
+  const { categories, loading: loadingCategories } = useCategoriesHooks();
 
-  // useEffect(() => {
-  //   if (!getCookie(CookieKeys.CARTNUMBER)) {
-  //     setCartNumberCookie()
-  //   }
-  // }, [])
+  console.log("categories====>", categories)
   const adBanners = home?.data?.adBanners || [];
-  const { data: bannerPopupData, isLoading: bannerPopupLoading } = useQuery(
-    ["getBannerPopup"],
-    getBannerPopup,
-  );
-  const bannerPop = getCookie("bannerPopup");
+ 
 
   const featuredProductsList = [
     {
@@ -127,7 +118,7 @@ const Home: NextPageWithLayout = () => {
           </div>
           <Categories
             loading={loadingCategories}
-            categories={categories?.data}
+            categories={categories}
           />
           {adBanners.length > 0 && (
             <div className="grid grid-cols-12 gap-4 my-6">
@@ -178,16 +169,7 @@ const Home: NextPageWithLayout = () => {
             )}
           </>
         )}
-        {bannerPopupData?.data.length > 0 &&
-          showPopupModal &&
-          bannerPop !== undefined &&
-          bannerPop !== true && (
-            <BannerPopup
-              setShowPopupModal={setShowPopupModal}
-              popupData={bannerPopupData?.data[0]!}
-              bannerPopupLoading={bannerPopupLoading}
-            />
-          )}
+       
       </div>
     </>
   );

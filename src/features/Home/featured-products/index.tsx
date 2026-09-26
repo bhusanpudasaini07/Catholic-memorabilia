@@ -14,7 +14,6 @@ interface IProps {
 
 const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
 
-    console.log("asdasd", products)
     const [swiperRef, setSwiperRef] = useState<SwiperClass>();
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)

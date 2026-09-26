@@ -2,24 +2,16 @@ import React from "react";
 import MainLayout from "@/shared/main-layout";
 import Categories from "@/features/Home/categories";
 
-import { useQuery } from "@tanstack/react-query";
 import { NextPageWithLayout } from "../_app";
+import { useCategoriesHooks } from "@/hooks/categories.hooks";
 
 const CategoriesPage: NextPageWithLayout = () => {
-  const { data: categoriess, isInitialLoading }: any = useQuery({
-    queryKey: ["getCategoriesList"],
-  });
-  //   const isInitialLoading
-  const categories = [
-    {
-      name: "hi",
-    },
-  ];
-
+  
+  const { categories, loading } = useCategoriesHooks();
   return (
     <div className="text-lg font-bold ">
       <div className="container mt-6">
-        <Categories loading={isInitialLoading} categories={categories} />
+        <Categories loading={loading} categories={categories} />
       </div>
     </div>
   );

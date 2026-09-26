@@ -50,22 +50,22 @@ const CartDropdown = () => {
                 {/* pricing list */}
                 <div className="my-[25px]">
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Order Amount : <span>NPR {couponData?.orderAmount ? couponData?.orderAmount : cart?.orderAmount}</span>
+                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : cart?.orderAmount}</span>
                   </p>
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Subtotal : <span>NPR {couponData?.subTotal ? couponData?.subTotal : cart?.subTotal}</span>
+                    Subtotal : <span>AUD {couponData?.subTotal ? couponData?.subTotal : cart?.subTotal}</span>
                   </p>
                   {
                     couponData?.couponDiscount &&
                     <p className="flex justify-between mb-1 font-medium text-gray-450">
-                      Coupon Discount : <span>NPR {couponData?.couponDiscount}</span>
+                      Coupon Discount : <span>AUD {couponData?.couponDiscount}</span>
                     </p>
                   }
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Delivery charge : <span>NPR {couponData?.deliveryCharge ? couponData?.deliveryCharge : cart?.deliveryCharge}</span>
+                    Delivery charge : <span>AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cart?.deliveryCharge}</span>
                   </p>
                   <p className="flex justify-between text-slate-850">
-                    Total : <span>NPR {couponData?.total ? couponData?.total : cart?.total}</span>
+                    Total : <span>AUD {couponData?.total ? couponData?.total : cart?.total}</span>
                   </p>
                 </div>
                 <div className=" [&>*:first-child]:mb-4">
@@ -96,7 +96,7 @@ const CartDropdown = () => {
           TOTAL PRICE
         </p>
         <p className="text-[#222222] text-sm font-bold hidden xs:block whitespace-nowrap">
-          NPR {couponData?.total ? couponData?.total : cart?.total || 0}
+          AUD {couponData?.total ? couponData?.total : cart?.total || 0}
         </p>
       </div>
     </div>

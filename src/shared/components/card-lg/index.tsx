@@ -44,7 +44,7 @@ const CardLg: React.FC<Props> = ({ type, title, price, image, link, availability
                     <div className="card-body px-[15px] py-[20px] gap-[10px]">
                         <p className='text-xs text-gray-450 uppercase'>{type}</p>
                         <h2 className="card-title plant-card-title text-base">{title}</h2>
-                        <p className='text-primary text-base font-semibold'>NPR {price}</p>
+                        <p className='text-primary text-base font-semibold'>AUD {price}</p>
                         <div className='my-[30px]'>
                             <p className='desc'>{desc}</p>
                             <Link href={link} className='text-slate-850 font-bold text-sm leading-[1] transition-all delay-100 duration-150 hover:text-primary z-[1] relative' aria-label={`reac-more`}>Read More</Link>

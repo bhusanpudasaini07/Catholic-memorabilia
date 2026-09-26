@@ -12,7 +12,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import {
-  getConfig,
   getCategoriesList,
 } from "@/services/home.service";
 import OfferIcon from "@/shared/icons/common/OfferIcon";
@@ -33,10 +32,12 @@ import { BsCaretDownFill } from "react-icons/bs";
 import { useDebounce } from "@/hooks/useDebounce.hooks";
 import { useCart } from "@/store/cart";
 import { setAuthorizationHeader } from "@/axios/axiosInstance";
+import { useCategoriesHooks } from "@/hooks/categories.hooks";
 
 const Header = () => {
   const router = useRouter();
-  const { pathname } = router
+  const { categories, loading } = useCategoriesHooks();
+
 
   const token = getCookie('token');
   const loggedIn = getCookie('isLoggedIn');
@@ -54,21 +55,7 @@ const Header = () => {
 
   // const { data: cart } = useQuery<ICartItem>(['getCart', logIn], () => getCartData({ coupon }));
 
-  const { data: config, isInitialLoading } = useQuery({
-    queryKey: ["getConfig"],
-    queryFn: getConfig,
-  });
 
-  // const { data: home } = useQuery<IHome>({
-  //   queryKey: ["getHomeData"],
-  //   queryFn: getHomeData,
-  // });
-
-  const { data: categories } = useQuery({
-    queryKey: ["getCategoriesList"],
-    queryFn: getCategoriesList,
-
-  });
 
   const { data: profile } = useQuery({
     queryKey: ["getProfile", logIn],
@@ -203,6 +190,7 @@ const Header = () => {
       setLogIn(false)
     }
   }, [loggedIn])
+
 
   return (
     <>
@@ -425,15 +413,14 @@ const Header = () => {
                 tabIndex={1}
                 className={`w-full p-0 shadow dropdown-content menu bg-base-100`}
               >
-                {categories?.data
-                  ?.slice(0, 9)
+                {categories?.slice(0, 9)
                   .map((item: any, index: number) => (
                     <li key={`menu-${index}`} className="py-1">
                       <Link
-                        href={`/categories/${item.slug}`}
+                        href={`/categories/${item.id}`}
                         className="py-2.5 px-5 dropdown-item hover:!pl-7"
                       >
-                        {item.name}
+                        {item.categoryName}
                       </Link>
                     </li>
                   ))}
@@ -453,7 +440,7 @@ const Header = () => {
                 Home
               </Button>
               <div className="rounded-none dropdown dropdown-hover">
-                <label
+                {/* <label
                   tabIndex={0}
                   className="m-1 font-bold bg-transparent border-0 cursor-pointer btn text-gray-550 hover:bg-transparent hover:text-primary"
                 >
@@ -461,7 +448,7 @@ const Header = () => {
                   <span>
                     <BsCaretDownFill />
                   </span>
-                </label>
+                </label> */}
                 {/* <ul
                   tabIndex={0}
                   className="dropdown-content z-[1] menu  px-0 pt-2.5 pb-0 shadow bg-base-100 w-[252px]"

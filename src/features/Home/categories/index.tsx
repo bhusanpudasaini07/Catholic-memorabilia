@@ -14,7 +14,6 @@ interface IProps {
 
 const Categories: React.FC<IProps> = ({ loading, categories }) => {
 
-    console.log("asdasd", categories)
     const [swiperRef, setSwiperRef] = useState<SwiperClass>();
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)
@@ -116,9 +115,9 @@ const Categories: React.FC<IProps> = ({ loading, categories }) => {
 
                             <CategoryCard
                                 key={`categories-${index}`}
-                                title={item?.name}
+                                title={item?.categoryName}
                                 totalProducts={item?.productCount}
-                                shopLink={`/categories/${item?.slug}`}
+                                shopLink={`/categories/${item?.id}`}
                                 image={item?.webpBackgroundImage ? item?.webpBackgroundImage : item?.backgroundImage}
                             />
 

@@ -11,7 +11,7 @@ import {
   getWareId,
 } from "@/shared/utils/cookies-utils/cookies.utils";
 const apiURL = config.gateway.apiURL;
-const apiEndpoint1 = config.gateway.apiEndPoint1;
+
 
 export const signUp = async (data: any) => {
   try {
@@ -39,7 +39,7 @@ export const login = async (data: any) => {
 
 export const logout = async () => {
   try {
-    const response = await axiosInstance.get(`/${apiEndpoint1}/logout`);
+    const response = await axiosInstance.get(`/auth/sign-out`);
     if (response.status === 204) {
       setCouponHeader({
         coupon: "",
@@ -54,7 +54,7 @@ export const logout = async () => {
 export const forgotPassword = async (account: IForgotPassword) => {
   try {
     const response = await axiosInstance.post(
-      `/${apiEndpoint1}/forget-password`,
+      `/auth/forget-password`,
       account,
     );
     return response?.data?.data;
@@ -66,7 +66,7 @@ export const forgotPassword = async (account: IForgotPassword) => {
 export const resetPassword = async (resetPasswordBody: IResetPassword) => {
   try {
     const response = await axiosInstance.post(
-      `/${apiEndpoint1}/reset-password`,
+      `/auth/reset-password`,
       resetPasswordBody,
     );
     return response?.data?.data;
@@ -78,7 +78,7 @@ export const resetPassword = async (resetPasswordBody: IResetPassword) => {
 export const changePassword = async (changePasswordBody: IChangePassword) => {
   try {
     const response = await axiosInstance.post(
-      `/${apiEndpoint1}/change-password`,
+      `/auth/change-password`,
       changePasswordBody,
     );
     return response;
@@ -96,7 +96,7 @@ export async function verifyEmail(token: string) {
 }
 export const deleteAccount = async () => {
   try {
-    const response = await axiosInstance.post(`/${apiEndpoint1}/user/delete`, {
+    const response = await axiosInstance.post(`/auth/user/delete`, {
       reason: "",
     });
     return response.data;
@@ -106,7 +106,7 @@ export const deleteAccount = async () => {
 };
 
 export const registerGuestUser = async (data: any, isInitialSubmit: any) => {
-  const registerGuestUserUrl = `${apiURL}/${apiEndpoint1}/guest/register`;
+  const registerGuestUserUrl = `${apiURL}/guest/register`;
   let payload;
   if (isInitialSubmit) {
     payload = {
