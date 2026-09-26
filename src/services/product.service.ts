@@ -6,7 +6,7 @@ const apiEndPoint1 = config.gateway.apiEndPoint1;
 export const getProductsFromSlug = async (productSlug: any) => {
   try {
     const response = await axiosInstance.get(
-      `/${apiEndPoint1}/products/${productSlug}`
+      `/products/${productSlug}`
     );
     return response.data;
   } catch (error) {
@@ -17,7 +17,7 @@ export const getProductsFromSlug = async (productSlug: any) => {
 export const getRelatedProductsFromId = async (productId: any) => {
   try {
     const response = await axiosInstance.get(
-      `/${apiEndPoint1}/products/${productId}/related`
+      `/products/${productId}/related`
     );
     return response.data;
   } catch (error) {
@@ -35,13 +35,23 @@ export const getProductByCategory = async (
   priceOrder: string
 ) => {
   try {
-    let url = `/${apiEndPoint1}/products?keyword=${query}&page=${page}&categoryId=${categoryId}&sortBy=${sortBy}&priceOrder=${priceOrder}&allProduct=1`;
+    let url = `/products?keyword=${query}&page=${page}&categoryId=${categoryId}&sortBy=${sortBy}&priceOrder=${priceOrder}&allProduct=1`;
 
     if (minPrice !== "" && maxPrice !== "") {
       url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
     }
 
     const response = await axiosInstance.get(url);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const getAllProducts = async () => {
+  try {
+    const response = await axiosInstance.get(`/products`);
     return response.data;
   } catch (error) {
     throw error;

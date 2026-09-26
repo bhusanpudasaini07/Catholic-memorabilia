@@ -18,6 +18,7 @@ import FeaturedProducts from "@/features/Home/featured-products";
 import NewArrival from "@/features/Home/new-arrival";
 import { newProducts } from "@/services/newarrival.service";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
+import { useProductsHooks } from "@/hooks/products.hooks";
 
 const Home: NextPageWithLayout = () => {
   const [showPopupModal, setShowPopupModal] = useState<boolean>(true);
@@ -26,8 +27,8 @@ const Home: NextPageWithLayout = () => {
   });
  
   const { categories, loading: loadingCategories } = useCategoriesHooks();
+  const { products, productsLoading } = useProductsHooks();
 
-  console.log("categories====>", categories)
   const adBanners = home?.data?.adBanners || [];
  
 
@@ -56,7 +57,7 @@ const Home: NextPageWithLayout = () => {
       <div className="text-lg font-bold">
         <Banner />
         <div className="container my-10">
-          <NewArrival loading={loadingCategories} products={newArrival} />
+          <NewArrival loading={productsLoading} products={products} />
           <FeaturedProducts
             loading={loadingCategories}
             products={featuredProductsList}

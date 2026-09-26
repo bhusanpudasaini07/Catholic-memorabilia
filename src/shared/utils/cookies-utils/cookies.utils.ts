@@ -2,7 +2,6 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 import { CookieKeys } from "@/shared/enum";
 import { ILogin, IWareHouseProps } from "@/interface/login.interface";
-import { setAuthorizationHeader } from "@/axios/axiosInstance";
 
 export const addAuthToStorage = (user: ILogin) => {
   setCookie(CookieKeys.TOKEN, user);

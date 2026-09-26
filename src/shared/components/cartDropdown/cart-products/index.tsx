@@ -11,17 +11,18 @@ const CartDropdownProducts = ({ item }: any) => {
     const selectedUnit = item?.selectedUnit;
 
     //used for finding the correct image to display according to selected id
-    const selectedImg = item?.product?.webpImages ?
-        item?.product?.webpImages.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id))
-        : item?.product?.images.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id));
+    // const selectedImg = item?.product?.webpImages ?
+    //     item?.product?.webpImages.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id))
+    //     : item?.product?.images?.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id));
 
     //to display the offer price if the product has offer
     const checkOffer = item?.product?.variants?.find((price: any) => price?.hasOffer);
 
     return (
-        <div key={item.product?.id} className="relative flex gap-4 py-3 border-b border-gray-350">
+        <div key={item?.productId} className="relative flex gap-4 py-3 border-b border-gray-350">
             <div className="min-w-[85px] min-h-[100px] aspect-auto border border-gray-350 relative">
-                <Link href={`/products/${item.product?.slug}`} className="absolute w-full h-full" aria-label={`product-item-slug`} />
+                <Link href={`/products/${item?.productId}`} className="absolute w-full h-full" aria-label={`product-item-slug`} />
+                {/* <img src={item?.productImageUrl} alt="image" className="object-contain min-w-[93px] max-w-[93px] min-h-[92px]" /> */}
                 <Image
                     width={85}
                     height={100}
@@ -29,7 +30,7 @@ const CartDropdownProducts = ({ item }: any) => {
                         width: 'auto',
                         height: 'auto'
                     }}
-                    src={selectedImg ? selectedImg?.imageName : item?.product?.images[0]?.imageName}
+                    src={item?.productImageUrl}
                     alt="image"
                     className="object-contain min-w-[93px] max-w-[93px] min-h-[92px]"
                     crossOrigin="anonymous"
@@ -40,16 +41,18 @@ const CartDropdownProducts = ({ item }: any) => {
             </div>
             <div className="flex-grow">
                 <Link
-                    href={`/products/${item?.product?.slug}`}
-                    aria-label={`product-${item?.product?.id}`}
+                    href={`/products/${item?.productId}`}
+                    aria-label={`product-${item?.sId}`}
                     className="overflow-hidden capitalize text-sm font-semibold transition-all delay-150 duration-150 block text-ellipsis whitespace-nowrap max-w-[90%] hover:text-primary ">
-                    {item?.product?.name}
+                    {item?.product?.productName}
                 </Link>
-                <p className="mt-1 text-sm gray-550">
+                <p className="mt-1 text-sm gray-550 font-bold">
                     {/* <span>AUD</span> {item?.product?.unitPrice[0].hasOffer ? item.product?.unitPrice[0]?.newPrice * item?.quantity : item.product?.unitPrice[0]?.sellingPrice * item?.quantity} */}
-                    <span>AUD</span> {
-                        checkOffer ? (checkOffer?.newPrice * item?.quantity) : (item?.selectedUnit?.sellingPrice * item?.quantity)
-                    }
+                    <span>AUD</span>
+                    {/* {
+                        checkOffer ? (checkOffer?.newPrice * item?.quantity) : (item?.productPrice * item?.quantity)
+                    } */}
+                    { item?.product?.productPrice * item?.quantity}
                 </p>
                 {
                     selectedUnit?.stock === 0 &&

@@ -2,16 +2,48 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      "assets.uat.ordering-iamthegardener-v4.ekbana.net", 
-      "api.uat.ordering-iamthegardener-v4.ekbana.net", 
-      "assets.qa.ordering-iamthegardener-v4.ekbana.net", 
-      "qa.ordering-iamthegardener.ekbana.net", 
-      'api.uat.ordering-merokishan.ekbana.net', 
-      "assets.iamthegardener.com",
-      "https://assets.iamthegardener.com/",
-      "uat.ordering-iamthegardener-v5.ekbana.net"
-  ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'wfdubfpmfwilfaxxvatx.storage.supabase.co',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.uat.ordering-iamthegardener-v4.ekbana.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.uat.ordering-iamthegardener-v4.ekbana.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.qa.ordering-iamthegardener-v4.ekbana.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'qa.ordering-iamthegardener.ekbana.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.uat.ordering-merokishan.ekbana.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.iamthegardener.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'uat.ordering-iamthegardener-v5.ekbana.net',
+        pathname: '/**',
+      },
+    ],
   },
   async rewrites() {
     return [
@@ -19,8 +51,10 @@ const nextConfig = {
         source: '/sitemap.xml',
         destination: '/api/sitemap',
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
+      "https://wfdubfpmfwilfaxxvatx.storage.supabase.co/",
+      "https://wfdubfpmfwilfaxxvatx.storage.supabase.co/"

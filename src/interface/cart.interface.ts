@@ -1,11 +1,14 @@
 import { ICartProduct, IProduct } from "./product.interface";
 
 export interface ICreateCartItem {
-  note: string;
-  variant_id: number | undefined;
+  productId: number;
   quantity: number;
+  note?: string;
+  variant_id?: number | undefined;
   cart_id?: string;
+
 }
+
 
 export interface IUpdateCartItem {
   note: string;

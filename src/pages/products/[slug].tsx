@@ -10,7 +10,7 @@ import { ICartData, ICartItem, ICreateCartItem, IUpdateCartItem } from '@/interf
 import { ICartProduct } from '@/interface/product.interface';
 import ButtonLoader from '@/shared/components/btn-loading';
 import Head from 'next/head';
-import { addToCart, getCartData, getCartProduct } from '@/services/cart.service';
+import { addToCart, getCartProduct } from '@/services/cart.service';
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
 import SkeletonImage from '@/shared/components/skeleton/image';
 import CardHeartIcon from '@/shared/icons/common/CardHeartIcon';
@@ -70,10 +70,9 @@ const ProductSlug = () => {
   );
 
   const handleCartAction = () => {
-    const payload: ICreateCartItem = {
-      note: '',
-      variant_id: selectedPrice?.id,
+    const payload: any = {
       quantity: value,
+      productId: productData?.productId,
     }
     mutation.mutate(payload)
   };
@@ -161,9 +160,8 @@ const ProductSlug = () => {
 
   useEffect(() => {
     if (productData) {
-      setMoreInfoContent(productData?.response?.data?.description || '');
-      const message = productData?.response?.data?.taxable ? 'Including Tax' : 'Excluding Tax';
-      setTaxMessage(message);
+      setMoreInfoContent(productData?.response?.productDescription || '');
+     
     }
   }, [productData]);
 
@@ -176,9 +174,7 @@ const ProductSlug = () => {
 
 
   //for SKU multiple
-  //For checking if the selected size and the mapped pricec are equal to show the change in price
-  const selectedPrice = productData?.response?.data?.variants?.find((price: any) => price?.id === selectedSizeId);
-
+ 
   //to display image according to the changed size.
   const selectedImg = productData?.response?.data?.webpImages ?
     productData?.response?.data?.webpImages?.find((img: any) => img?.unit_price_id === selectedSizeId)
@@ -197,12 +193,15 @@ const ProductSlug = () => {
     }
   }, [selectedCartItems, selectedSizeId])
 
+
+
+  console.log("productData====>", productData)
   return (
     <>
       <Head>
-        <title>{productData?.response?.data?.name}</title>
+        <title>{productData?.response?.productName}</title>
       </Head>
-      <Breadcrumb title={productData?.response?.data?.name} />
+      <Breadcrumb title={productData?.response?.productName} />
       <section className="my-[60px]">
         <div className="container">
           <div className="grid grid-cols-12">
@@ -287,83 +286,22 @@ const ProductSlug = () => {
                 ) : (
                   <>
                     <h2 className="mb-6 text-2xl font-semibold text-slate-850">
-                      {productData?.response?.data?.name}
+                      {productData?.response?.productName}
                     </h2>
-                    <p className='mb-2 text-sm font-bold text-sllate-850'>Availability: {' '}
-                      {
-                        selectedPrice?.stock === 0 ? (
-                          <span className='font-semibold text-red-250'>Out Of Stock</span>
-                        ) : (
-                          <span className='font-semibold text-primary'>In Stock</span>
-                        )
-                      }
-                    </p>
+                    
 
                     <p className="flex items-center gap-3 mb-2 text-sm font-bold text-slate-850">
                       Category:
-                      <Link href={`/category/${productData?.response?.data?.categorySlug}`} aria-label="category-title" className="mb-0 text-primary hover:text-orange-450">
-                        <span className="font-normal">{productData?.response?.data?.restaurantName}</span>
+                      <Link href={`/category/${productData?.response?.categoryId}`} aria-label="category-title" className="mb-0 text-primary hover:text-orange-450">
+                        <span className="font-normal">{productData?.response?.category?.categoryName}</span>
                       </Link>
                     </p>
-                    <p className="flex items-center gap-3 mb-2 text-sm font-bold color-slate-850">
-                      Tags:
-                      {productData?.response?.data?.tags?.map((prev: ITag, index: number) => (
-                        <Link href={`/tag?id=${prev?.slug}`} aria-label="tag-title" className="mb-0 capitalize transition-all text-primary hover:text-orange-450" key={`tag-${index}`}>
-                          <span className="font-normal">{prev?.name}</span>
-                        </Link>
-                      ))}
+                    <p className="flex items-center gap-3 mb-2 text-sm font-bold text-slate-850">
+                       Price:
+                        <span className="text-primary font-bold">AUD {productData?.response?.productPrice}</span>
                     </p>
-                    <ul className="flex my-5">
 
-                      {
-                        selectedPrice && selectedPrice?.hasOffer ? (
-                          <>
-                            <li className="mr-1 text-base font-bold text-red-250">
-                              AUD
-                              <span>
-                                {selectedPrice?.newPrice * value}
-                              </span>
-                            </li>
-
-                            <li className="mr-1 text-base font-bold line-through text-primary">
-                              AUD
-                              <span>
-                                {selectedPrice?.oldPrice}
-                              </span>
-                            </li>
-                          </>
-                        ) : (
-                          < li className="mr-1 text-base font-bold text-primary" >
-                            AUD
-                            <span className='ml-1'>
-                              {selectedPrice?.sellingPrice * value}
-                            </span>
-                          </li>
-                        )
-                      }
-                      <li className="text-base font-bold text-primary ">
-                        ( <span dangerouslySetInnerHTML={{ __html: taxMessage }} />)
-                      </li>
-                    </ul>
-
-                    <p dangerouslySetInnerHTML={{ __html: selectedPrice?.description, }} />
-
-                    {
-                      unitPriceArray.length > 1 &&
-                      <div className='mt-3'>
-                        <p className='mb-3 text-lg font-bold text-slate-850'>Size</p>
-                        <select name="" id=""
-                          value={selectedSizeId}
-                          onChange={(e) => setSelectedSizeId(JSON.parse(e.target.value))}
-                          className='px-3 py-1 w-[175px] focus:outline-none text-lg border rounded-[4px] border-primary text-slate-850'>
-                          {
-                            unitPriceArray?.map((size: any) => (
-                              <option key={size?.id} value={size?.id}><p>{size?.size}</p></option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                    }
+                    
                     <div className="w-100 flex my-[30px]">
                       <div className="h-[48px] flex items-center border border-solid border-gray-950 overflow-hidden relative text-gray-250">
                         <button
@@ -392,7 +330,7 @@ const ProductSlug = () => {
                             <button
                               type='button'
                               onClick={handleCartAction}
-                              disabled={mutation.isLoading || selectedPrice?.stock === 0}
+                              disabled={mutation.isLoading}
                               className={`${mutation.isLoading && 'opacity-70 '} disabled:cursor-not-allowed flex items-center gap-4 relative px-[55px] font-bold uppercase rounded-[30px] bg-accent text-base-100 ml-2.5 h-[48px] text-normal hover:bg-orange-250 hover:text-base-100`}>
 
                               + Update To Cart
@@ -405,7 +343,7 @@ const ProductSlug = () => {
                             <button
                               type='button'
                               onClick={handleCartAction}
-                              disabled={mutation.isLoading || selectedPrice?.stock === 0}
+                              disabled={mutation.isLoading}
                               className={`${mutation.isLoading && 'opacity-70 '} disabled:cursor-not-allowed flex items-center gap-4 relative px-[55px] font-bold uppercase rounded-[30px] bg-accent text-base-100 ml-2.5 h-[48px] text-normal hover:bg-orange-250 hover:text-base-100`}>
 
                               + Add To Cart

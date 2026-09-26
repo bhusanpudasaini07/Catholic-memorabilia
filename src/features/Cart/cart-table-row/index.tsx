@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback,  useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 
 const CartTableRow = ({ item }: any) => {

@@ -7,8 +7,8 @@ import Link from 'next/link'
 import { ITag } from '@/interface/tag.interface'
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ICartData, ICartItem, ICreateCartItem, IUpdateCartItem } from '@/interface/cart.interface'
-import { addToCart, getCartData } from '@/services/cart.service'
+import { ICartData, ICreateCartItem } from '@/interface/cart.interface'
+import { addToCart } from '@/services/cart.service'
 import { getProductsFromSlug } from '@/services/product.service'
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils'
 import { useWishlists } from '@/hooks/wishlist.hooks'
@@ -37,7 +37,6 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     //for swiper carousel
     const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
-    const { data: cartData } = useQuery<ICartItem>(['getCart'], () => getCartData({ coupon: '' }));
     const { data: cartList } = useQuery<ICartData>(['getCartList'])
     const { data: productData, isLoading, error } = useQuery(
         ['getProductsFromSlug', slug],
@@ -59,7 +58,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
 
     const handleAddToCart = () => {
         const payload: ICreateCartItem = {
-            note: '',
+            productId: productData?.productId,
             variant_id: selectedSizeId,
             quantity: value,
         }

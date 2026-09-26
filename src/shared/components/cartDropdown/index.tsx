@@ -5,32 +5,39 @@ import CartIcon from '@/shared/icons/common/CartIcon';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { getCartData, getCartProduct } from '@/services/cart.service';
-import { ICartData, ICartItem } from '@/interface/cart.interface';
 import { useCart as useCartStores } from '@/store/cart';
 import CartDropdownProducts from './cart-products';
 
-const CartDropdown = () => {
+interface CartDropdownProps {
+  logIn: boolean;
+}
+const CartDropdown = ({ logIn }: CartDropdownProps) => {
   const router = useRouter();
-
 
   const { coupon, setCoupon, couponData } = useCartStores();
 
-  const { data: cart } = useQuery<ICartItem>(['getCart'], () => getCartData({ coupon }));
-  const { data: cartList } = useQuery<ICartData>(['getCartList'], getCartProduct)
+  const { data: cartList } = useQuery({
+    queryKey: ['cartList'],
+    queryFn: getCartProduct,
+    enabled: !!logIn,
+  });
+
   //checking if there is any item which is out of stock
-  const hasOutOfStock = cartList?.cartProducts.find((item) => item?.selectedUnit?.stock === 0) ? true : false
+  const hasOutOfStock = cartList?.cartProducts?.find((item: any) => item?.selectedUnit?.stock === 0) ? true : false
   useEffect(() => {
     if (window && localStorage && localStorage.getItem("coupon")) {
       setCoupon(localStorage.getItem("coupon") as string)
     }
   }, [window, localStorage, coupon])
 
+  console.log("cartList====>", cartList)
+
   return (
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>
       <div className="relative z-40 py-3 bg-gray-350 btn-circle shrink-0">
         <CartIcon className="mx-auto" />
         <Badge className="badge-accent" badgePosition="top-right">
-          {cartList?.cartProducts?.length || 0}
+          {cartList?.length || 0}
         </Badge>
         {/* Total Price */}
 
@@ -43,29 +50,29 @@ const CartDropdown = () => {
             ) : (
               <>
                 <div className="overflow-y-scroll max-h-[350px">
-                  {cartList && cartList?.cartProducts?.map((item: any, index: number) => (
+                  {cartList && cartList?.items?.map((item: any, index: number) => (
                     <CartDropdownProducts item={item} key={index} />
                   ))}
                 </div>
                 {/* pricing list */}
                 <div className="my-[25px]">
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : cart?.orderAmount}</span>
+                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : cartList?.totalAmount}</span>
                   </p>
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Subtotal : <span>AUD {couponData?.subTotal ? couponData?.subTotal : cart?.subTotal}</span>
+                    Subtotal : <span>AUD {couponData?.subTotal ? couponData?.subTotal : cartList?.totalAmount}</span>
                   </p>
-                  {
+                  {/* {
                     couponData?.couponDiscount &&
                     <p className="flex justify-between mb-1 font-medium text-gray-450">
                       Coupon Discount : <span>AUD {couponData?.couponDiscount}</span>
                     </p>
-                  }
-                  <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Delivery charge : <span>AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cart?.deliveryCharge}</span>
-                  </p>
+                  } */}
+                  {/* <p className="flex justify-between mb-1 font-medium text-gray-450">
+                    Delivery charge : <span>AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cartList?.deliveryCharge}</span>
+                  </p> */}
                   <p className="flex justify-between text-slate-850">
-                    Total : <span>AUD {couponData?.total ? couponData?.total : cart?.total}</span>
+                    Total : <span>AUD {couponData?.total ? couponData?.total : cartList?.totalAmount}</span>
                   </p>
                 </div>
                 <div className=" [&>*:first-child]:mb-4">
@@ -96,7 +103,7 @@ const CartDropdown = () => {
           TOTAL PRICE
         </p>
         <p className="text-[#222222] text-sm font-bold hidden xs:block whitespace-nowrap">
-          AUD {couponData?.total ? couponData?.total : cart?.total || 0}
+          AUD {couponData?.total ? couponData?.total : cartList?.total || 0}
         </p>
       </div>
     </div>

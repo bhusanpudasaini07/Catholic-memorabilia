@@ -51,7 +51,7 @@ export const getCartData = async (params: { coupon?: string }) => {
 export const getCartProduct = async () => {
   try {
     const response = await axiosInstance.get(`/carts`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw error;
   }

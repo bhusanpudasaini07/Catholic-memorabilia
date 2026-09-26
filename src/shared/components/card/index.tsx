@@ -9,7 +9,6 @@ import { ICartData, ICartItem, ICreateCartItem, IUpdateCartItem } from "@/interf
 import ButtonLoader from "../btn-loading";
 import { useCartsHooks } from "@/hooks/cart.hooks";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
-import { debounce } from 'lodash'
 import CardHeartIcon from "@/shared/icons/common/CardHeartIcon";
 import { useWishlists } from "@/hooks/wishlist.hooks";
 import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
@@ -60,13 +59,11 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
   * Handle Add to cart paylod function
   */
   const handleAddToCart = () => {
-    // const payload: ICreateCartItem = {
-    //   note: '',
-    //   productId: product?.id,
-    //   priceId: product?.unitPrice[0]?.id,
-    //   quantity: quantity,
-    // }
-    // mutation.mutate(payload)
+    const payload: ICreateCartItem = {
+      productId: product?.id,
+      quantity: quantity,
+    }
+    mutation.mutate(payload)
     setShowProductModal(true)
     setProductModalId(product?.slug)
   };
@@ -139,7 +136,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
     <>
       <div className="relative card plant-card">
         <Link
-          href={`/products/${product?.slug}`}
+          href={`/products/${product?.id}`}
           className="absolute top-0 bottom-0 left-0 right-0 z-[1]"
         />
         {logIn &&
@@ -164,9 +161,9 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
         }
         <figure className="relative">
           {
-            product && product?.images && product?.images?.length === 0 ? (
+            product && product?.productImageUrl  ? (
               <Image
-                src={product?.webpImages[0]?.imageName}
+                src={product?.productImageUrl}
                 alt="products"
                 width={116}
                 height={170}
@@ -179,7 +176,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               />
             ) : (
               <Image
-                src={product?.images &&product?.images[0]?.imageName}
+                src={product?.productImageUrl &&product?.productImageUrl}
                 alt="products"
                 width={116}
                 height={170}
@@ -200,7 +197,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
 
         <div className="plant-card_preview-icon">
           <Link
-            href={`/products/${product?.slug}`}
+            href={`/products/${product?.id}`}
             className="flex items-center justify-center"
           >
             <SearchIcon className="max-w-[15px] h-auto" />
@@ -213,7 +210,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
           </p>
           {/* <div className="static z-[2]"> */}
           {/* <div className="tooltip tooltip-bottom" data-tip={product?.name}> */}
-          <h2 className="card-title plant-card-title">{product?.name}</h2>
+          <h2 className="card-title plant-card-title">{product?.productName}</h2>
           {/* </div> */}
           {/* </div> */}
 
@@ -240,7 +237,9 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
                 </div>
               ) : (
                 <p className="text-sm font-semibold text-primary">
-                  AUD { product?.variants &&product?.variants[0]?.sellingPrice}
+                  AUD {product?.productPrice}
+                  {/* AUD { product?.variants &&product?.variants[0]?.sellingPrice} */}
+                  
                 </p>
               )
             }
@@ -248,13 +247,13 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               <button
                 className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto"
                 onClick={handleAddToCart}
-              // disabled={mutation.isLoading}
+              disabled={mutation.isLoading}
               >
                 Add to Cart
-                {/* {
+                {
                     mutation.isLoading &&
                     <ButtonLoader />
-                  } */}
+                  }
               </button>
             ) :
               cart?.cartProducts?.some((item: any) => item?.product.id === product?.id) && (

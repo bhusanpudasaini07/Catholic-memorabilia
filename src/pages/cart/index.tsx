@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NextPageWithLayout } from '../_app';
 import MainLayout from '@/shared/main-layout';
 import Title from '@/shared/components/title';
-import { ICartData, ICartItem, ICouponCartData, ICouponCartError } from '@/interface/cart.interface';
+import {  ICouponCartData, ICouponCartError } from '@/interface/cart.interface';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Head from 'next/head';
 import CartTableRow from '@/features/Cart/cart-table-row';
@@ -15,6 +15,7 @@ import { useCart as useCartStore } from '@/store/cart';
 import { addCouponCode, getCartData, getCartProduct } from '@/services/cart.service';
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
 import { useRouter } from 'next/router';
+import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 
 enum COUPON_METHODS {
   ADD_COUPON = 'Apply Coupon',
@@ -23,14 +24,23 @@ enum COUPON_METHODS {
 
 const Cart: NextPageWithLayout = () => {
   const queryClient = useQueryClient();
+  const token = getToken()
   const router = useRouter()
   const [tempCoupon, setTempCoupon] = useState('');
 
   const { coupon, setCoupon, setCouponData, couponData } = useCartStore();
 
   const [couponText, setCouponText] = useState<COUPON_METHODS>(COUPON_METHODS.ADD_COUPON);
-  const { data: cart } = useQuery<ICartItem>(['getCart'], () => getCartData({ coupon }));
-  const { data: cartData } = useQuery<ICartData>(['getCartList'], getCartProduct);
+  const { data: cart } = useQuery({
+    queryKey: ['getCart', coupon],
+    queryFn: () => getCartData({ coupon }),
+    enabled: !!coupon || !!token,
+});
+  const { data: cartData } = useQuery({
+    queryKey: ['getCartList'],
+    queryFn: getCartProduct,
+    enabled: !!token,
+  });
   const { bulkCartDelete, bulkDeleteLoading } = useCartsHooks();
 
   const { data: couponCartData, isError, error: couponCartError } = useQuery<ICouponCartData, ICouponCartError[]>({
@@ -44,7 +54,7 @@ const Cart: NextPageWithLayout = () => {
   };
 
   //checking if there is any item which is out of stock
-  const hasOutOfStock = cartData?.cartProducts.find((item) => item?.selectedUnit?.stock === 0) ? true : false
+  const hasOutOfStock = cartData?.cartProducts.find((item: any) => item?.selectedUnit?.stock === 0) ? true : false
 
   const handleApplyCoupon = () => {
     setCoupon(tempCoupon);
