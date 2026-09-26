@@ -55,7 +55,7 @@ const Home: NextPageWithLayout = () => {
         <title></title>
       </Head>
       <div className="text-lg font-bold">
-        <Banner />
+        {/* <Banner /> */}
         <div className="container my-10">
           <NewArrival loading={productsLoading} products={products} />
           <FeaturedProducts

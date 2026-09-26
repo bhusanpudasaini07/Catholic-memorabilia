@@ -43,16 +43,19 @@ const CartDropdownProducts = ({ item }: any) => {
                 <Link
                     href={`/products/${item?.productId}`}
                     aria-label={`product-${item?.sId}`}
-                    className="overflow-hidden capitalize text-sm font-semibold transition-all delay-150 duration-150 block text-ellipsis whitespace-nowrap max-w-[90%] hover:text-primary ">
+                    className="overflow-hidden capitalize text-sm font-semibold transition-all delay-150 duration-150 block text-ellipsis whitespace-nowrap max-w-[80%] hover:text-primary ">
                     {item?.product?.productName}
                 </Link>
-                <p className="mt-1 text-sm gray-550 font-bold">
+                <p className="mt-1 text-sm text-primary font-bold">
                     {/* <span>AUD</span> {item?.product?.unitPrice[0].hasOffer ? item.product?.unitPrice[0]?.newPrice * item?.quantity : item.product?.unitPrice[0]?.sellingPrice * item?.quantity} */}
                     <span>AUD</span>
                     {/* {
                         checkOffer ? (checkOffer?.newPrice * item?.quantity) : (item?.productPrice * item?.quantity)
                     } */}
+                    <span className="text-primary font-bold pl-1">
+
                     { item?.product?.productPrice * item?.quantity}
+                    </span>
                 </p>
                 {
                     selectedUnit?.stock === 0 &&
@@ -61,8 +64,8 @@ const CartDropdownProducts = ({ item }: any) => {
             </div>
             <button
                 className="absolute right-0 w-5 btn-circle btn-error btn aspect-square hover:bg-primary hover:border-primary bg-gray-750 border-gray-750"
-                onClick={() => handleRemoveFromCart(item?.id)}
-                disabled={selectedId === item?.id && cartDelete.isLoading}>
+                onClick={() => handleRemoveFromCart(item?.productId)}
+                disabled={selectedId === item?.productId && cartDelete.isLoading}>
                 {selectedId === item?.id && cartDelete.isLoading ? (
                     <span className="w-3 h-3 border-2 border-dotted rounded-full border-primary border-t-transparent animate-spin"></span>
                 ) : (

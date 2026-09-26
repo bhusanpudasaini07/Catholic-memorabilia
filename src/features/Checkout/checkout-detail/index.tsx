@@ -23,7 +23,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
         </ul>
         <div className="my-[29px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className="">
-            {cartData?.cartProducts.map((productData: any, index: any) => (
+            {cartData?.cartProducts?.map((productData: any, index: any) => (
               <li className="flex justify-between" key={index}>
                 <span> {productData?.product?.name} X {productData?.quantity} </span>
                 <span>AUD {productData.selectedUnit.sellingPrice *

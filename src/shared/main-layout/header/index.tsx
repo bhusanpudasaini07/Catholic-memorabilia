@@ -352,110 +352,33 @@ const Header = () => {
               >
                 Home
               </Button>
-              <div className="rounded-none dropdown dropdown-hover">
-                {/* <label
-                  tabIndex={0}
-                  className="m-1 font-bold bg-transparent border-0 cursor-pointer btn text-gray-550 hover:bg-transparent hover:text-primary"
-                >
-                  OUR SERVICE{" "}
-                  <span>
-                    <BsCaretDownFill />
-                  </span>
-                </label> */}
-                {/* <ul
-                  tabIndex={0}
-                  className="dropdown-content z-[1] menu  px-0 pt-2.5 pb-0 shadow bg-base-100 w-[252px]"
-                >
-                  <li>
-                    <Link
-                      href="/page/plant-consultation"
-                      className="rounded-none text-gray-750 border-b-gray-150 border-solid border-b-[1px]  text-sm  capitalize font-medium hover:bg-transparent hover:text-primary hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Plant Consultation
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/page/gift-a-plant"
-                      className="rounded-none text-gray-750 text-sm  capitalize font-medium hover:bg-transparent hover:text-primary hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Gift a plant
-                    </Link>
-                  </li>
-                </ul> */}
-              </div>
-              {/* <Link href="/page/our-outlets" aria-label="our-outlets" className="!bg-white border-0 text-gray-550 font-bold text-sm">  OUTLET</Link> */}
-              {/* <Button
-                  type="ghost"
-                  className="!bg-white border-0 text-gray-550 font-bold"
-                >
-                  OUTLET
-                </Button> */}
-
-              <div className="dropdown dropdown-hover">
-                <label
-                  tabIndex={0}
-                  className="m-1 font-bold bg-transparent border-0 cursor-pointer btn text-gray-550 hover:bg-transparent hover:text-primary"
-                >
-                  ABOUT US{" "}
-                  <span>
-                    <BsCaretDownFill />
-                  </span>
-                </label>
-                {/* <ul
-                  tabIndex={0}
-                  className="dropdown-content z-[1] menu pt-2.5 pb-0 shadow bg-base-100 w-[252px]"
-                >
-                  <li>
-                    <Link
-                      href="/page/tree-installation"
-                      className="rounded-none text-gray-750 hover:bg-transparent hover:text-primary border-b-gray-150 border-solid border-b-[1px]  text-sm  capitalize font-medium hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Tree Installation
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/page/about-us"
-                      className="rounded-none text-gray-750 hover:bg-transparent hover:text-primary border-b-gray-150 border-solid border-b-[1px]  text-sm  capitalize font-medium hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Our Story
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/page/our-values"
-                      className="rounded-none text-gray-750 hover:bg-transparent hover:text-primary border-b-gray-150 border-solid border-b-[1px]  text-sm  capitalize font-medium hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Values That Make Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/page/working-at-i-am-the-gardener"
-                      className="rounded-none text-gray-750 hover:bg-transparent hover:text-primary border-b-gray-150 border-solid border-b-[1px]  text-sm  capitalize font-medium hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Working At I Am The Gardner
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/page/csr-projects"
-                      className="rounded-none text-gray-750 text-sm  capitalize font-medium hover:bg-transparent hover:text-primary hover:pl-[20px] transition-all duration-200 ease-linear outline-none"
-                    >
-                      Our CSR Project
-                    </Link>
-                  </li>
-                </ul> */}
-              </div>
-              <Link href="/blogs" aria-label="header-blogs">
+             
+              <Link href="/">
                 <Button
                   type="ghost"
                   className="!bg-white border-0 text-gray-550 font-bold uppercase"
                 >
-                  BLOGS
+                  Just for you
                 </Button>
               </Link>
+              <Link href="/">
+                <Button
+                  type="ghost"
+                  className="!bg-white border-0 text-gray-550 font-bold uppercase"
+                >
+                  New In
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button
+                  type="ghost"
+                  className="!bg-white border-0 text-gray-550 font-bold uppercase"
+                >
+                  Sale
+                </Button>
+              </Link>
+          
+               
             </div>
           </div>
           <Link href="/offer" aria-label="header-offer">

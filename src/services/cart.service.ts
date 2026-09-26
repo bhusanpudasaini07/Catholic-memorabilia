@@ -57,10 +57,10 @@ export const getCartProduct = async () => {
   }
 };
 
-export const deleteCartItemById = async (id: number) => {
+export const deleteCartItemById = async (productId: number) => {
   try {
     const response = await axiosInstance.delete(
-      `/carts/${id}`
+      `/carts/items/${productId}`
     );
     return response;
   } catch (error) {

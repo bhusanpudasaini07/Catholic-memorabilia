@@ -13,7 +13,7 @@ export const useCartsHooks = () => {
     const cartDelete = useMutation({
         mutationFn: deleteCartItemById,
         onSuccess: () => {
-            queryClient.invalidateQueries(['getCartList'])
+            queryClient.invalidateQueries(['cartList'])
             queryClient.invalidateQueries(['getCart'])
             showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
             if (router.pathname === '/wishlist') {

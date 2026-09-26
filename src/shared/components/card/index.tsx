@@ -38,11 +38,12 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
   /*
   * Handle Add to cart api call
   */
-  const mutation = useMutation({
+  const addToCartmutation = useMutation({
     mutationFn: addToCart,
     onSuccess: () => {
       showToast(TOAST_TYPES.success, 'Item Added To Cart Successfully');
       queryClient.invalidateQueries(['getCart'])
+      queryClient.invalidateQueries(['cartList'])
       setShowProductModal(false)
       // if (router.pathname === '/wishlist') {
       //   queryClient.invalidateQueries(['wishlistProducts'])
@@ -63,7 +64,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
       productId: product?.id,
       quantity: quantity,
     }
-    mutation.mutate(payload)
+    addToCartmutation.mutate(payload)
     setShowProductModal(true)
     setProductModalId(product?.slug)
   };
@@ -247,11 +248,11 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               <button
                 className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto"
                 onClick={handleAddToCart}
-              disabled={mutation.isLoading}
+              disabled={addToCartmutation.isLoading}
               >
                 Add to Cart
                 {
-                    mutation.isLoading &&
+                    addToCartmutation.isLoading &&
                     <ButtonLoader />
                   }
               </button>

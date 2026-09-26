@@ -1,3 +1,4 @@
+import { BreadCrumbImage } from "@/shared/lib/image-config";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -5,7 +6,12 @@ const Footer = () => {
 
   return (
     <div className="relative">
-      {/* <Image fill src={FooterBg} priority={true} className="z-0" alt="footer-bg" /> */}
+     <footer 
+      style={{ backgroundImage: `url(${BreadCrumbImage})` }}
+      className="bg-cover bg-center bg-no-repeat"
+     >
+
+     </footer>
       
     </div>
   );
