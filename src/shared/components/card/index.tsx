@@ -42,7 +42,6 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
     mutationFn: addToCart,
     onSuccess: () => {
       showToast(TOAST_TYPES.success, 'Item Added To Cart Successfully');
-      queryClient.invalidateQueries(['getCart'])
       queryClient.invalidateQueries(['cartList'])
       setShowProductModal(false)
       // if (router.pathname === '/wishlist') {

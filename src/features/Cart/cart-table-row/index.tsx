@@ -1,6 +1,5 @@
+import Quantity from '@/components/Quantity';
 import { useCartsHooks } from '@/hooks/cart.hooks';
-import { useDebounce } from '@/hooks/useDebounce.hooks';
-import { ICreateCartItem, IUpdateCartItem } from '@/interface/cart.interface';
 import { addToCart } from '@/services/cart.service';
 import ButtonLoader from '@/shared/components/btn-loading';
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
@@ -8,39 +7,24 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback,  useEffect,  useState } from 'react'
+import React, { useCallback,    useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 
 const CartTableRow = ({ item }: any) => {
     const [quantity, setQuantity] = useState<number>(item?.quantity || 1);
     const stock: any = item?.selectedUnit?.stock
-    const queryClient = useQueryClient();
 
     const { updateCartMutation, handleRemoveFromCart, cartDeleteLoading } = useCartsHooks(); //customHook
-
-    const mutation = useMutation({
-        mutationFn: addToCart,
-        onSuccess: () => {
-            showToast(TOAST_TYPES.success, 'Product Updated Successfully');
-            queryClient.invalidateQueries(['cartList'])
-            queryClient.invalidateQueries(['getCart'])
-        },
-        onError: (error: any) => {
-            showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.detail)
-        }
-    })
 
     /*
   ** Provides payload to the update api when the value is being increased or decreased.
   */
     const handleUpdateCart = (newQuantity: number, itemId: number) => {
-       debugger;
             const payload: any = {
                 productId: itemId,
                 quantity: newQuantity,
             }
-            debugger;
-            mutation.mutate(payload)
+            updateCartMutation.mutate(payload)
     };
 
     /**
@@ -79,7 +63,7 @@ const CartTableRow = ({ item }: any) => {
                 />
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium">
-                <Link href={`/products/${item?.product?.slug}`} className="text-[15px] hover:text-primary" aria-label="indoor-plants" >
+                <Link href={`/products/${item?.product?.id}`} className="text-[15px] hover:text-primary" aria-label="indoor-plants" >
                     {item?.product?.productName}{" "}
                 </Link>
                 {
@@ -91,29 +75,8 @@ const CartTableRow = ({ item }: any) => {
                 AUD {item?.unitPrice}
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium">
-                <div className="flex justify-center m-auto h-[40px] max-w-[115px]">
-                    <button
-                        className="text-base text-gray-650 p-[5px] border border-gray-350 transition-all delay-100 duration-150 hover:bg-slate-850 hover:text-primary disabled:cursor-not-allowed disabled:hover:opacity-50 disabled:pointer-events-none"
-                        onClick={() => { updateCartCall(quantity - 1) }}
-                        disabled={quantity === 1 ? true : false}
-                    >
-                        -
-                    </button>
-                    <input
-                        type="text"
-                        className="w-full text-base text-center border-y border-y-gray-350 focus:outline-0"
-                        readOnly
-                        value={quantity}
-                        maxLength={3}
-                    />
-                    <button
-                        className="text-base text-gray-650 p-[5px] border border-gray-350 transition-all delay-100 duration-150 hover:bg-slate-850 hover:text-primary disabled:cursor-not-allowed disabled:hover:opacity-50 disabled:pointer-events-none"
-                        onClick={() => { updateCartCall(quantity + 1) }}
-                        disabled={quantity === stock ? true : false}
-                    >
-                        +
-                    </button>
-                </div>
+               
+                <Quantity quantity={quantity} stock={stock} updateCartCall={updateCartCall} />
             </td>
             <td className="text-gray-650 text-center py-[30px] font-medium text-[15px]">
                 AUD {item?.totalPrice}

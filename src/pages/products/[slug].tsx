@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import MainLayout from '@/shared/main-layout';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -21,6 +21,9 @@ import { ITag } from '@/interface/tag.interface';
 import RelatedProducts from '@/features/Product/related-products';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Thumbs } from 'swiper';
+import Quantity from '@/components/Quantity';
+import { useCartsHooks } from '@/hooks/cart.hooks';
+import { debounce } from 'lodash';
 
 
 const ProductSlug = () => {
@@ -28,25 +31,23 @@ const ProductSlug = () => {
   const { slug } = router.query;
   const token = getToken()
   const queryClient = useQueryClient();
-  const [descriptionContent, setDescriptionContent] = useState<string>('');
+  const { updateCartMutation } = useCartsHooks();
   const [moreInfoContent, setMoreInfoContent] = useState<string>('');
-  const [taxMessage, setTaxMessage] = useState<string>('');
 
-  const [itemCartDetail, setItemCartDetail] = useState<ICartProduct>()
   const [value, setValue] = useState<number>(1);
 
   //for swiper carousel
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
 
-  const { data: cartData } = useQuery<ICartData>(['getCartList'], getCartProduct);
+  const { data: cartData } = useQuery<ICartData>(['cartList'], getCartProduct);
 
   const { data: productData, isLoading, error } = useQuery(
     ['getProductsFromSlug', slug],
     async () => {
       if (slug) {
         const response = await getProductsFromSlug(slug);
-        const productId = response?.data?.id;
+        const productId = response?.id;
         return { response, productId };
       }
     }
@@ -80,13 +81,8 @@ const ProductSlug = () => {
   const mutation = useMutation({
     mutationFn: addToCart,
     onSuccess: () => {
-      if (selectedCartItems && updateCart) {
-        showToast(TOAST_TYPES.success, 'Product Updated Successfully');
-      } else {
-        showToast(TOAST_TYPES.success, 'Item Added To Cart Successfully');
-      }
-      queryClient.invalidateQueries(['getCartList'])
-      queryClient.invalidateQueries(['getCart'])
+      showToast(TOAST_TYPES.success, 'Item Added To Cart Successfully');
+      queryClient.invalidateQueries(['cartList'])
     },
     onError: (error: any) => {
       showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
@@ -148,20 +144,20 @@ const ProductSlug = () => {
   }
   const favId = genFavId() //setting generated fav id.
 
-  useEffect(() => {
-    if (cartData) {
-      cartData?.cartProducts?.map((item: any) => {
-        if (slug === item?.product?.slug) {
-          setItemCartDetail(item)
-        }
-      })
-    }
-  }, [slug, cartData])
+  // useEffect(() => {
+  //   if (cartData) {
+  //     cartData?.cartProducts?.map((item: any) => {
+  //       if (slug === item?.product?.slug) {
+  //         setItemCartDetail(item)
+  //       }
+  //     })
+  //   }
+  // }, [slug, cartData])
 
   useEffect(() => {
     if (productData) {
       setMoreInfoContent(productData?.response?.productDescription || '');
-     
+
     }
   }, [productData]);
 
@@ -171,10 +167,12 @@ const ProductSlug = () => {
     }
   }, [productData])
 
+  console.log("value====>", productData)
+
 
 
   //for SKU multiple
- 
+
   //to display image according to the changed size.
   const selectedImg = productData?.response?.data?.webpImages ?
     productData?.response?.data?.webpImages?.find((img: any) => img?.unit_price_id === selectedSizeId)
@@ -184,6 +182,36 @@ const ProductSlug = () => {
   //checking stock for each product/sku element
   const stock: any = productData?.response?.data?.variants?.find((price: any) => price?.id === selectedSizeId)?.stock
   const selectedCartItems: ICartProduct | undefined = cartData?.cartProducts?.find((cart: any) => JSON.parse(cart?.selectedUnit?.id) === selectedSizeId);
+
+  /*
+** Provides payload to the update api when the value is being increased or decreased.
+*/
+  const handleUpdateCart = (newQuantity: number, itemId: number) => {
+    const payload: any = {
+      productId: itemId,
+      quantity: newQuantity,
+    }
+    updateCartMutation.mutate(payload)
+  };
+
+
+  /**
+   * Used in order to debounce the value(quantity) that is being updated.
+   */
+  const debouncedHandleUpdateCart = useCallback( //debounce callback to call when value changes
+    debounce((newQuantity) => {
+      handleUpdateCart(newQuantity, productData?.productId!)
+    }, 300), [slug]
+  )
+
+  /**
+   * For btn onClick function to pass the new value either being increased or decreased.
+   */
+  const updateCartCall = (newQuantity: number) => {
+    setValue(newQuantity) //set the updated value
+    debouncedHandleUpdateCart(newQuantity) //debounce callback added the updated value
+  }
+
 
   useEffect(() => {
     if (updateCart) {
@@ -195,7 +223,6 @@ const ProductSlug = () => {
 
 
 
-  console.log("productData====>", productData)
   return (
     <>
       <Head>
@@ -288,7 +315,7 @@ const ProductSlug = () => {
                     <h2 className="mb-6 text-2xl font-semibold text-slate-850">
                       {productData?.response?.productName}
                     </h2>
-                    
+
 
                     <p className="flex items-center gap-3 mb-2 text-sm font-bold text-slate-850">
                       Category:
@@ -297,33 +324,15 @@ const ProductSlug = () => {
                       </Link>
                     </p>
                     <p className="flex items-center gap-3 mb-2 text-sm font-bold text-slate-850">
-                       Price:
-                        <span className="text-primary font-bold">AUD {productData?.response?.productPrice}</span>
+                      Price:
+                      <span className="text-primary font-bold">AUD {productData?.response?.productPrice}</span>
                     </p>
 
-                    
+
                     <div className="w-100 flex my-[30px]">
-                      <div className="h-[48px] flex items-center border border-solid border-gray-950 overflow-hidden relative text-gray-250">
-                        <button
-                          onClick={() => { setValue(value - 1) }}
-                          disabled={value === 1 ? true : false}
-                          className="w-6 h-12 text-sm font-medium text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
-                          -
-                        </button>
-                        <input
-                          type="text"
-                          name="qtybutton"
-                          className="flex-grow w-[30px] text-sm text-center h-[48px] focus-visible:border-none focus-visible:outline focus:outline-none"
-                          readOnly
-                          value={value}
-                        />
-                        <button
-                          onClick={() => { setValue(value + 1) }}
-                          disabled={value === stock ? true : false}
-                          className="w-6 h-12 text-sm font-medium text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
-                          +
-                        </button>
-                      </div>
+                      <div className="flex">
+                      <Quantity quantity={value} stock={stock} updateCartCall={updateCartCall} />
+
                       <div>
                         {
                           selectedCartItems && updateCart ?
@@ -353,6 +362,8 @@ const ProductSlug = () => {
                               }
                             </button>
                         }
+                      </div>
+
                       </div>
                     </div>
                     {

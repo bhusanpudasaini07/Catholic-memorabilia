@@ -32,8 +32,7 @@ const AccountSidebar = () => {
     onSuccess: () => {
       deleteCookie("token");
       deleteCookie("isLoggedIn");
-      queryClient.invalidateQueries(['getCart']);
-      queryClient.invalidateQueries(['getCartList']);
+      queryClient.invalidateQueries(['cartList']);
       router.push('/login')
       showToast(TOAST_TYPES.success, "Logged out successfully");
     },
@@ -44,8 +43,7 @@ const AccountSidebar = () => {
     onSuccess: (data) => {
       deleteCookie("token");
       deleteCookie("isLoggedIn");
-      queryClient.invalidateQueries(['getCart']);
-      queryClient.invalidateQueries(['getCartList']);
+      queryClient.invalidateQueries(['cartList']);
       showToast(TOAST_TYPES.success, data?.data?.message);
       router.push('/login');
     },

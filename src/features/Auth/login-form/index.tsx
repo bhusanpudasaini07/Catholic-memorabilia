@@ -8,8 +8,6 @@ import { ILogin } from "../../../interface/login.interface";
 import { setCookie } from "cookies-next";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import ButtonLoader from "@/shared/components/btn-loading";
-import { ICartData } from "@/interface/cart.interface";
-import { associateCart } from "@/services/cart.service";
 
 interface LoginFormProps {
   closeModal?: () => void;

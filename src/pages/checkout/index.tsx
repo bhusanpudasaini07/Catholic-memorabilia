@@ -121,8 +121,7 @@ const Checkout: NextPageWithLayout = () => {
   const associateCartModal = async(value: string) => {
     const associateCartResponse:any = await associateCart(token, value);
     if(associateCartResponse){
-      queryClient.invalidateQueries(['getCart'])
-      queryClient.invalidateQueries(['getCartList'])
+      queryClient.invalidateQueries(['cartList'])
       queryClient.invalidateQueries(['getProfile'])
       router.push('/checkout');
       setAssociateCartModal(false);

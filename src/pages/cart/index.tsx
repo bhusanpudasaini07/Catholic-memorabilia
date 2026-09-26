@@ -12,10 +12,11 @@ import { useCartsHooks } from '@/hooks/cart.hooks';
 import ButtonLoader from '@/shared/components/btn-loading';
 import { useCart as useCartStore } from '@/store/cart';
 
-import { addCouponCode, getCartData, getCartProduct } from '@/services/cart.service';
+import { addCouponCode, getCartProduct } from '@/services/cart.service';
 import { TOAST_TYPES, showToast } from '@/shared/utils/toast-utils/toast.utils';
 import { useRouter } from 'next/router';
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
+import BreadcumbsBanner from '@/shared/components/breadcumbs-banner';
 
 enum COUPON_METHODS {
   ADD_COUPON = 'Apply Coupon',
@@ -33,7 +34,7 @@ const Cart: NextPageWithLayout = () => {
   const [couponText, setCouponText] = useState<COUPON_METHODS>(COUPON_METHODS.ADD_COUPON);
 
   const { data: cartData } = useQuery({
-    queryKey: ['getCartList'],
+    queryKey: ['cartList'],
     queryFn: getCartProduct,
   });
 
@@ -109,22 +110,7 @@ const Cart: NextPageWithLayout = () => {
         <EmptyCart />
       ) : (
         <>
-          <div className="product-page-banner">
-            <div className="container">
-              <h2 className="text-slate-850 text-[30px] capitalize font-semibold">Cart</h2>
-              <div className="text-base breadcrumbs">
-                <ul className="justify-center">
-                  <li>
-                    <Link href="/" className="text-slate-850 transition-all delay-150 duration-300 hover:!no-underline hover:text-primary">
-                      Home
-                    </Link>
-                  </li>
-                  {/* <li><Link href={'#'}>Documents</Link></li> */}
-                  <li className="text-slate-850">Cart</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <BreadcumbsBanner />
           <div className="container my-[60px]">
             <Title type="" className="text-2xl text-slate-850 font-semibold mb-[30px]" text="Your cart Items" />
             <div className="grid grid-cols-12 gap-10" >
@@ -175,7 +161,7 @@ const Cart: NextPageWithLayout = () => {
                     </div>
                     <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                       <p className="text-sm font-semibold">Total products</p>
-                      <p className="text-lg font-bold">{couponData?.orderAmount ? couponData?.orderAmount : cartData.totalItems}</p>
+                      <p className="text-lg font-bold">{couponData?.orderAmount ? couponData?.orderAmount : cartData?.totalItems}</p>
                     </div>
                     {
 
@@ -189,11 +175,11 @@ const Cart: NextPageWithLayout = () => {
                     }
                     <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                       <p className="text-sm font-semibold">Subtotal</p>
-                      <p className="text-lg font-bold">AUD {couponData?.subTotal ? couponData?.subTotal : cartData.totalAmount}</p>
+                      <p className="text-lg font-bold">AUD {couponData?.subTotal ? couponData?.subTotal : cartData?.totalAmount}</p>
                     </div>
                     <div className="flex items-center justify-between w-full mt-[36px] mb-[27px]">
                       <p className="text-sm font-semibold">Delivery Charge</p>
-                      <p className="text-lg font-bold">AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cartData.deliveryCharge || 0}</p>
+                      <p className="text-lg font-bold">AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cartData?.deliveryCharge || 0}</p>
                     </div>
                     <div className="flex items-center justify-between w-full mb-[20px] text-primary">
                       <p className="text-xl font-bold">Grand Total</p>

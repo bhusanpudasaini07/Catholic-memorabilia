@@ -37,8 +37,7 @@ const Drawer = () => {
     onSuccess: () => {
       deleteCookie("token");
       deleteCookie("isLoggedIn")
-      queryClient.invalidateQueries(['getCart']);
-      queryClient.invalidateQueries(['getCartList']);
+      queryClient.invalidateQueries(['cartList']);
       showToast(TOAST_TYPES.success, "Logged out successfully");
     },
   });

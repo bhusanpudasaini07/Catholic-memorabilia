@@ -95,8 +95,7 @@ const Header = () => {
       deleteCookie("isLoggedIn");
       deleteCookie("cart_number");
       await setAuthorizationHeader();
-      // queryClient.invalidateQueries(['getCart']);
-      // queryClient.invalidateQueries(['getCartList']);
+     
       showToast(TOAST_TYPES.success, "Logged out successfully");
       router.push('/')
       setShowModal(false);

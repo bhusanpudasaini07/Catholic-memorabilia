@@ -69,8 +69,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
         mutationFn: addToCart,
         onSuccess: () => {
             showToast(TOAST_TYPES.success, 'Item Added To Cart Successfully');
-            queryClient.invalidateQueries(['getCartList'])
-            queryClient.invalidateQueries(['getCart'])
+            queryClient.invalidateQueries(['cartList'])
             setProductModalId('')
         },
         onError: (error: any) => {

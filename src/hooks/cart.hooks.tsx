@@ -1,4 +1,4 @@
-import { addCouponCode, bulkDeleteCart, deleteCartItemById } from "@/services/cart.service";
+import { addCouponCode, bulkDeleteCart, deleteCartItemById, updateCart } from "@/services/cart.service";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCookie } from "cookies-next";
@@ -14,7 +14,6 @@ export const useCartsHooks = () => {
         mutationFn: deleteCartItemById,
         onSuccess: () => {
             queryClient.invalidateQueries(['cartList'])
-            queryClient.invalidateQueries(['getCart'])
             showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
             if (router.pathname === '/wishlist') {
                 queryClient.invalidateQueries(['wishlistProducts'])
@@ -28,14 +27,14 @@ export const useCartsHooks = () => {
     };
 
     const updateCartMutation = useMutation({
-        // mutationFn: updateCart,
-        // onSuccess: () => {
-        //     showToast(TOAST_TYPES.success, 'Item Updated To Cart Successfully');
-        //     queryClient.invalidateQueries(['getCart'])
-        // },
-        // onError: (error: any) => {
-        //     showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message);
-        // }
+        mutationFn: updateCart,
+        onSuccess: () => {
+            showToast(TOAST_TYPES.success, 'Item Updated To Cart Successfully');
+            queryClient.invalidateQueries(['cartList'])
+        },
+        onError: (error: any) => {
+            showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message);
+        }
     })
 
     const bulkCartDelete = useMutation({
@@ -43,7 +42,7 @@ export const useCartsHooks = () => {
         onSuccess: () => {
             showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
             deleteCookie('cart_number')
-            queryClient.invalidateQueries(['getCart'])
+            queryClient.invalidateQueries(['cartList'])
         }
     })
 

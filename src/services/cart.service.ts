@@ -80,21 +80,21 @@ export const addToCart = async (data: ICreateCartItem) => {
   }
 };
 
-// export const updateCart = async (data: IUpdateCartItem) => {
-//   const payload = {
-//     ...data,
-//   };
-//   delete payload.product_number;
-//   try {
-//     const response = await axiosInstance.patch(
-//       `/cart-product/${data.product_number}`,
-//       payload
-//     );
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+export const updateCart = async (data: any) => {
+  const payload = {
+    ...data,
+  };
+  delete payload.productId;
+  try {
+    const response = await axiosInstance.patch(
+      `/carts/items/${data.productId}`,
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const bulkDeleteCart = async () => {
   try {
