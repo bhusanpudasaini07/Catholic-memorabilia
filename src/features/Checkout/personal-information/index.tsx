@@ -134,12 +134,11 @@ const PersonalInformation: React.FC<PersonalInformationProps> = ({
                                 {
                                     required: "Phone number is required.",
                                     pattern: {
-                                        value: /^98\d*$/,
+                                        value: /^\+614\d{8}$/,
                                         message: "Incorrect phone number format",
                                     }
                                 })}
-                            pattern="^[1-9]\d*$"
-                            maxLength={10}
+                            maxLength={12}
                             inputMode='numeric'
                             onKeyUp={() => trigger('contactNumber')}
                             onKeyDown={handleKeyDownNumber}

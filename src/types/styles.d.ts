@@ -9,6 +9,8 @@ declare module '*.scss' {
 }
 
 declare module '@/styles/*'
+declare module 'swiper'
+declare module 'swiper/react'
 declare module 'swiper/css'
 declare module 'swiper/css/*'
 declare module 'react-toastify/dist/ReactToastify.css'

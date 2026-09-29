@@ -6,7 +6,7 @@ import Title from '@/shared/components/title'
 import React, { useCallback, useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { Grid } from 'swiper'
-import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 
 export interface IRelatedProducts {
     relatedProducts: IProduct[],
@@ -19,7 +19,7 @@ const RelatedProducts = ({ relatedProducts, relatedProductsLoading }: IRelatedPr
     //For swiper
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)
-    const [swiperRef, setSwiperRef] = useState<SwiperClass>();
+    const [swiperRef, setSwiperRef] = useState<any>();
 
     //handling prev and next of swiper category
     const handlePrevious = useCallback(() => {

@@ -2,9 +2,11 @@ import CategoryCard from '@/shared/components/category-card'
 import CategorySkeletonLoading from '@/shared/components/skeleton/category'
 import Title from '@/shared/components/title'
 import React, { useCallback, useMemo, useState } from 'react'
-import { Grid, Navigation } from 'swiper';
-import { Swiper, SwiperClass, SwiperSlide, useSwiper } from 'swiper/react';
+import { Grid } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import type { Swiper as SwiperClass } from 'swiper/types';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import ProductCircleCard from './product-circle-card';
 
 interface IProps {
     loading: boolean;
@@ -14,7 +16,7 @@ interface IProps {
 
 const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
 
-    const [swiperRef, setSwiperRef] = useState<SwiperClass>();
+    const [swiperRef, setSwiperRef] = useState<SwiperClass | null>(null);
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)
 
@@ -25,9 +27,6 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
             swiperRef?.slidePrev();
         }
     }, [swiperRef]);
-    // const handlePrevious = () => {
-    //     swiper?.slidePrev()
-    // }
 
     const handleNext = useCallback(() => {
         setPrevDisable(false)
@@ -36,16 +35,13 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
         }
     }, [swiperRef]);
 
-    // const handleNext = () => {
-    //     swiper?.slideNext()
-    // }
+
 
     return (
         <section className="mb-[60px] relative">
             <Title
                 type="title-section"
-                text="Featured Products"
-                subTitle="We’ve got something for everyone"
+                text="Featured"
             />
             {
                 products?.length > 6 && (
@@ -74,9 +70,9 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
 
                 :
                 <Swiper
-                    slidesPerView={3}
+                    slidesPerView={8}
                     grid={{
-                        rows: 2,
+                        rows: 1,
                         fill: "row",
                     }}
                     pagination={false}
@@ -88,39 +84,36 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
                     onReachEnd={() => setNextDisable(true)}
                     breakpoints={{
                         0: {
-                            slidesPerView: 1,
+                            slidesPerView: 3,
                             grid: {
-                                rows: 2
+                                rows: 1
                             },
                             spaceBetween: 20
                         },
                         768: {
-                            slidesPerView: 2,
+                            slidesPerView: 6,
                             grid: {
-                                rows: 2
+                                rows: 1
                             },
                             spaceBetween: 20
                         },
                         1050: {
-                            slidesPerView: 3,
+                            slidesPerView: 8,
                             grid: {
-                                rows: 2
+                                rows: 1
                             },
                             spaceBetween: 20
                         }
                     }}
                 >
-                    {products?.map((item: any, index: number) => (
+                    {products && products?.length > 0 && products?.map((item: any, index: number) => (
                         <SwiperSlide key={`categories-${index}`}>
-
-                            <CategoryCard
+                            <ProductCircleCard
                                 key={`categories-${index}`}
-                                title={item?.name}
-                                totalProducts={item?.productCount}
-                                shopLink={`/categories/${item?.slug}`}
-                                image={item?.webpBackgroundImage ? item?.webpBackgroundImage : item?.backgroundImage}
+                                imageUrl={item?.imageUrl}
+                                name={item?.productName}
+                                shopLink={`/products/${item?.id}`}
                             />
-
                         </SwiperSlide>
                     ))}
                 </Swiper>

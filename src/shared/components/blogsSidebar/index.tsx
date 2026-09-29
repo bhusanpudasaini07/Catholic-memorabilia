@@ -1,5 +1,4 @@
 import { IBlogItem } from "@/interface/blog.interface";
-import { getBlogs } from "@/services/blog.service";
 import SearchIcon from "@/shared/icons/common/SearchIcon";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -75,7 +74,7 @@ const BlogSidebar = () => {
                   />
                 </div>
                 <div className="flex flex-col p-2 overflow-hidden">
-                  <Link href={`/blogs//${blog?.slug}`} className="mb-1 text-sm font-bold truncate transition-all delay-100 duration-150 relative z-[1] hover:text-primary" aria-label={`blog-slug-${blog?.slug}`}>
+                  <Link href={`/blogs/${blog?.slug}`} className="mb-1 text-sm font-bold truncate transition-all delay-100 duration-150 relative z-[1] hover:text-primary" aria-label={`blog-slug-${blog?.slug}`}>
                     {" "}
                     {blog?.title}
                   </Link>

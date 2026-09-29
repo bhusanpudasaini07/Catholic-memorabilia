@@ -6,7 +6,8 @@ import Link from 'next/link'
 import React, { useCallback, useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { Grid } from 'swiper'
-import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import type { Swiper as SwiperClass } from 'swiper'
 
 
 export interface IProps {

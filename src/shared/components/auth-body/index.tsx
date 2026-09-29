@@ -27,6 +27,7 @@ const AuthBody = () => {
                             >Sign Up</Link>
                         </div>
                     }
+                    
                     <div className='auth-form'>
                         {
                             router.pathname.includes('/reset-password') ?

@@ -51,7 +51,7 @@ const Checkout: NextPageWithLayout = () => {
     setCheckoutGuestUserData(data);
   };
 
-  const { data: cartData } = useQuery<ICartData>(['getCartList'], getCartProduct);
+  const { data: cartData } = useQuery<ICartData>(['cartList'], getCartProduct);
   const queryClient = useQueryClient();
 
   const [personalInfoSubmitted, setPersonalInfoSubmitted] = useState<boolean>(false);

@@ -30,7 +30,6 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
     }
   }, [window, localStorage, coupon])
 
-  console.log("cartList====>", cartList)
 
   return (
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>

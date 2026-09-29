@@ -35,7 +35,7 @@ const Title: React.FC<Props> = ({ type, text, className, subTitle , subClassName
         );
     };
     return (
-        <div className={`flex justify-between items-center ${type == 'title-section' && !mb ? 'mb-[30px]' : ''}`}>
+        <div className={`flex justify-between items-center ${type == 'title-section' && !mb ? 'mb-[20px]' : ''}`}>
             {
                 getType()
             }

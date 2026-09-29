@@ -32,8 +32,11 @@ interface AddressSuggestion {
 
 const useAddressAutocomplete = () => {
   const [query, setQuery] = useState("");
+
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+
   const [loading, setLoading] = useState(false);
+  
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {

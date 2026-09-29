@@ -6,7 +6,7 @@ import MainLayout from '@/shared/main-layout';
 import Card from '@/shared/components/card';
 import Pagination from '@/shared/components/pagination';
 import { useState } from 'react';
-import { getProductByCategory } from '@/services/product.service';
+import {  getRelatedProductsFromId } from '@/services/product.service';
 import EmptyPage from '@/components/emptyPage';
 import Slider from 'react-slider';
 import { getConfig } from '@/services/home.service';
@@ -84,26 +84,19 @@ const CategoryDetail: NextPageWithLayout = () => {
             setSelectedValue('');
         }
     };
+  
+
     const { data: initialProductData, isLoading } = useQuery(
-        ['getProductByCategoryId', slug, pageNumber, enableFilter, selectedValue, selectedPriceValue],
+        ['productByCategoryId', slug],
         async () => {
-            const response = await getProductByCategory(query, pageNumber, slug, value[0], value[1], selectedValue, selectedPriceValue);
+            const response = await getRelatedProductsFromId(slug);
             return response;
         },
     );
-    const updatedData = initialProductData?.data?.map((item: any) => ({
-        ...item,
-        // product: {
-        //     ...item.product,
-        // }
-        isFav: favList && favList?.data?.length > 0 ? favList?.data?.some((favItem: any) => favItem?.product_id === item?.id) : false,
-        favId: favList && favList?.data?.length > 0 ? favList?.data.find((favItem: any) => favItem.product_id === item?.id)?.id : 0
-    }));
 
     const handlePageChange = (value: number) => {
         setPageNumber(value)
     }
-
 
     useEffect(() => {
         if (initialProductData) {
@@ -125,9 +118,9 @@ const CategoryDetail: NextPageWithLayout = () => {
     return (
         <>
             <Head>
-                <title>{initialProductData?.data[0]?.categoryTitle || ''}</title>
+                <title>{initialProductData && initialProductData?.categoryTitle || ''}</title>
             </Head>
-            <Breadcrumb title={initialProductData?.data[0]?.categoryTitle} />
+            <Breadcrumb title={initialProductData?.data &&initialProductData?.data[0]?.categoryTitle} />
             <div className='container my-[60px]'>
                 <div className="grid grid-cols-12 md:gap-[30px]">
                     <div className='order-last col-span-12 md:order-first md:col-span-3 right-sidebar'>
@@ -173,12 +166,12 @@ const CategoryDetail: NextPageWithLayout = () => {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        {/* <div>
                             <h3 className='right-sidebar-head'>
                                 Tag
                             </h3>
                             <TagSidebar />
-                        </div>
+                        </div> */}
                     </div>
                     <div className='col-span-12 md:col-span-9'>
                         <div className='flex flex-col sm:flex-row px-[30px] py-[10px] mb-[30px] bg-slate-150'>
@@ -205,7 +198,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                                     ) : (
                                         <>
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xxs:grid-cols-2 lg:grid-cols-4">
-                                                {updatedData?.map((product: any, index: any) => (
+                                                {initialProductData?.map((product: any, index: any) => (
                                                     <Card
                                                         setProductModalId={setProductModalId}
                                                         product={product}

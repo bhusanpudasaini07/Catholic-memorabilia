@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProductsFromSlug, getRelatedProductsFromId } from '@/services/product.service';
 import Breadcrumb from '@/shared/components/breadcrumb';
 import Link from 'next/link';
-import { ICartData, ICartItem, ICreateCartItem, IUpdateCartItem } from '@/interface/cart.interface';
+import { ICartData  } from '@/interface/cart.interface';
 import { ICartProduct } from '@/interface/product.interface';
 import ButtonLoader from '@/shared/components/btn-loading';
 import Head from 'next/head';
@@ -17,7 +17,6 @@ import CardHeartIcon from '@/shared/icons/common/CardHeartIcon';
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 import { useWishlists } from '@/hooks/wishlist.hooks';
 import SkeletonDescription from '@/shared/components/skeleton/description';
-import { ITag } from '@/interface/tag.interface';
 import RelatedProducts from '@/features/Product/related-products';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Thumbs } from 'swiper';
@@ -61,10 +60,10 @@ const ProductSlug = () => {
     : unitPriceArray;
 
   const { data: relatedProducts, isLoading: relatedProductsLoading } = useQuery(
-    ['getRelatedProductsFromId', productData?.productId],
+    ['relatedProducts', productData?.response?.categoryId],
     async () => {
-      if (productData?.productId) {
-        const response = await getRelatedProductsFromId(productData?.productId);
+      if (productData?.response?.categoryId) {
+        const response = await getRelatedProductsFromId(productData?.response?.categoryId);
         return response;
       }
     }
@@ -167,9 +166,6 @@ const ProductSlug = () => {
     }
   }, [productData])
 
-  console.log("value====>", productData)
-
-
 
   //for SKU multiple
 
@@ -220,7 +216,6 @@ const ProductSlug = () => {
       setValue(1)
     }
   }, [selectedCartItems, selectedSizeId])
-
 
 
   return (
@@ -426,8 +421,8 @@ const ProductSlug = () => {
 
       {/* Related Products */}
       {
-        relatedProducts && relatedProducts?.data.length !== 0 &&
-        <RelatedProducts relatedProductsLoading={relatedProductsLoading} relatedProducts={relatedProducts?.data} />
+        relatedProducts && relatedProducts?.data?.length !== 0 &&
+        <RelatedProducts relatedProductsLoading={relatedProductsLoading} relatedProducts={relatedProducts} />
       }
     </>
   );

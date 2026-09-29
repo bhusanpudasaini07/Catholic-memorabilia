@@ -2,8 +2,8 @@ import CategoryCard from '@/shared/components/category-card'
 import CategorySkeletonLoading from '@/shared/components/skeleton/category'
 import Title from '@/shared/components/title'
 import React, { useCallback, useMemo, useState } from 'react'
-import { Grid, Navigation } from 'swiper';
-import { Swiper, SwiperClass, SwiperSlide, useSwiper } from 'swiper/react';
+import { Grid } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 interface IProps {
@@ -14,7 +14,7 @@ interface IProps {
 
 const Categories: React.FC<IProps> = ({ loading, categories }) => {
 
-    const [swiperRef, setSwiperRef] = useState<SwiperClass>();
+    const [swiperRef, setSwiperRef] = useState<any>();
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)
 
@@ -110,7 +110,7 @@ const Categories: React.FC<IProps> = ({ loading, categories }) => {
                         }
                     }}
                 >
-                    {categories?.map((item: any, index: number) => (
+                    {categories && categories?.length > 0 && categories?.map((item: any, index: number) => (
                         <SwiperSlide key={`categories-${index}`}>
 
                             <CategoryCard
@@ -118,7 +118,7 @@ const Categories: React.FC<IProps> = ({ loading, categories }) => {
                                 title={item?.categoryName}
                                 totalProducts={item?.productCount}
                                 shopLink={`/categories/${item?.id}`}
-                                image={item?.webpBackgroundImage ? item?.webpBackgroundImage : item?.backgroundImage}
+                                image={item?.webpBackgroundImage || item?.backgroundImage || '/images/no-image.png'}
                             />
 
                         </SwiperSlide>

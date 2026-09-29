@@ -1,4 +1,4 @@
-import {toast} from 'react-toastify'
+import { toast, ToastPosition } from 'react-toastify'
 
 export enum TOAST_TYPES {
   info,
@@ -8,12 +8,16 @@ export enum TOAST_TYPES {
 }
 
 export const showToast = (type: TOAST_TYPES, message: string) => {
-//   const placement = 'topRight'; //topLeft bottomRight bottomLeft
+  const placement: ToastPosition = 'top-right'
   switch (type) {
     case TOAST_TYPES.info:
         toast.info(
           message = message,
+          {
+            position: placement,
+          }
         )
+
       break;
     case TOAST_TYPES.error:
       toast.error(
@@ -23,7 +27,9 @@ export const showToast = (type: TOAST_TYPES, message: string) => {
     case TOAST_TYPES.success:
       toast.success(
         message = message,
+        
       )
+
       break;
     default:
       toast.success(

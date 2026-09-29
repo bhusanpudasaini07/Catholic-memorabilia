@@ -1,9 +1,7 @@
 import axios from "axios";
 import { config } from "../../config";
 import {
-  getCartNumber,
   getToken,
-  getWareId,
 } from "@/shared/utils/cookies-utils/cookies.utils";
 // import { getCoupon } from "@/shared/utils/local-storage-utils/local-storage.utils";
 

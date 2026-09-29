@@ -33,7 +33,6 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
  * States 
  */
   const [quantity, setQuantity] = useState<number>(1);
-  const { updateCartMutation, handleRemoveFromCart, cartDeleteLoading } = useCartsHooks(); //customHook
   const [showProductModal, setShowProductModal] = useState<boolean>(false)
   /*
   * Handle Add to cart api call
@@ -164,7 +163,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             product && product?.productImageUrl  ? (
               <Image
                 src={product?.productImageUrl}
-                alt="products"
+                alt={product?.productName}
                 width={116}
                 height={170}
                 quality={100}
@@ -176,8 +175,8 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               />
             ) : (
               <Image
-                src={product?.productImageUrl &&product?.productImageUrl}
-                alt="products"
+                src={'/images/no-image.png'}
+                alt={product?.productName}
                 width={116}
                 height={170}
                 quality={100}

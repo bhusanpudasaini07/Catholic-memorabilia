@@ -2,7 +2,6 @@ import React from 'react'
 import { Props } from './category-card.props'
 import Link from 'next/link'
 import Image from 'next/image'
-import SearchIcon from '@/shared/icons/common/SearchIcon'
 import CaretDownIcon from '@/shared/icons/common/CaretDownIcon'
 
 const CategoryCard: React.FC<Props> = ({ title, totalProducts, shopLink, image }) => {
@@ -10,7 +9,7 @@ const CategoryCard: React.FC<Props> = ({ title, totalProducts, shopLink, image }
     <div className='relative category-card'>
       <Link className='absolute w-full h-full z-[1]' href={shopLink} />
       <div>
-        <Image src={image}
+        <Image src={image || '/images/no-image.png'}
           className="transition-all duration-300 delay-200" alt="Category Image"
           width={389}
           height={147}

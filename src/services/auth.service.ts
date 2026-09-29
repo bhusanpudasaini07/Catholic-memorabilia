@@ -39,13 +39,9 @@ export const login = async (data: any) => {
 
 export const logout = async () => {
   try {
-    const response = await axiosInstance.get(`/auth/sign-out`);
-    if (response.status === 204) {
-      setCouponHeader({
-        coupon: "",
-      });
-      return response;
-    }
+    const response = await axiosInstance.post(`/auth/sign-out`);
+   
+      return response.data;
   } catch (error) {
     throw error;
   }

@@ -33,7 +33,8 @@ import { useDebounce } from "@/hooks/useDebounce.hooks";
 import { useCart } from "@/store/cart";
 import { setAuthorizationHeader } from "@/axios/axiosInstance";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
-import TopHeader from "./top-header";
+import TopHeader from "./profile-dropmenu";
+import ProfileDropmenu from "./profile-dropmenu";
 
 const Header = () => {
   const router = useRouter();
@@ -189,7 +190,6 @@ const Header = () => {
 
   return (
     <>
-    <TopHeader logIn={logIn} />
 
       {/* search header */}
       <div className="px-2 py-4 border-b-[1px]  border-[#6071C60F] bg-white sticky md:static top-0 md:z-10 z-40 ">
@@ -304,6 +304,9 @@ const Header = () => {
             {/* Cart */}
             <CartDropdown  logIn={logIn}/>
 
+
+            <ProfileDropmenu logIn={logIn} />
+
             {/* md:drawer */}
             <Drawer />
           </div>
@@ -325,8 +328,7 @@ const Header = () => {
                 tabIndex={1}
                 className={`w-full p-0 shadow dropdown-content menu bg-base-100`}
               >
-                {categories?.slice(0, 9)
-                  .map((item: any, index: number) => (
+                {categories && categories?.length > 0 && categories?.slice(0, 9)?.map((item: any, index: number) => (
                     <li key={`menu-${index}`} className="py-1">
                       <Link
                         href={`/categories/${item.id}`}

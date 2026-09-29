@@ -1,8 +1,8 @@
 import { login } from "@/services/auth.service";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ILogin } from "../../../interface/login.interface";
 import { setCookie } from "cookies-next";
@@ -25,21 +25,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
       setCookie("token", data?.data?.accessToken);
       setCookie("isLoggedIn", true);
       showToast(TOAST_TYPES.success, "You have been successfully logged in.");
-      // if (cart && cart.cartProducts?.length > 0) {
-      //   const { response: associateCartResponse, error }: any = await associateCart(data?.data?.accessToken, '');
-      //     if(associateCartResponse){
-      //       queryClient.invalidateQueries(['getCart'])
-      //       queryClient.invalidateQueries(['getCartList'])
-      //       queryClient.invalidateQueries(['getProfile'])
-      //       router.push('/checkout');
-      //       closeModal && closeModal();
-      //     } else{
-      //       closeModal && closeModal();
-      //       setAssociateCartModal(true);
-      //     }
-      // } else {
-      //   router.push('/');
-      // }
       router.push("/");
     },
     onError: (error: any) => {
@@ -57,20 +42,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const loginSubmit: SubmitHandler<ILogin> = (data) => {
     mutation.mutate(data);
   };
-
-  //   useEffect(() => {
-  //     const token = getToken();
-  //     if (token) {
-  //       if (cart && cart.cartProducts?.length > 0) {
-  //         associateCart(data?.access_token);
-  //         queryClient.invalidateQueries(['getCart'])
-  //         router.push('/checkout');
-  //         closeModal && closeModal();
-  //       } else {
-  //         router.push('/');
-  //       }
-  //     }
-  // }, [token])
 
   return (
     <form onSubmit={handleSubmit(loginSubmit)} autoComplete="off">

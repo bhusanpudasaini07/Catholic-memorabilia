@@ -1,6 +1,8 @@
 import "@/styles/globals.scss";
+import 'swiper/css';
 import 'swiper/css/grid';
-import 'react-toastify/dist/ReactToastify.css';
+import 'swiper/css/pagination';
+import 'swiper/css/thumbs';
 
 import "@/styles/abstract/utils.scss";
 import "@/styles/pages/innerpages.scss";
@@ -11,9 +13,7 @@ import "@/styles/components/pagination.scss";
 import "@/styles/components/auth.scss";
 import "@/styles/components/btn.scss";
 import "@/styles/components/slider.scss";
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextPage } from "next";

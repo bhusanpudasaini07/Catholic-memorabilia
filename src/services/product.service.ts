@@ -1,7 +1,5 @@
 import axiosInstance from "@/axios/axiosInstance";
-import { config } from "../../config";
 
-const apiEndPoint1 = config.gateway.apiEndPoint1;
 
 export const getProductsFromSlug = async (productSlug: any) => {
   try {
@@ -14,10 +12,11 @@ export const getProductsFromSlug = async (productSlug: any) => {
   }
 };
 
-export const getRelatedProductsFromId = async (productId: any) => {
+export const getRelatedProductsFromId = async (catId: any) => {
+  let limit = 10;
   try {
     const response = await axiosInstance.get(
-      `/products/${productId}/related`
+      `/products/related/${catId}?limit=${limit}`
     );
     return response.data;
   } catch (error) {
