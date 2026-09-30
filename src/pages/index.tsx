@@ -13,12 +13,14 @@ import { useProductsHooks } from "@/hooks/products.hooks";
 import NewArrival from "@/features/Home/new-arrival";
 import DeliverInfo from "@/features/Home/deliver-info";
 import Footer from "@/shared/main-layout/footer";
+import ProductsWithSwiper from "@/features/Home/products-Card";
 
 const Home: NextPageWithLayout = () => {
 
   const { categories, loading: loadingCategories } = useCategoriesHooks();
-  const { products, productsLoading } = useProductsHooks();
+  const { products, productsLoading, featuredProducts, featuredProductsLoading, newArrivalProducts, newArrivalProductsLoading } = useProductsHooks();
 
+  console.log('featuredProducts', products);
   return (
     <>
       <Head>
@@ -32,14 +34,14 @@ const Home: NextPageWithLayout = () => {
 
             <FeaturedProducts
               loading={productsLoading}
-              products={products}
+              products={featuredProducts}
             />
           </section>
           {/* New Arrival  */}
           <section>
             <NewArrival
-              loading={productsLoading}
-              products={products}
+              loading={newArrivalProductsLoading}
+              products={newArrivalProducts}
             />
           </section>
           {/* Deliver Info  */}
@@ -50,11 +52,18 @@ const Home: NextPageWithLayout = () => {
           <section>
             <Categories
               loading={loadingCategories}
-              categories={categories}
+              categories={categories?.items}
             />
           </section>
           {/* Products  */}
-          <section>
+          <section> 
+            <ProductsWithSwiper
+            title="All Products"
+            subtitle="Browse our all products"
+            products={[...(products?.items || [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())}
+       
+            loading={productsLoading}
+          />
           </section>
           <section>
             <Footer />

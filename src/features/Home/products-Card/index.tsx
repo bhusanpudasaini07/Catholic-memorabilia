@@ -1,22 +1,24 @@
-import CategoryCard from '@/shared/components/category-card'
+
+
 import CategorySkeletonLoading from '@/shared/components/skeleton/category'
 import Title from '@/shared/components/title'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Grid } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import type { Swiper as SwiperClass } from 'swiper/types';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import ProductCircleCard from './product-circle-card';
+import Card from '@/shared/components/card';
 
 interface IProps {
+    title: string;
+    subtitle: string;
     loading: boolean;
     products: any;
 }
 
 
-const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
+const ProductsWithSwiper: React.FC<IProps> = ({ title, subtitle, loading, products }) => {
 
-    const [swiperRef, setSwiperRef] = useState<SwiperClass | null>(null);
+    const [swiperRef, setSwiperRef] = useState<any>();
     const [nextDisable, setNextDisable] = useState<boolean>(false)
     const [prevDisable, setPrevDisable] = useState<boolean>(false)
 
@@ -27,6 +29,7 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
             swiperRef?.slidePrev();
         }
     }, [swiperRef]);
+   
 
     const handleNext = useCallback(() => {
         setPrevDisable(false)
@@ -36,12 +39,12 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
     }, [swiperRef]);
 
 
-
     return (
         <section className="mb-[60px] relative">
             <Title
                 type="title-section"
-                text="Featured"
+                text={title}
+                subTitle={subtitle}
             />
             {
                 products?.length > 6 && (
@@ -60,7 +63,7 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
                 )
             }
             {loading ?
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
                     {[1, 2, 3, 4, 5, 6]?.map((index: number) => (
                         <CategorySkeletonLoading
                             key={`categories-${index}`}
@@ -70,9 +73,8 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
 
                 :
                 <Swiper
-                    slidesPerView={8}
+                    slidesPerView={3}
                     grid={{
-                        rows: 1,
                         fill: "row",
                     }}
                     pagination={false}
@@ -84,21 +86,21 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
                     onReachEnd={() => setNextDisable(true)}
                     breakpoints={{
                         0: {
-                            slidesPerView: 3,
+                            slidesPerView: 1,
                             grid: {
                                 rows: 1
                             },
                             spaceBetween: 20
                         },
                         768: {
-                            slidesPerView: 6,
+                            slidesPerView: 2,
                             grid: {
                                 rows: 1
                             },
                             spaceBetween: 20
                         },
                         1050: {
-                            slidesPerView: 8,
+                            slidesPerView: 5,
                             grid: {
                                 rows: 1
                             },
@@ -106,20 +108,18 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
                         }
                     }}
                 >
-                    {products && products.length > 0 && products
-                        .filter((item: any) => item?.isFeatured)
-                        .map((item: any, index: number) => (
-                            <SwiperSlide key={`categories-${index}`}>
-                                <ProductCircleCard
-                                    key={`categories-${index}`}
-                                    imageUrl={item?.productImageUrl}
-                                    name={item?.productName}
-                                    shopLink={`/products/${item?.id}`}
-                                />
-                            </SwiperSlide>
-                        ))
-                    }
-              
+                    {products && products?.length > 0 && products?.map((item: any, index: number) => (
+                        <SwiperSlide key={`categories-${index}`}>
+
+                            <Card
+                                setProductModalId={() => {
+                                    return "hi"
+                                }}
+                                product={item}
+                                key={`app-cat-products-${index}`}
+                            />
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
             }
 
@@ -127,4 +127,8 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
     )
 }
 
-export default FeaturedProducts
+export default ProductsWithSwiper
+
+
+
+

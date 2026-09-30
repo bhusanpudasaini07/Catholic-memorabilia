@@ -8,6 +8,9 @@ export const useCategoriesHooks = () => {
         queryFn: getCategoriesList,
     });
 
+
+
+
     return {
         categories: getCategories.data,
         loading: getCategories.isLoading,

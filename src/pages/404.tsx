@@ -8,7 +8,7 @@ const NotFound = () => {
   return (
     <div>
       <div className="container flex flex-col items-center text-center">
-        <Image src={fourzerofour} width={634} height={417} className="my-6" alt="error" />
+        {/* <Image src={fourzerofour} width={634} height={417} className="my-6" alt="error" /> */}
         <h1 className="text-2xl md:text-3xl lg:text-4xl text-primary font-bold mb-4 md:mb-8">
           Something went wrong.
         </h1>

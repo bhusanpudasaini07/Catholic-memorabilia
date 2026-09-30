@@ -56,3 +56,21 @@ export const getAllProducts = async () => {
     throw error;
   }
 };
+
+export const getFeaturedProducts = async () => {
+  try {
+    const response = await axiosInstance.get(`/products/featured?limit=10`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getNewArrivalProducts = async () => {
+  try {
+    const response = await axiosInstance.get(`/products/new-arrivals?limit=10`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
