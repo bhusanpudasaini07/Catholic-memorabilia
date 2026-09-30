@@ -30,7 +30,7 @@ const CartDropdownProducts = ({ item }: any) => {
                         width: 'auto',
                         height: 'auto'
                     }}
-                    src={item?.productImageUrl}
+                    src={item?.product?.productImageUrl}
                     alt="image"
                     className="object-contain min-w-[93px] max-w-[93px] min-h-[92px]"
                     crossOrigin="anonymous"

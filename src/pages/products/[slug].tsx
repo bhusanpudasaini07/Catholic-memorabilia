@@ -218,6 +218,7 @@ const ProductSlug = () => {
   }, [selectedCartItems, selectedSizeId])
 
 
+  console.log('productData', productData);
   return (
     <>
       <Head>
@@ -227,7 +228,7 @@ const ProductSlug = () => {
       <section className="my-[60px]">
         <div className="container">
           <div className="grid grid-cols-12">
-            <div className="col-span-12 md:col-span-5">
+            <div className="col-span-12 md:col-span-4">
               {
                 isLoading ?
                   <SkeletonImage />
@@ -286,7 +287,7 @@ const ProductSlug = () => {
                                   <Image
                                     className='m-auto cursor-pointer'
                                     alt='Product Image'
-                                    src={img?.imageName}
+                                    src={img?.imageUrl}
                                     width={90} height={90}
                                   />
                                 </SwiperSlide>
@@ -299,6 +300,11 @@ const ProductSlug = () => {
                     )
                   )
               }
+              {productData?.response?.productImageUrl && (
+                <div className="flex justify-start w-full gap-2 py-2">
+                  <Image alt='Product image' className='border border-primary' src={productData?.response?.productImageUrl} width={300} height={100} />
+                </div>
+              )}
 
             </div>
             <div className="col-span-12 md:col-span-7">

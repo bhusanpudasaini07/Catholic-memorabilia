@@ -11,7 +11,7 @@ const CategoriesPage: NextPageWithLayout = () => {
   return (
     <div className="text-lg font-bold ">
       <div className="container mt-6">
-        <Categories loading={loading} categories={categories} />
+        <Categories loading={loading} categories={categories?.items} />
       </div>
     </div>
   );

@@ -328,7 +328,7 @@ const Header = () => {
                 tabIndex={1}
                 className={`w-full p-0 shadow dropdown-content menu bg-base-100`}
               >
-                {categories && categories?.length > 0 && categories?.slice(0, 9)?.map((item: any, index: number) => (
+                {categories && categories?.items?.length > 0 && categories?.items?.slice(0, 9)?.map((item: any, index: number) => (
                     <li key={`menu-${index}`} className="py-1">
                       <Link
                         href={`/categories/${item.id}`}
