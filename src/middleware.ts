@@ -24,7 +24,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/wishlist",
-    "/account/:path*",
     "/login",
     "/register",
     "/forgot-password",

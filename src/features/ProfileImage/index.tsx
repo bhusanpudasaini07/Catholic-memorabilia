@@ -1,16 +1,15 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 
 import Image from "next/image";
-import { ProfileImg } from "@/shared/lib/image-config";
 import { FiEdit } from 'react-icons/fi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { uploadProfileImage } from '@/services/profile.service';
 import { showToast, TOAST_TYPES } from '@/shared/utils/toast-utils/toast.utils';
 import SkeletonProfileLoading from '@/shared/components/skeleton/profile';
-import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
+import { getCookie } from 'cookies-next';
 
 const ProfileImage = () => {
-  const token = getToken()
+  const loggedIn = getCookie('isLoggedIn')
   /**
    * Use States
    */
@@ -20,7 +19,7 @@ const ProfileImage = () => {
   /**
    * Get api calls
    */
-  const { data: profile, initialLoading: profileLoading }: any = useQuery(['getProfile', token])
+  const { data: profile, initialLoading: profileLoading }: any = useQuery(['getProfile', loggedIn])
 
 
   const handleImageChange = (event: any) => {

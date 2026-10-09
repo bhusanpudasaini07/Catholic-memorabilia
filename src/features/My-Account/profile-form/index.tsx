@@ -10,18 +10,19 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 const ProfileForm = () => {
     const queryClient = useQueryClient();
-    const token = getCookie('token')
     const loggedIn = getCookie('isLoggedIn');
     const { data: profile, initialLoading: profileLoading }: any = useQuery({
-        queryKey: ['getProfile', token]
+        queryKey: ['getProfile', loggedIn]
     })
     const { register, handleSubmit, formState: { errors }, trigger, reset } = useForm<IProfile>({
         defaultValues: {
             firstName: profile && profile?.firstName,
             lastName: profile && profile?.lastName,
             phoneNumber: profile && profile?.data?.mobileNumber,
+            email: profile && profile?.email,
         }
     })
+    console.log('profile', profile)
 
     const mutation = useMutation({
         mutationFn: updateProfile,
@@ -45,6 +46,7 @@ const ProfileForm = () => {
             firstName: profile?.firstName,
             lastName: profile?.lastName,
             phoneNumber: profile?.mobileNumber,
+            email: profile?.email,
         })
     }, [profile])
 
@@ -116,7 +118,7 @@ const ProfileForm = () => {
                                         type="text"
                                         readOnly
                                         placeholder="Email Address"
-                                        defaultValue={profile?.data?.email}
+                                        defaultValue={profile?.email}
                                         className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border border-gray-350 read-only:bg-gray-350 "
                                     />
                                 </>

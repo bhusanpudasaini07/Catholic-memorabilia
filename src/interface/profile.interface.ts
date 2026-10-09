@@ -1,4 +1,5 @@
 export interface IProfile {
+  email: string;
   firstName: string;
   lastName: string;
   phoneNumber: number;

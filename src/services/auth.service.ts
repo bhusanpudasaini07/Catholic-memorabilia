@@ -10,7 +10,6 @@ import {
   getCartNumber,
   getWareId,
 } from "@/shared/utils/cookies-utils/cookies.utils";
-const apiURL = config.gateway.apiURL;
 
 
 export const signUp = async (data: any) => {
@@ -102,7 +101,7 @@ export const deleteAccount = async () => {
 };
 
 export const registerGuestUser = async (data: any, isInitialSubmit: any) => {
-  const registerGuestUserUrl = `${apiURL}/guest/register`;
+  const registerGuestUserUrl = `/guest/register`;
   let payload;
   if (isInitialSubmit) {
     payload = {

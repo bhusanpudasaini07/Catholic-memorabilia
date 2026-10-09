@@ -1,11 +1,9 @@
 import axiosInstance, { setAuthorizationHeader } from "@/axios/axiosInstance";
 import { IProfileImage, IProfileSubmit } from "@/interface/profile.interface";
-import {
-  getToken,
-  getWareId,
-} from "@/shared/utils/cookies-utils/cookies.utils";
+
 import axios from "axios";
 import { config } from "../../config";
+import { getCookie } from "cookies-next";
 const apiURL = config.gateway.apiURL;
 const apiEndPoint1 = config.gateway.apiEndPoint1;
 
@@ -22,7 +20,7 @@ export const getProfile = async () => {
 export const updateProfile = async (data: IProfileSubmit) => {
   try {
     const response = await axiosInstance.put(
-      `/${apiEndPoint1}/user/update`,
+      `/user/update`,
       data
     );
     return response.data;
@@ -32,21 +30,17 @@ export const updateProfile = async (data: IProfileSubmit) => {
 };
 
 export const uploadProfileImage = async (avatar: File) => {
-  const imageUrl = `${apiURL}/${apiEndPoint1}/profile/image`;
-
-  const headers = {
-    ...(getToken() && { Authorization: `Bearer ${getToken()}` }),
-    "Api-Key": config.gateway.apiKey,
-    "Warehouse-Id": getWareId(),
-  };
+  const imageUrl = `/profile/image`;
 
   try {
     const formData = new FormData();
     formData.append("avatar", avatar);
-
     const response = await axios.post(imageUrl, formData, {
-      headers: headers,
+      headers: {
+        Authorization: `Bearer ${getCookie('isLoggedIn')}`,
+      },
     });
+    return response.data;
   } catch (error) {
     throw error;
   }
