@@ -11,7 +11,6 @@ import { useCartsHooks } from "@/hooks/cart.hooks";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import CardHeartIcon from "@/shared/icons/common/CardHeartIcon";
 import { useWishlists } from "@/hooks/wishlist.hooks";
-import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
 
@@ -129,6 +128,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
       setLogin(false)
     }
   }, [loggedIn])
+  console.log("product", product);
 
   return (
     <>
@@ -188,7 +188,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             )
           }
           {
-            product?.variants && product?.variants[0]?.hasOffer &&
+          ( product?.hasDiscount && product?.discountPercentage && product?.discountPercentage > 0) &&
             <p className="absolute px-2 py-1 text-xs font-medium text-white rounded-md bottom-2 left-3 bg-red-250">Offer</p>
           }
         </figure>
@@ -223,14 +223,14 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               </button>
             ) : ( */}
             {
-              product?.variants && product?.variants[0]?.hasOffer ? (
+              product?.hasDiscount && product?.discountPercentage && product?.discountPercentage > 0 ? (
                 <div className="flex flex-col ">
                   <p className="flex-grow-0 mr-2 text-sm text-primary">
-                    AUD {product?.variants &&product?.variants[0]?.newPrice}
+                    AUD {product?.productPrice - (product?.productPrice * product?.discountPercentage / 100)}
                   </p>
                   <p className="flex-grow-0 mr-2 text-xs font-semibold line-through text-gray-1450">
                     AUD {' '}
-                    {product?.variants && product?.variants[0]?.oldPrice}
+                    {product?.productPrice}
                   </p>
                 </div>
               ) : (

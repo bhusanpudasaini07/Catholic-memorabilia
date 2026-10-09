@@ -9,31 +9,24 @@ import {
   useInfiniteQuery,
   useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
-import {
-  getCategoriesList,
-} from "@/services/home.service";
+
 import OfferIcon from "@/shared/icons/common/OfferIcon";
 import HeartIcon from "@/shared/icons/common/HeartIcon";
 import Link from "next/link";
 import { getProfile } from "@/services/profile.service";
 import { deleteCookie, getCookie } from "cookies-next";
-import { FaChevronDown, FaUser } from "react-icons/fa";
 
 import { logout } from "@/services/auth.service";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import React, { useEffect, useState } from "react";
-import ConfirmationModal from "@/shared/components/confirmation-modal";
 import { useRouter } from "next/router";
 import { getSuggestionResults } from "@/services/search.service";
 import CartDropdown from "@/shared/components/cartDropdown";
-import { BsCaretDownFill } from "react-icons/bs";
 import { useDebounce } from "@/hooks/useDebounce.hooks";
 import { useCart } from "@/store/cart";
 import { setAuthorizationHeader } from "@/axios/axiosInstance";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
-import TopHeader from "./profile-dropmenu";
 import ProfileDropmenu from "./profile-dropmenu";
 
 const Header = () => {
@@ -43,7 +36,6 @@ const Header = () => {
 
   const token = getCookie('token');
   const loggedIn = getCookie('isLoggedIn');
-  const { setCoupon, coupon } = useCart();
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("product");

@@ -24,7 +24,7 @@ interface IProps{
   onChange: any;
 }
 const LeafletMap:FC<IProps> = ({ lat, long, onChange}) => {
-  const [positions, setPositions] = useState<[number, number]>([27.7172, 85.3240]); // Coordinates for Nepal
+  const [positions, setPositions] = useState<[number, number]>([-25.2744, 133.7751]); // Coordinates for Nepal
 
    // Leaflet Geosearch
    const GeoSearch = () => {

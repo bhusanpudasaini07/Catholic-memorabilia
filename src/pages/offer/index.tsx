@@ -2,11 +2,9 @@ import React, { ChangeEvent, useState } from "react";
 import { NextPageWithLayout } from "../_app";
 import MainLayout from "@/shared/main-layout";
 import Card from "@/shared/components/card";
-import { CardImg } from "@/shared/lib/image-config";
 import { useQuery } from "@tanstack/react-query";
 import { getOffers } from "@/services/offer.service";
-import Link from "next/link";
-import Loader from "@/components/Loading";
+
 import EmptyPage from "@/components/emptyPage";
 import Breadcrumb from "@/shared/components/breadcrumb";
 import Head from "next/head";
@@ -44,6 +42,7 @@ const Offer: NextPageWithLayout = () => {
       setSelectedValue('');
     }
   }
+
   return (
     <>
       <Head>
@@ -83,17 +82,20 @@ const Offer: NextPageWithLayout = () => {
                       (
                         <>
                           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                            {offers?.data?.map((product: any, index: any) => (
-                              <Card
-                                setProductModalId={setProductModalId}
-                                product={product}
-                                key={`app-cat-products-${index}`}
-                              />
+                            {offers?.items
+                              ?.filter((product: any) => product?.discountPercentage > 0)
+                              .map((product: any, index: any) => (
+                                <Card
+                                  setProductModalId={setProductModalId}
+                                  product={product}
+                                  key={`app-cat-products-${index}`}
+                                />
                             ))}
+                      
                           </div>
                           <Pagination
-                            totalPages={offers?.meta?.pagination?.total_pages}
-                            currentPage={offers?.meta?.pagination?.current_page}
+                            totalPages={offers?.total_pages}
+                            currentPage={offers?.page}
                             pageChange={handlePageChange}
                           />
                         </>

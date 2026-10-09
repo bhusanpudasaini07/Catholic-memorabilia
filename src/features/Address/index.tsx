@@ -5,6 +5,7 @@ import NewAddressIcon from '@/shared/icons/common/NewAddressIcon';
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 import { showToast, TOAST_TYPES } from '@/shared/utils/toast-utils/toast.utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import React, { FC, useEffect, useState } from 'react';
 import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 
@@ -25,7 +26,7 @@ const Address: React.FC<IProps> = ({
   setIsEditing,
 }) => {
   const queryClient = useQueryClient();
-  const token = getToken()
+  const token =   getCookie('isLoggedIn')
   const [deliveryAddressId, setDeliveryAddressId] = useState<string>('')
   const { data: deliveryAddressData } = useQuery({
     queryKey: ["getDeliverAddress", token],
@@ -94,10 +95,10 @@ const Address: React.FC<IProps> = ({
     deleteAdddressMutation.mutate(id)
   };
 
-
+console.log("deliveryAddressData", deliveryAddressData);
   return (
     <>
-      {deliveryAddressData?.length < 3 ? (
+      {(deliveryAddressData?.length < 3 ||!deliveryAddressData) ? (
         <div className="col-span-12 sm:col-span-6 lg:col-span-4 border boder-solid boder-grey-500 min-h-[170px]">
           <button
             onClick={handleAddNew}

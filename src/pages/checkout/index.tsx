@@ -15,7 +15,7 @@ import ConfirmationModal from "@/shared/components/confirmation-modal";
 import LoginForm from "@/features/Auth/login-form";
 import { IRegister } from "@/interface/register.interface";
 import { registerGuestUser } from "@/services/auth.service";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import PersonalInformation from "@/features/Checkout/personal-information";
 import OrderNote from "@/features/Checkout/order-note";
 import CheckoutDetail from "@/features/Checkout/checkout-detail";
@@ -40,8 +40,10 @@ const Checkout: NextPageWithLayout = () => {
   const [paymentOpen, setPaymentOpen] = useState<boolean>(false)
   const [placeBtnDisable, setPlaceBtnDisable] = useState<boolean>(false)
   const [note, setNote] = useState<string>("");
-  const token = getToken()
-  //Get Config Data
+  const loggedIn = getCookie('isLoggedIn');
+
+  console.log("loggedIn", loggedIn);
+  // Get Config Data
   const { data: config, isInitialLoading } = useQuery({
     queryKey: ["getConfig"],
     queryFn: getConfig,
@@ -51,7 +53,6 @@ const Checkout: NextPageWithLayout = () => {
     setCheckoutGuestUserData(data);
   };
 
-  const { data: cartData } = useQuery<ICartData>(['cartList'], getCartProduct);
   const queryClient = useQueryClient();
 
   const [personalInfoSubmitted, setPersonalInfoSubmitted] = useState<boolean>(false);
@@ -119,7 +120,7 @@ const Checkout: NextPageWithLayout = () => {
   };
 
   const associateCartModal = async(value: string) => {
-    const associateCartResponse:any = await associateCart(token, value);
+    const associateCartResponse:any = await associateCart(loggedIn, value);
     if(associateCartResponse){
       queryClient.invalidateQueries(['cartList'])
       queryClient.invalidateQueries(['getProfile'])
@@ -137,9 +138,9 @@ const Checkout: NextPageWithLayout = () => {
 
 
   const { data: deliveryAddressData, refetch: getDeliveryAddress } = useQuery({
-    queryKey: ["getDeliverAddress", token],
+    queryKey: ["getDeliverAddress", loggedIn],
     queryFn: getDeliverAddress,
-    enabled: !!token
+    enabled: !!loggedIn
   });
 
   
@@ -148,7 +149,7 @@ const Checkout: NextPageWithLayout = () => {
   // Checkout Place order
   const handlePlaceOrder = async () => {
     setPlaceBtnDisable(true)
-    if (token) {
+    if (loggedIn) {
       const selectedDeliveryAddressId = selectedDeliveryAddress;
       const selectedPaymentMethodId = selectedPayment?.id;
       checkout(selectedDeliveryAddressId, selectedPaymentMethodId, note)
@@ -221,17 +222,17 @@ const Checkout: NextPageWithLayout = () => {
 
 
   useEffect(() => {
-    if (token) {
+    if (loggedIn) {
       setAddressOpen(true);
     }
-  }, [token])
+  }, [loggedIn])
   return (
     <div>
       <div className="mt-[60px] mb-[40px]">
         <div className="container">
           <h3 className="mb-4 text-3xl font-bold">Your Order</h3>
           {
-            !token &&
+            !loggedIn &&
             <p>
               Already have an account?
               <a className="ml-3 cursor-pointer text-primary" onClick={openLoginModal}>Log in</a>
@@ -287,7 +288,7 @@ const Checkout: NextPageWithLayout = () => {
               {/* Accordion Start */}
               <div>
                 {
-                  !token &&
+                  !loggedIn &&
                   <div className="collapse collapse-arrow p-4 border-solid border-[1px] border-gray-1200 mb-[16px]">
                     <input
                       type="radio"
@@ -325,7 +326,7 @@ const Checkout: NextPageWithLayout = () => {
                   </div>
                 }
 
-                <div className={`collapse collapse-arrow p-4 border-solid border-[1px] border-orange-550 mb-[16px] ${(!token && addressCollapseDisabled) ? 'pointer-events-none' : ''}`}>
+                <div className={`collapse collapse-arrow p-4 border-solid border-[1px] border-orange-550 mb-[16px] ${(!loggedIn && addressCollapseDisabled) ? 'pointer-events-none' : ''}`}>
                   <input
                     type="radio"
                     name="address"
@@ -334,7 +335,7 @@ const Checkout: NextPageWithLayout = () => {
                     readOnly />
                   <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
                     <div className="text-left col-10">
-                      {token ? (
+                      {loggedIn ? (
                         <h5 className="text-[16px] font-semibold">
                           {" "}
                           1. Address{" "}
@@ -356,7 +357,7 @@ const Checkout: NextPageWithLayout = () => {
                     </div>
                   </div>
                   <div className="collapse-content">
-                    {token ? (
+                    {loggedIn ? (
                       <>
                         <div className="grid grid-cols-12 gap-5 p-4">
 
@@ -426,7 +427,7 @@ const Checkout: NextPageWithLayout = () => {
                     readOnly />
                   <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
                     <div className="text-left col-10">
-                      {token ? (
+                      {loggedIn ? (
                         <h5 className="text-[16px] font-semibold">
                           {" "}
                           2. Payment Method{" "}

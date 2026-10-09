@@ -149,10 +149,10 @@ const OrderDetailModal = ({
                                                                     {product?.productTitle} X {product?.quantity}
                                                                 </td>
                                                                 <td className="whitespace-nowrap">
-                                                                    NRS {product?.price}
+                                                                    AUD {product?.price}
                                                                 </td>
                                                                 <td className="text-right whitespace-nowrap">
-                                                                    NRS {product?.quantity * product?.price}
+                                                                    AUD {product?.quantity * product?.price}
                                                                 </td>
                                                             </tr>
                                                         ))}

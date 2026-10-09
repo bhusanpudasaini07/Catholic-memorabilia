@@ -1,11 +1,11 @@
 import { IDeliveryAddress } from '@/interface/delivery-address.interface';
 import { addDeliverAddress, getDeliverAddress, updateDeliveryAddressByAddressId } from '@/services/delivery-address.service';
-import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 import { showToast, TOAST_TYPES } from '@/shared/utils/toast-utils/toast.utils';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react'
 import ButtonLoader from '../btn-loading';
+import { getCookie } from 'cookies-next';
 
 const LeafletMap = dynamic(() => import('@/shared/components/leaflet'), {
   ssr: false,
@@ -28,7 +28,7 @@ const DeliveryAddressModal: React.FC<IProps> = ({
   isEditing }) => {
 
   const [addressSaved, setAddressSaved] = useState(false);
-  const token = getToken();
+  const token = getCookie('isLoggedIn');
   const handleMarkerClick = (lat: any, lng: any) => {
     setFormData((prevData: any) => ({
       ...prevData,
@@ -107,8 +107,8 @@ const DeliveryAddressModal: React.FC<IProps> = ({
           <form action="" className="p-4" onSubmit={handleSubmit}>
             <div className="h-[280px] mb-3">
               <LeafletMap
-                lat={formData.lat || 27.7172}
-                long={formData.lng || 85.3240}
+                lat={formData.lat || -25.2744}
+                long={formData.lng || 133.7751}
                 onChange={handleMarkerClick}
               />
             </div>

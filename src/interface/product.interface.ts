@@ -36,7 +36,9 @@ export interface IProduct {
   decimal: boolean;
   description: string;
   productPrice: number;
+  hasDiscount: boolean;
   hasOffer: boolean;
+  discountPercentage: number;
   id: number;
   images: IProductImage[];
   webpImages: IProductImage[];

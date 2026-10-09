@@ -37,10 +37,7 @@ const CategoryDetail: NextPageWithLayout = () => {
     // const { data: categories, isInitialLoading: loading }: any = useQuery({ queryKey: ['getCategoriesList'] });
     // const { data: cart } = useQuery<ICartData>(["getCartList"]);
     const { data: cart } = useQuery<ICartData>(["getCartList"]);
-    const { data: tags } = useQuery({
-        queryKey: ["getTagList"],
-        queryFn: getTagList,
-    });
+  
     const { data: config } = useQuery({
         queryKey: ["getConfig"],
         queryFn: getConfig,
@@ -48,8 +45,8 @@ const CategoryDetail: NextPageWithLayout = () => {
     //For favourite map
     const { data: favList }: any = useQuery<any>(["wishlistProducts", token], { enabled: !!token });
 
-    const minimumPrice = Number(config?.data?.minimumPrice);
-    const maximumPrice = Number(config?.data?.pageData['max-price']);
+    const minimumPrice = Number(config?.data?.minimumPrice || 0);
+    const maximumPrice = Number(config?.data?.pageData['max-price'] || 3000);
     const isMinimumValid = !isNaN(minimumPrice) && isFinite(minimumPrice);
     const isMaximumValid = !isNaN(maximumPrice) && isFinite(maximumPrice);
     const initialValue = [
@@ -115,12 +112,14 @@ const CategoryDetail: NextPageWithLayout = () => {
         handlePageChange(1)
     }, [slug])
 
+    console.log("initialProductData", initialProductData);
+
     return (
         <>
             <Head>
-                <title>{initialProductData && initialProductData?.categoryTitle || ''}</title>
+                <title>{initialProductData &&initialProductData[0]?.category?.categoryName}</title>
             </Head>
-            <Breadcrumb title={initialProductData?.data &&initialProductData?.data[0]?.categoryTitle} />
+            <Breadcrumb title={initialProductData &&initialProductData[0]?.category?.categoryName} />
             <div className='container my-[60px]'>
                 <div className="grid grid-cols-12 md:gap-[30px]">
                     <div className='order-last col-span-12 md:order-first md:col-span-3 right-sidebar'>
