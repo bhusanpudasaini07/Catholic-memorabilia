@@ -63,9 +63,9 @@ module.exports = {
     daisyui: {
         themes: [{
             mytheme: {
-                primary: "#c98f36",
-                secondary: "#87dd40",
-                accent: "#F58220",
+                primary: "#682C3E",
+                secondary: "#333333",
+                accent: "#682C3E",
                 neutral: "#25192e",
                 "base-100": "#fff",
                 info: "#4184e1",

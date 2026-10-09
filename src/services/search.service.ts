@@ -5,27 +5,12 @@ import axiosInstance from "@/axios/axiosInstance";
 export const getSearchResults = async (
   type?: string,
   keyword?: string,
-  page?: number,
-  sortBy?: string,
-  priceOrder?: string
 ) => {
   try {
-    let apiUrl = "";
-
-    if (type === "category") {
-      apiUrl = `/categories`;
-    } else if (type === "product") {
-      apiUrl = `/products`;
-    } else {
-      throw new Error("Invalid search type");
-    }
-
-    const response = await axiosInstance.get(apiUrl, {
+    const response = await axiosInstance.get(`/products/suggest`, {
       params: {
+        type,
         keyword,
-        page,
-        sortBy,
-        priceOrder,
       },
     });
 
@@ -38,7 +23,7 @@ export const getSearchResults = async (
 //suggestion
 export const getSuggestionResults = async (type?: string, keyword?: string) => {
   try {
-    const response = await axiosInstance.get(`/suggest`, {
+    const response = await axiosInstance.get(`/products/suggest`, {
       params: {
         type,
         keyword,

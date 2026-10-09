@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../button";
+import { FaArrowRight } from "react-icons/fa";
 
 const Banner = () => {
  
@@ -8,32 +9,32 @@ const Banner = () => {
    <section
   className="hero min-h-[500px]"
   style={{
-    backgroundImage: "url('/images/banner.png')",
+    backgroundImage: "url('/images/home-banner.png')",
   }}
 >
-  <div className="hero-overlay bg-black/20"></div>
+  {/* <div className="hero-overlay bg-black/20"></div> */}
 
-  <div className="hero-content text-center">
-    <div className="max-w-2xl">
-      <h1 className="text-5xl font-bold text-white">
-        Faith in Every Moment.
+  <div className="container mx-auto">
+    <div className="">
+      <h1 className="text-5xl font-bold text-primary leading-snug ">
+       Meaningful Catholic Gifts
         <br />
-        Love in Every Detail.
+        Inspire By Faith
       </h1>
 
-      <p className="py-6 text-lg text-white">
+      <p className="py-6 text-lg text-secondary leading-snug">
         Discover meaningful Catholic treasures that inspire faith
+        <br />
         and bring blessings to everyday life.
       </p>
-      <div className="flex justify-center gap-3">
+      <div className="flex gap-3 mt-2">
 
       <Button size="md" type="primary" className="p-4">
-        Shop Now
+       Explore the Collections
+       <span className="ml-2"><FaArrowRight className="text-white" /></span>
       </Button>
 
-      <Button  size="md" type="info" className="p-4">
-        Explore Collections
-      </Button>
+     
       </div>
     </div>
   </div>

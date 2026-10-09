@@ -1,14 +1,11 @@
 import MainLayout from "@/shared/main-layout";
 import { NextPageWithLayout } from "../_app";
-import Input from "postcss/lib/input";
-import Image from 'next/image';
 import { getSearchResults } from "@/services/search.service";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import Card from "@/shared/components/card";
 import EmptyPage from "@/components/emptyPage";
 import { ChangeEvent, useState } from "react";
-import Loader from "@/components/Loading";
 import CategoryCard from "@/shared/components/category-card";
 import Breadcrumb from "@/shared/components/breadcrumb";
 import Head from "next/head";
@@ -32,9 +29,8 @@ const SearchPage: NextPageWithLayout = () => {
     setSelectedOption(event.target.value);
   };
 
-
-  const { data: searchData, isLoading, error } = useQuery(['searchResults', type?.toString() || '', keyword?.toString() || '', selectedValue, pageNumber, selectedPriceValue], () =>
-    getSearchResults(type?.toString() || '', keyword?.toString() || '', pageNumber, selectedValue, selectedPriceValue)
+  const { data: searchData, isLoading } = useQuery(['searchResults', type?.toString() || '', keyword?.toString() || '', selectedValue, pageNumber, selectedPriceValue], () =>
+    getSearchResults(type?.toString() || '', keyword?.toString() || '')
   );
 
   const { data: favList }: any = useQuery<any>(["wishlistProducts", token], { enabled: !!token });
@@ -42,11 +38,11 @@ const SearchPage: NextPageWithLayout = () => {
   /**
    * Updates the search data and shows all items as well as fav products as well
    */
-  const updatedData = searchData?.data?.map((item: any) => ({
-    ...item,
-    isFav: favList && favList?.data?.length > 0 ? favList?.data?.some((favItem: any) => favItem?.product_id === item?.id) : false,
-    favId: favList && favList.data.length > 0 ? favList?.data.find((favItem: any) => favItem.product_id === item.id)?.id : 0
-  }));
+  // const updatedData = searchData?.data?.map((item: any) => ({
+  //   ...item,
+  //   isFav: favList && favList?.data?.length > 0 ? favList?.data?.some((favItem: any) => favItem?.product_id === item?.id) : false,
+  //   favId: favList && favList.data.length > 0 ? favList?.data.find((favItem: any) => favItem.product_id === item.id)?.id : 0
+  // }));
 
   const handleSortingChange = (value: string) => {
     if (value === 'asc' || value === 'desc') {
@@ -90,13 +86,7 @@ const SearchPage: NextPageWithLayout = () => {
                       <div className="flex items-center sorting">
                         <p className="pr-3 text-sm font-normal text-gray-750">Sort By:</p>
                         <SortingDropdown sortChange={handleSortingChange} />
-                        {/* <select defaultValue={selectedOption} onChange={handleSelectChange}>
-                              <option value="">Please Select</option>
-                              <option value="ascending">A to Z</option>
-                              <option value="descending">Z to A</option>
-                              <option value="low">Price(Low &gt; High)</option>
-                              <option value="high">Price(High &lt; Low)</option>
-                            </select> */}
+                        
                       </div>
                     </div>
                     <section className="my-[60px]">
@@ -111,7 +101,7 @@ const SearchPage: NextPageWithLayout = () => {
                           </div>
                         ) : (
                           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                            {updatedData && updatedData?.map((product: any, index: any) => (
+                            {searchData && searchData?.map((product: any, index: any) => (
                               <Card
                                 setProductModalId={setProductModalId}
                                 product={product}
@@ -143,7 +133,7 @@ const SearchPage: NextPageWithLayout = () => {
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                          {updatedData && updatedData?.map((item: any, index: number) => (
+                          {searchData && searchData?.map((item: any, index: number) => (
                             <CategoryCard
                               key={`categories-${index}`}
                               title={item?.name}

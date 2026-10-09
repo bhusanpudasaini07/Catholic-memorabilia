@@ -171,6 +171,7 @@ const Header = () => {
   //   }
   // }, [window, localStorage, coupon])
 
+  console.log("suggestData", suggestData)
   useEffect(() => {
     if (loggedIn !== undefined) {
       setLogIn(true)
@@ -238,20 +239,20 @@ const Header = () => {
                     {suggestData &&
                       suggestData.pages?.map((group: any, index: number) => (
                         <React.Fragment key={index}>
-                          {group?.data?.map((prev: any, _i: number) => (
+                          {group?.map((prev: any, _i: number) => (
                             <li
                               key={_i}
                               className="p-2 cursor-pointer hover:bg-gray-100"
                             >
-                              <div className="flex items-center cursor-pointer" onClick={() => redirectDetailPage(prev?.title)}>
+                              <div className="flex items-center cursor-pointer" onClick={() => redirectDetailPage(prev?.productName)}>
                                 <Image
-                                  src={prev?.image}
+                                  src={prev?.productImageUrl}
                                   width={30}
                                   height={20}
                                   alt={`image-${_i}`}
                                   className="object-contain aspect-square"
                                 />
-                                <span className="ps-2">{prev.title}</span>
+                                <span className="ps-2">{prev.productName}</span>
                               </div>
                             </li>
                           ))}

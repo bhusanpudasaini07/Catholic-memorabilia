@@ -14,6 +14,7 @@ import NewArrival from "@/features/Home/new-arrival";
 import DeliverInfo from "@/features/Home/deliver-info";
 import Footer from "@/shared/main-layout/footer";
 import ProductsWithSwiper from "@/features/Home/products-Card";
+import Banner from "@/shared/components/banner";
 
 const Home: NextPageWithLayout = () => {
 
@@ -23,11 +24,15 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-      
         <title>Home</title>
       </Head>
+      <section>
+            <Banner />
+          </section>
       <div className="content">
         <div className="container">
+          {/* /Banner */}
+         
           {/* Featured  */}
           <section className="mt-5">
 
