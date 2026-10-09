@@ -6,14 +6,14 @@ const Title: React.FC<Props> = ({ type, text, className, subTitle , subClassName
     const getType = () => {
         if (type === 'title-content')
             return (
-                <h2 className={className ? `${className}` : 'py-[30px] text-slate-850 text-3xl font-medium text-center relative w-full'}>
+                <h2 className={className ? `${className}` : 'py-[30px] text-primary text-3xl font-medium text-center relative w-full'}>
                     {text}
                 </h2>
             );
         if (type === 'title-section')
             return (
                 <div>
-                    <h3 className={className ? `${className}` : 'text-slate-850 text-2xl capitalize font-semibold mb-[10px]'}>
+                    <h3 className={className ? `${className}` : 'text-primary text-3xl capitalize font-semibold mb-[10px]'}>
                         {text}
                     </h3>
                     {

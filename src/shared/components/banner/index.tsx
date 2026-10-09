@@ -29,7 +29,7 @@ const Banner = () => {
       </p>
       <div className="flex gap-3 mt-2">
 
-      <Button size="md" type="primary" className="p-4">
+      <Button size="md" type="primary" className="p-4 text-white">
        Explore the Collections
        <span className="ml-2"><FaArrowRight className="text-white" /></span>
       </Button>

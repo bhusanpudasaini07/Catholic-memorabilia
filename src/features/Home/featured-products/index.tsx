@@ -41,7 +41,7 @@ const FeaturedProducts: React.FC<IProps> = ({ loading, products }) => {
         <section className="mb-[60px] relative">
             <Title
                 type="title-section"
-                text="Featured"
+                text="Shop By Collection"
             />
             {
                 products?.length > 6 && (
