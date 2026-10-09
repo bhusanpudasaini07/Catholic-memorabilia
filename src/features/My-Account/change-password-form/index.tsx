@@ -11,10 +11,7 @@ import ButtonLoader from '@/shared/components/btn-loading';
 const ChangePasswordForm = () => {
     const router = useRouter();
 
-    /**
-     * States
-     */
-    const [passwordMatch, setPasswordMatch] = useState<boolean>(true)
+  
 
     /**
      * Get Api calls
@@ -53,15 +50,7 @@ const ChangePasswordForm = () => {
     /**
      * Effects
      */
-    useEffect(() => {
-        if (getValues("password_confirmation") !== '') {
-            // Update password match status whenever password or password_confirmation values change
-            if (isDirty) {
-                setPasswordMatch(watch("password") === watch("password_confirmation"));
-            }
-
-        }
-    }, [watch("password"), watch("password_confirmation"), isDirty]);
+    
 
     return (
         <form className="px-6 py-6" onSubmit={handleSubmit(changePasswordSubmit)} autoComplete="off">
@@ -71,21 +60,21 @@ const ChangePasswordForm = () => {
                         type="password"
                         placeholder="OLD PASSWORD"
                         // className="w-full h-10 input input-bordered "
-                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.old_password ? 'border-error' : 'input-bordered'}`}
-                        {...register("old_password", { required: 'Old Password is required.' })}
-                        onKeyUp={() => trigger("old_password")}
+                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.currentPassword ? 'border-error' : 'input-bordered'}`}
+                        {...register("currentPassword", { required: 'Old Password is required.' })}
+                        onKeyUp={() => trigger("currentPassword")}
                     />
                     {
-                        errors?.old_password &&
-                        <p className="text-error text-xs leading-[24px] mt-1">{errors?.old_password?.message}</p>
+                        errors?.currentPassword &&
+                        <p className="text-error text-xs leading-[24px] mt-1">{errors?.currentPassword?.message}</p>
                     }
                 </div>
                 <div className="col-span-12">
                     <input
                         type="password"
                         placeholder="NEW PASSWORD"
-                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.password ? 'border-error' : 'input-bordered'}`}
-                        {...register("password", {
+                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.newPassword ? 'border-error' : 'input-bordered'}`}
+                        {...register("newPassword", {
                             required: 'Password is required',
                             minLength: {
                                 value: 7,
@@ -96,35 +85,14 @@ const ChangePasswordForm = () => {
                                 message: "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
                             },
                         })}
-                        onKeyUp={() => trigger("password")}
+                        onKeyUp={() => trigger("newPassword")}
                     />
                     {
-                        errors?.password &&
-                        <p className="text-error text-xs leading-[24px] mt-1">{errors?.password?.message}</p>
+                        errors?.newPassword &&
+                        <p className="text-error text-xs leading-[24px] mt-1">{errors?.newPassword?.message}</p>
                     }
                 </div>
-                <div className="col-span-12">
-                    <input
-                        type="password"
-                        placeholder="CONFIRM PASSWORD"
-                        className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.password_confirmation && !passwordMatch ? 'border-error' : 'input-bordered'}`}
-                        {...register("password_confirmation",
-                            {
-                                required: "Confirm Password is required.",
-                                validate: (value) => value === watch("password") || "Passwords do not match",
-                            },
-                        )}
-                        onKeyUp={() => trigger("password_confirmation")}
-                    />
-                    {
-                        errors.password_confirmation && !passwordMatch &&
-                        <p className="text-error text-xs leading-[24px] mt-1">{errors?.password_confirmation?.message}</p>
-                    }
-                    {
-                        !errors.password_confirmation && !passwordMatch && // Display error message when passwords don't match
-                        <p className='text-error text-xs leading-[24px] mt-1'>Passwords do not match</p>
-                    }
-                </div>
+                
                 <div className="flex justify-between col-span-12">
                     <button
                         className="btn btn-tertiary text-slate-850 text-sm font-bold uppercase px-[30px] py-[11px] rounded-[30px] hover:bg-primary hover:text-white hover:border-primary"

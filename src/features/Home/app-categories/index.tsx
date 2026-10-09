@@ -6,7 +6,6 @@ import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import type { Swiper as SwiperClass } from 'swiper';
 import { Grid } from 'swiper';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HalfLeftCard from "./half-left-card";
@@ -31,7 +30,7 @@ const AppCategories: React.FC<IProps> = ({ prev }) => {
   }
   ));
 
-  const [swiperRef, setSwiperRef] = useState<SwiperClass>();
+  const [swiperRef, setSwiperRef] = useState<any>();
 
   //handling prev and next of swiper category
   const handlePrevious = useCallback(() => {

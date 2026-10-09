@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import Card from '@/shared/components/card';
 import ProductDetailModal from '@/shared/components/product-detail-modal';
+import { tr } from 'date-fns/locale';
 
 interface IProps {
     loading: boolean;
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 
-const NewArrival: React.FC<IProps> = ({ loading, products }) => {
+const NewInPage: React.FC<IProps> = ({ loading, products }) => {
 
     const [productModalId, setProductModalId] = useState<string>('');
     const [swiperRef, setSwiperRef] = useState<any>();
@@ -46,22 +47,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                 text="New Arrival"
                 subTitle="Discover Something Meaningful and New"
             />
-            {
-                products?.length > 6 && (
-                    <div className='productSwiper-navigation'>
-                        <button
-                            disabled={prevDisable}
-                            onClick={handlePrevious}>
-                            <FaChevronLeft />
-                        </button>
-                        <button
-                            disabled={nextDisable}
-                            onClick={handleNext}>
-                            <FaChevronRight />
-                        </button>
-                    </div>
-                )
-            }
+          
             {loading ?
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
                     {[1, 2, 3, 4, 5, 6]?.map((index: number) => (
@@ -73,7 +59,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
 
                 :
                 <Swiper
-                    slidesPerView={3}
+                    slidesPerView={4}
                     grid={{
                         fill: "row",
                     }}
@@ -120,6 +106,22 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                     ))}
                 </Swiper>
             }
+              {
+                products?.length > 6 && (
+                    <div className='productSwiper-navigation'>
+                        <button
+                            disabled={prevDisable}
+                            onClick={handlePrevious}>
+                            <FaChevronLeft />
+                        </button>
+                        <button
+                            disabled={nextDisable}
+                            onClick={handleNext}>
+                            <FaChevronRight />
+                        </button>
+                    </div>
+                )
+            }
 
 {
                     productModalId !== '' &&
@@ -129,7 +131,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
     )
 }
 
-export default NewArrival
+export default NewInPage
 
 
 

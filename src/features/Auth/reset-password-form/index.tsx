@@ -29,14 +29,14 @@ const ResetPasswordForm = () => {
     });
 
     useEffect(() => {
-        if (getValues("password_confirmation") !== '') {
+        if (getValues("confirmPassword") !== '') {
             // Update password match status whenever password or password_confirmation values change
             if (isDirty) {
-                setPasswordMatch(watch("password") === watch("password_confirmation"));
+                setPasswordMatch(watch("newPassword") === watch("confirmPassword"));
             }
 
         }
-    }, [watch("password"), watch("password_confirmation"), isDirty]);
+    }, [watch("newPassword"), watch("confirmPassword"), isDirty]);
     return (
         <form
             onSubmit={handleSubmit(resetPasswordSubmit)}
@@ -59,8 +59,8 @@ const ResetPasswordForm = () => {
                 <input
                     type="password"
                     placeholder="Enter Reset Password"
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.password ? 'border-error' : 'border-gray-350'}`}
-                    {...register("password", {
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors?.newPassword ? 'border-error' : 'border-gray-350'}`}
+                    {...register("newPassword", {
                         required: 'Password is required.',
                         minLength: {
                             value: 7,
@@ -71,31 +71,31 @@ const ResetPasswordForm = () => {
                             message: "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
                         },
                     })}
-                    onKeyUp={() => trigger("password")}
+                    onKeyUp={() => trigger("newPassword")}
                 />
                 {
-                    errors.password &&
-                    <p className="text-error text-xs leading-[24px] mt-1">{errors?.password?.message}</p>
+                    errors.newPassword &&
+                    <p className="text-error text-xs leading-[24px] mt-1">{errors?.newPassword?.message}</p>
                 }
             </div>
             <div className="flex flex-col mb-[20px]">
                 <input
                     type="password"
                     placeholder="Confirm Password"
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.password_confirmation && !passwordMatch ? 'border-error' : 'border-gray-350'}`}
-                    {...register("password_confirmation",
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.confirmPassword && !passwordMatch ? 'border-error' : 'border-gray-350'}`}
+                    {...register("confirmPassword",
                         {
                             required: 'Confirm Password is required.',
-                            validate: (value) => value === watch("password") || 'Password do not match.'
+                            validate: (value) => value === watch("newPassword") || 'Password do not match.'
                         })}
-                    onKeyUp={() => trigger("password_confirmation")}
+                    onKeyUp={() => trigger("confirmPassword")}
                 />
                 {
-                    errors.password_confirmation && !passwordMatch &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.password_confirmation.message}</p>
+                    errors.confirmPassword && !passwordMatch &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.confirmPassword.message}</p>
                 }
                 {
-                    !errors.password_confirmation && !passwordMatch && // Display error message when passwords don't match
+                    !errors.confirmPassword && !passwordMatch && // Display error message when passwords don't match
                     <p className='text-error text-xs leading-[24px] mt-1'>Passwords do not match</p>
                 }
             </div>

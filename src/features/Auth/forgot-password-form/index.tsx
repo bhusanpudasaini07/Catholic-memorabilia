@@ -33,19 +33,19 @@ const ForgotPasswordForm = () => {
             autoComplete='off'
         >
             <p className='mb-[20px] text-sm text-zinc-250 leading-[24px]'>
-                Please enter email address/phone number. You will receive a link to create new password via email or OTP in your phone number.
+                Please enter email address/phone number. You will receive a link to create new password via email.
             </p>
             <div className='flex flex-col mb-[20px]'>
                 <input
                     type="text"
                     placeholder='Enter Your Email or Phone number'
-                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.account ? 'border-error' : 'border-gray-350'}`}
-                    {...register("account", { required: 'Email or Phone Number is required.' })}
-                    onBlur={() => trigger('account')}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.email ? 'border-error' : 'border-gray-350'}`}
+                    {...register("email", { required: 'Email or Phone Number is required.' })}
+                    onBlur={() => trigger('email')}
                 />
                 {
-                    errors.account &&
-                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.account.message}</p>
+                    errors.email &&
+                    <p className='text-error text-xs leading-[24px] mt-1'>{errors.email.message}</p>
                 }
             </div>
             <div className='flex items-center justify-between'>

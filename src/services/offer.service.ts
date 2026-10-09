@@ -1,7 +1,6 @@
 import axiosInstance from "@/axios/axiosInstance";
 import { config } from "../../config";
 
-const apiEndPoint1 = config.gateway.apiEndPoint1;
 
 export const getOffers = async (
   query: any,
@@ -11,7 +10,7 @@ export const getOffers = async (
   priceOrder?: string
 ) => {
   try {
-    const response = await axiosInstance.get(`/${apiEndPoint1}/products`, {
+    const response = await axiosInstance.get(`/products`, {
       params: {
         query,
         page,

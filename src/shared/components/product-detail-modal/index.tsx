@@ -4,7 +4,6 @@ import SkeletonImage from '../skeleton/image'
 import Image from 'next/image'
 import SkeletonDescription from '../skeleton/description'
 import Link from 'next/link'
-import { ITag } from '@/interface/tag.interface'
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ICartData, ICreateCartItem } from '@/interface/cart.interface'
@@ -43,13 +42,14 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
         async () => {
             if (slug) {
                 const response = await getProductsFromSlug(slug);
-                const productId = response?.data?.id;
+                const productId = slug;
                 return { response, productId };
             }
         }
     );
     //For SKU
     const [selectedSizeId, setSelectedSizeId] = useState<number>(0)
+
     const unitPriceArray = productData?.response?.data?.variants || [];
     const filteredUnitPrice = selectedSizeId
         ? unitPriceArray.filter((sizeObj: any) => sizeObj.size === selectedSizeId)
@@ -58,7 +58,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
 
     const handleAddToCart = () => {
         const payload: ICreateCartItem = {
-            productId: productData?.productId,
+            productId: Number(productData?.productId),
             variant_id: selectedSizeId,
             quantity: value,
         }
@@ -170,6 +170,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     useEffect(() => {
         setValue(1)
     }, [selectedSizeId])
+    console.log('selectedSizeId', productData);
 
     //For checking if the selected size and the mapped pricec are equal to show the change in price
     const selectedPrice = productData?.response?.data?.variants?.find((price: any) => price?.id === selectedSizeId);
@@ -183,6 +184,10 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
 
     const selectedCartItems: ICartProduct | undefined = cartList?.cartProducts?.find((cart: any) => JSON.parse(cart?.selectedUnit?.id) === selectedSizeId);
 
+    const salePrice = productData?.response?.productPrice ? productData?.response?.productPrice - (productData?.response?.productPrice * productData?.response?.discountPercentage / 100) : productData?.response?.productPrice
+    const originalPrice = productData?.response?.productPrice ? productData?.response?.productPrice : salePrice
+
+
     // useEffect(() => {
     //     if (updatedCart) {
     //         setValue(selectedCartItems?.quantity!)
@@ -190,6 +195,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     //         setValue(1)
     //     }
     // }, [selectedCartItems, selectedSizeId])
+    console.log('productData', productData?.response);
 
     return (
         <>
@@ -201,7 +207,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                         <button onClick={() => setProductModalId('')}><FaTimes /></button>
                     </div>
                     <div className="grid grid-cols-12">
-                        <div className="col-span-12 md:col-span-5">
+                        <div className="col-span-12 md:col-span-4">
                             {
                                 isLoading ?
                                     <SkeletonImage />
@@ -273,16 +279,21 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                         )
                                     )
                             }
+                            {productData?.response?.productImageUrl && (
+                                <div className="flex justify-start w-full gap-2 py-2">
+                                    <Image alt='Product image' className='border border-primary' src={productData?.response?.productImageUrl} width={250} height={100} />
+                                </div>
+                            )}
 
                         </div>
-                        <div className="col-span-12 md:col-span-7">
+                        <div className="col-span-12 md:col-span-8">
                             {
                                 isLoading ? (
                                     <SkeletonDescription />
                                 ) : (
                                     <>
                                         <h2 className="mb-6 text-2xl font-semibold text-slate-850">
-                                            {productData?.response?.data?.name}
+                                            {productData?.response?.productName}
                                         </h2>
                                         <p className='mb-2 text-sm font-bold text-sllate-850'>Availability: {' '}
                                             {
@@ -295,52 +306,36 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                         </p>
                                         <p className="flex items-center gap-3 mb-2 text-sm font-bold color-slate-850">
                                             Category:
-                                            <Link href={`/category/${productData?.response?.data?.categorySlug}`} aria-label="category-title" className="mb-0 text-primary hover:text-orange-450">
-                                                <span className="font-normal">{productData?.response?.data?.restaurantName}</span>
+                                            <Link href={`/category/${productData?.response?.categoryId}`} aria-label="category-title" className="mb-0 text-primary hover:text-orange-450">
+                                                <span className="font-normal">{productData?.response?.category?.categoryName}</span>
                                             </Link>
                                         </p>
-                                        {
-                                            productData?.response?.data?.tags.length > 0 &&
-                                            <p className="flex items-center gap-3 mb-2 text-sm font-bold color-slate-850">
-                                                Tags:
-                                                {productData?.response?.data?.tags.map((prev: ITag, index: number) => (
-                                                    <Link href={`/tag?id=${prev?.slug}`} aria-label="tag-title" className="mb-0 capitalize text-primary hover:text-orange-450" key={`tag-${index}`}>
-                                                        <span className="font-normal">{prev?.name}</span>
-                                                    </Link>
-                                                ))}
-                                            </p>
-                                        }
+
                                         <ul className="flex my-5">
 
-                                            {
-                                                selectedPrice && selectedPrice?.hasOffer ? (
-                                                    <>
-                                                        <li className="mr-1 text-base text-red-250">
-                                                            AUD
-                                                            <span>
-                                                                {selectedPrice?.newPrice * value}
+                                            <li>
+                                                <div className="flex items-center gap-2 mb-4 mt-3">
+                                                    {productData?.response?.discountPercentage ? (
+                                                        <>
+                                                            <span className="text-base font-semibold text-slate-400 line-through">
+                                                                AUD {originalPrice}
                                                             </span>
-                                                        </li>
-
-                                                        <li className="mr-1 text-base font-semibold line-through text-primary">
-                                                            AUD
-                                                            <span>
-                                                                {selectedPrice?.oldPrice}
+                                                            <span className="text-2xl font-bold text-primary mx-1">
+                                                                AUD {salePrice?.toFixed(2)}
                                                             </span>
-                                                        </li>
-                                                    </>
-                                                ) : (
-                                                    < li className="mr-1 text-base font-bold text-primary" >
-                                                        AUD
-                                                        <span className='ml-1'>
-                                                            {selectedPrice?.sellingPrice * value}
+                                                            <span className="bg-[#F95F53] text-white font-bold text-xs px-2 py-1 rounded ml-1">
+                                                                {Math.round(((productData?.response?.productPrice - salePrice) / productData?.response?.productPrice) * 100)}% OFF
+                                                            </span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-2xl font-bold text-primary">
+                                                            AUD {salePrice?.toFixed(2)}
                                                         </span>
-                                                    </li>
-                                                )
-                                            }
-                                            <li className="text-base font-semibold text-primary ">
-                                                ( <span dangerouslySetInnerHTML={{ __html: taxMessage }} />)
+                                                    )}
+                                                </div>
+
                                             </li>
+
                                         </ul>
 
                                         <p className='font-normal' dangerouslySetInnerHTML={{ __html: selectedPrice?.description, }} />
@@ -417,7 +412,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                         {
                                             token && (
                                                 isFavGen() ?
-                                                    <button onClick={() => removeFromFav(productData?.productId)} className='flex items-center gap-3'>
+                                                    <button onClick={() => removeFromFav(Number(productData?.productId))} className='flex items-center gap-3'>
                                                         {
                                                             removeLoading ? (
                                                                 <ButtonLoader className='!border-primary' />
@@ -429,7 +424,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
                                                             )
                                                         }
                                                     </button> :
-                                                    <button onClick={() => addToFav(productData?.productId)} className='flex items-center gap-3'>
+                                                    <button onClick={() => addToFav(Number(productData?.productId))} className='flex items-center gap-3'>
                                                         {
                                                             addLoading ? (
                                                                 <ButtonLoader className='!border-primary' />

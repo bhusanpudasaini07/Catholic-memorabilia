@@ -1,15 +1,14 @@
 export interface IForgotPassword {
-  account: string;
+  email: string;
 }
 
 export interface IResetPassword {
   token: string;
-  password: string;
-  password_confirmation: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface IChangePassword {
-  old_password: string;
-  password: string;
-  password_confirmation: string;
+  currentPassword: string;
+  newPassword: string;
 }

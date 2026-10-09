@@ -18,7 +18,6 @@ import { getCookie } from "cookies-next";
 const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
 
   //Token 
-  const token = getToken();
   const [logIn, setLogin] = useState<boolean>(false)
   const loggedIn = getCookie("isLoggedIn")
   const router = useRouter()
@@ -64,7 +63,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
     }
     addToCartmutation.mutate(payload)
     setShowProductModal(true)
-    setProductModalId(product?.slug)
+    setProductModalId(product?.id?.toString() || '')
   };
 
 

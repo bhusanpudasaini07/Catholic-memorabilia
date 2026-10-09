@@ -354,15 +354,8 @@ const Header = () => {
                 Home
               </Button>
              
-              <Link href="/">
-                <Button
-                  type="ghost"
-                  className="!bg-white border-0 text-gray-550 font-bold uppercase"
-                >
-                  Just for you
-                </Button>
-              </Link>
-              <Link href="/">
+              
+              <Link href="/new-in">
                 <Button
                   type="ghost"
                   className="!bg-white border-0 text-gray-550 font-bold uppercase"

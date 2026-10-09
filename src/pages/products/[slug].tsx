@@ -42,7 +42,7 @@ const ProductSlug = () => {
   const { data: cartData } = useQuery<ICartData>(['cartList'], getCartProduct);
 
   const { data: productData, isLoading, error } = useQuery(
-    ['getProductsFromSlug', slug],
+    ['getProductsFromSlug', !!slug],
     async () => {
       if (slug) {
         const response = await getProductsFromSlug(slug);
@@ -55,12 +55,13 @@ const ProductSlug = () => {
   //For SKU
   const [selectedSizeId, setSelectedSizeId] = useState<number>(0)
   const unitPriceArray = productData?.response?.data?.variants || [];
+
   const filteredUnitPrice = selectedSizeId
     ? unitPriceArray.filter((sizeObj: any) => sizeObj.size === selectedSizeId)
     : unitPriceArray;
 
   const { data: relatedProducts, isLoading: relatedProductsLoading } = useQuery(
-    ['relatedProducts', productData?.response?.categoryId],
+    ['relatedProducts', !!productData?.response?.categoryId],
     async () => {
       if (productData?.response?.categoryId) {
         const response = await getRelatedProductsFromId(productData?.response?.categoryId);
@@ -167,7 +168,6 @@ const ProductSlug = () => {
   }, [productData])
 
 
-  //for SKU multiple
 
   //to display image according to the changed size.
   const selectedImg = productData?.response?.data?.webpImages ?
@@ -176,10 +176,18 @@ const ProductSlug = () => {
   const updateCart = cartData?.cartProducts?.find((cartItem: any) => JSON.parse(cartItem?.selectedUnit?.id) === selectedSizeId) ? true : false
 
   //checking stock for each product/sku element
-  const stock: any = productData?.response?.data?.variants?.find((price: any) => price?.id === selectedSizeId)?.stock
+  const stock: any = productData?.response?.data?.find((price: any) => price?.id === selectedSizeId)?.stock
   const selectedCartItems: ICartProduct | undefined = cartData?.cartProducts?.find((cart: any) => JSON.parse(cart?.selectedUnit?.id) === selectedSizeId);
 
-  /*
+// pricing logic
+console.log("asdasd", productData?.response)
+  const salePrice = productData?.response?.productPrice ? productData?.response?.productPrice - (productData?.response?.productPrice * productData?.response?.discountPercentage / 100) : productData?.response?.productPrice
+  const originalPrice = productData?.response?.productPrice ? productData?.response?.productPrice : salePrice
+ 
+
+
+ 
+  /*  
 ** Provides payload to the update api when the value is being increased or decreased.
 */
   const handleUpdateCart = (newQuantity: number, itemId: number) => {
@@ -218,7 +226,6 @@ const ProductSlug = () => {
   }, [selectedCartItems, selectedSizeId])
 
 
-  console.log('productData', productData);
   return (
     <>
       <Head>
@@ -324,15 +331,31 @@ const ProductSlug = () => {
                         <span className="font-normal">{productData?.response?.category?.categoryName}</span>
                       </Link>
                     </p>
-                    <p className="flex items-center gap-3 mb-2 text-sm font-bold text-slate-850">
-                      Price:
-                      <span className="text-primary font-bold">AUD {productData?.response?.productPrice}</span>
-                    </p>
+                    <div className="flex items-center gap-2 mb-4 mt-3">
+                      {productData?.response?.discountPercentage ? (
+                        <>
+                          <span className="text-base font-semibold text-slate-400 line-through">
+                            AUD {originalPrice}
+                          </span>
+                          <span className="text-2xl font-bold text-primary mx-1">
+                            AUD {salePrice?.toFixed(2)}
+                          </span>
+                          <span className="bg-[#F95F53] text-white font-bold text-xs px-2 py-1 rounded ml-1">
+                            {Math.round(((productData?.response?.productPrice - salePrice) / productData?.response?.productPrice) * 100)}% OFF
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-2xl font-bold text-primary">
+                          AUD {salePrice?.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+               
 
 
                     <div className="w-100 flex my-[30px]">
                       <div className="flex">
-                      <Quantity quantity={value} stock={stock} updateCartCall={updateCartCall} />
+                      {/* <Quantity quantity={value} stock={stock} updateCartCall={updateCartCall} /> */}
 
                       <div>
                         {

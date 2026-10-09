@@ -20,7 +20,6 @@ const Home: NextPageWithLayout = () => {
   const { categories, loading: loadingCategories } = useCategoriesHooks();
   const { products, productsLoading, featuredProducts, featuredProductsLoading, newArrivalProducts, newArrivalProductsLoading } = useProductsHooks();
 
-  console.log('featuredProducts', products);
   return (
     <>
       <Head>
