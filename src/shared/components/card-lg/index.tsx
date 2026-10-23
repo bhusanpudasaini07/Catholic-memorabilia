@@ -23,7 +23,7 @@ const CardLg: React.FC<Props> = ({ type, title, price, image, link, availability
         }
     }
     return (
-        <div className="card plant-card relative ">
+        <div className="card catholic-card relative ">
             <Link href={link} className="absolute top-0 bottom-0 left-0 right-0 z-[1]" aria-label={`blog-custom-${title}`} />
             <div className='grid grid-cols-12'>
                 <div className='col-span-12 md:col-span-4'>
@@ -43,7 +43,7 @@ const CardLg: React.FC<Props> = ({ type, title, price, image, link, availability
                 <div className='col-span-12 md:col-span-8'>
                     <div className="card-body px-[15px] py-[20px] gap-[10px]">
                         <p className='text-xs text-gray-450 uppercase'>{type}</p>
-                        <h2 className="card-title plant-card-title text-base">{title}</h2>
+                        <h2 className="card-title catholic-card-title text-base">{title}</h2>
                         <p className='text-primary text-base font-semibold'>AUD {price}</p>
                         <div className='my-[30px]'>
                             <p className='desc'>{desc}</p>

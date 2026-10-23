@@ -180,7 +180,6 @@ const ProductSlug = () => {
   const selectedCartItems: ICartProduct | undefined = cartData?.cartProducts?.find((cart: any) => JSON.parse(cart?.selectedUnit?.id) === selectedSizeId);
 
 // pricing logic
-console.log("asdasd", productData?.response)
   const salePrice = productData?.response?.productPrice ? productData?.response?.productPrice - (productData?.response?.productPrice * productData?.response?.discountPercentage / 100) : productData?.response?.productPrice
   const originalPrice = productData?.response?.productPrice ? productData?.response?.productPrice : salePrice
  

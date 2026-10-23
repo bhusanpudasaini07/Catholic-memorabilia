@@ -42,7 +42,6 @@ const Checkout: NextPageWithLayout = () => {
   const [note, setNote] = useState<string>("");
   const loggedIn = getCookie('isLoggedIn');
 
-  console.log("loggedIn", loggedIn);
   // Get Config Data
   const { data: config, isInitialLoading } = useQuery({
     queryKey: ["getConfig"],

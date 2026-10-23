@@ -61,6 +61,7 @@ const SearchPage: NextPageWithLayout = () => {
     setPageNumber(value)
   }
 
+
   return (
     <div>
       <Head>
@@ -86,7 +87,6 @@ const SearchPage: NextPageWithLayout = () => {
                       <div className="flex items-center sorting">
                         <p className="pr-3 text-sm font-normal text-gray-750">Sort By:</p>
                         <SortingDropdown sortChange={handleSortingChange} />
-                        
                       </div>
                     </div>
                     <section className="my-[60px]">
@@ -136,10 +136,10 @@ const SearchPage: NextPageWithLayout = () => {
                           {searchData && searchData?.map((item: any, index: number) => (
                             <CategoryCard
                               key={`categories-${index}`}
-                              title={item?.name}
+                              title={item?.categoryName}
                               totalProducts={item?.productCount}
-                              shopLink={`/categories/${item?.slug}`}
-                              image={item?.webpBackgroundImage ? item?.webpBackgroundImage : item?.backgroundImage}
+                              shopLink={`/categories/${item?.id}`}
+                              image={item?.categoryImageUrl || '/images/no-image.png'}
                             />
                           ))}
                         </div>

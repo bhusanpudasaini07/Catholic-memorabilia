@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Badge from '../badge';
 import CartIcon from '@/shared/icons/common/CartIcon';
 import { useRouter } from 'next/router';
@@ -7,20 +7,29 @@ import { useQuery } from '@tanstack/react-query';
 import { getCartData, getCartProduct } from '@/services/cart.service';
 import { useCart as useCartStores } from '@/store/cart';
 import CartDropdownProducts from './cart-products';
+import { useCartsHooks } from '@/hooks/cart.hooks';
 
 interface CartDropdownProps {
   logIn: boolean;
 }
 const CartDropdown = ({ logIn }: CartDropdownProps) => {
   const router = useRouter();
+  const { cartItems } = useCartsHooks();
 
   const { coupon, setCoupon, couponData } = useCartStores();
+  const [cartList, setCartList] = useState<any>(null);
 
-  const { data: cartList } = useQuery({
+  const { data } = useQuery({
     queryKey: ['cartList'],
     queryFn: getCartProduct,
+    onSuccess: (data) => {
+      if(logIn && data) {
+        setCartList(data)
+      } 
+    },
     enabled: !!logIn,
   });
+
 
   //checking if there is any item which is out of stock
   const hasOutOfStock = cartList?.items?.find((item: any) => item?.selectedUnit?.stock === 0) ? true : false
@@ -30,6 +39,16 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
     }
   }, [window, localStorage, coupon])
 
+  useEffect(() => {
+    if (!cartItems || (cartItems && cartItems?.items?.length === 0)) {
+      const cart = JSON.parse(localStorage.getItem("cart") as string)
+      setCartList(cart)
+    }else{
+      setCartList(cartItems)
+    }
+  }, [window, localStorage, cartItems])
+
+  console.log("cartItemspage", cartItems)
 
   return (
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>
@@ -50,7 +69,7 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
               <>
                 <div className="overflow-y-scroll max-h-[350px]">
                   {cartList && cartList?.items?.map((item: any, index: number) => (
-                    <CartDropdownProducts item={item} key={index} />
+                    <CartDropdownProducts item={item} key={index} logIn={logIn} />
                   ))}
                 </div>
                 {/* pricing list */}

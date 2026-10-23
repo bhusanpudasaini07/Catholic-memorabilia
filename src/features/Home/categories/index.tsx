@@ -112,13 +112,12 @@ const Categories: React.FC<IProps> = ({ loading, categories }) => {
                 >
                     {categories && categories?.length > 0 && categories?.map((item: any, index: number) => (
                         <SwiperSlide key={`categories-${index}`}>
-
                             <CategoryCard
                                 key={`categories-${index}`}
                                 title={item?.categoryName}
                                 totalProducts={item?.productCount}
                                 shopLink={`/categories/${item?.id}`}
-                                image={item?.webpBackgroundImage || item?.backgroundImage || '/images/no-image.png'}
+                                image={item?.categoryImageUrl || '/images/no-image.png'}
                             />
 
                         </SwiperSlide>

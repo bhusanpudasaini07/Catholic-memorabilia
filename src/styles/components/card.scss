@@ -1,4 +1,4 @@
-.plant-card {
+.catholic-card {
   @apply relative bg-white border border-gray-350 rounded-[5px] transition-all delay-150 duration-300 mb-0;
   &_preview-icon {
     @apply absolute top-[50%] transform translate-y-[-50%] left-0 right-0 text-center z-[1] h-[46px];
@@ -17,8 +17,12 @@
       }
     }
   }
+  .figure {
+    background-color: #f0f0f0;
+  }
   figure img{
-    aspect-ratio: 0.8;
+    aspect-ratio: 1;
+    border-bottom: 1px solid #e0e0e0;
   }
 
   &-title {
@@ -40,7 +44,7 @@
   }
   &:hover {
     @apply border-primary;
-    .plant-card_preview-icon {
+    .catholic-card_preview-icon {
       a {
         @apply opacity-100;
         transform: scaleX(1);

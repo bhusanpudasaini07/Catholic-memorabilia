@@ -27,7 +27,7 @@ const ShopByCollection: React.FC<IProps> = ({ products, loading }) => {
                         <CollectionCard
                             key={category.id}
                             id={category?.id}
-                            image={category?.categoryImageUrl}
+                            image={category?.categoryImageUrl || '/images/no-image.png'}
                             name={category?.categoryName}
                         />
                     ))

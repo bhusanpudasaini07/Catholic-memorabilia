@@ -20,7 +20,7 @@ const DeliverInfo = () => {
                     type="title-section"
                     className="text-slate-850 font-semibold text-normal capitalize leading-[22px] mb-0"
                     text="Free Shipping"
-                    subTitle="Get plants delivered to your doorstep without hassle!"
+                    subTitle="Get orders delivered to your doorstep without hassle!"
                     subClassName="leading-[20px] text-gray-650 font-normal text-[13px]"
                     mb="0"
                   />

@@ -170,7 +170,6 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     useEffect(() => {
         setValue(1)
     }, [selectedSizeId])
-    console.log('selectedSizeId', productData);
 
     //For checking if the selected size and the mapped pricec are equal to show the change in price
     const selectedPrice = productData?.response?.data?.variants?.find((price: any) => price?.id === selectedSizeId);
@@ -195,7 +194,6 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     //         setValue(1)
     //     }
     // }, [selectedCartItems, selectedSizeId])
-    console.log('productData', productData?.response);
 
     return (
         <>

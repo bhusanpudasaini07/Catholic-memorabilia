@@ -112,7 +112,6 @@ const CategoryDetail: NextPageWithLayout = () => {
         handlePageChange(1)
     }, [slug])
 
-    console.log("initialProductData", initialProductData);
 
     return (
         <>

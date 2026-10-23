@@ -7,8 +7,8 @@ import CaretDownIcon from '@/shared/icons/common/CaretDownIcon'
 const CategoryCard: React.FC<Props> = ({ title, totalProducts, shopLink, image }) => {
   return (
     <div className='relative category-card'>
-      <Link className='absolute w-full h-full z-[1]' href={shopLink} />
-      <div>
+      <Link className='absolute w-full h-full z-[1] cursor-pointer bg-black/5 transition-all duration-300' href={shopLink} />
+      <div className='h-[247px]'>
         <Image src={image || '/images/no-image.png'}
           className="transition-all duration-300 delay-200" alt="Category Image"
           width={389}
@@ -17,7 +17,6 @@ const CategoryCard: React.FC<Props> = ({ title, totalProducts, shopLink, image }
           priority={true}
           style={{
             maxWidth: '100%',
-            height: 'auto',
             width: "100%"
           }}
         />

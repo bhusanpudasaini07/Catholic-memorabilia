@@ -24,9 +24,11 @@ export interface ISelectedUnit {
 }
 
 export interface IProduct {
+  id: number;
   productName: string;
   productImageUrl: string;
   productDescription: string;
+  productPrice: number;
   brand: string | null;
   categoryBackgroundImage: string;
   categoryIcon: string;
@@ -34,12 +36,9 @@ export interface IProduct {
   categorySlug: string;
   restaurantName: string;
   decimal: boolean;
-  description: string;
-  productPrice: number;
   hasDiscount: boolean;
   hasOffer: boolean;
   discountPercentage: number;
-  id: number;
   images: IProductImage[];
   webpImages: IProductImage[];
   link: string;

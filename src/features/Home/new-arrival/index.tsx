@@ -29,7 +29,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
             swiperRef?.slidePrev();
         }
     }, [swiperRef]);
-   
+
 
     const handleNext = useCallback(() => {
         setPrevDisable(false)
@@ -46,6 +46,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                 text="New Arrival"
                 subTitle="Discover Something Meaningful and New"
             />
+
             {
                 products?.length > 6 && (
                     <div className='productSwiper-navigation'>
@@ -72,59 +73,23 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                 </div>
 
                 :
-                <Swiper
-                    slidesPerView={3}
-                    grid={{
-                        fill: "row",
-                    }}
-                    pagination={false}
-                    modules={[Grid]}
-                    className="productSwiper"
-                    onSwiper={setSwiperRef}
-                    onBeforeInit={() => setPrevDisable(true)}
-                    onReachBeginning={() => setPrevDisable(true)}
-                    onReachEnd={() => setNextDisable(true)}
-                    breakpoints={{
-                        0: {
-                            slidesPerView: 1,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        },
-                        768: {
-                            slidesPerView: 2,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        },
-                        1050: {
-                            slidesPerView: 5,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        }
-                    }}
-                >
-                    {products && products?.length > 0 && products?.map((item: any, index: number) => (
-                        <SwiperSlide key={`categories-${index}`}>
-
-                            <Card
-                                setProductModalId={setProductModalId}
-                                product={item}
-                                key={`app-cat-products-${index}`}
-                            />
-                        </SwiperSlide>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+                    {products && products.length > 0 && products.slice(0, 6).map((item: any, index: number) => (
+                        <Card
+                            setProductModalId={setProductModalId}
+                            product={item}
+                            key={`app-cat-products-${index}`}
+                        />
                     ))}
-                </Swiper>
+              
+                </div>
+
             }
 
-{
-                    productModalId !== '' &&
-                    <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId.toString()} />
-                  }
+            {
+                productModalId !== '' &&
+                <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId.toString()} />
+            }
         </section>
     )
 }

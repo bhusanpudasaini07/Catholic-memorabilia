@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useCartsHooks } from '@/hooks/cart.hooks'
 import { FaTimes } from 'react-icons/fa'
 
-const CartDropdownProducts = ({ item }: any) => {
+const CartDropdownProducts = ({ item, logIn }: any) => {
     const { cartDelete, handleRemoveFromCart, selectedId } = useCartsHooks();
     //for checking sku units
     const selectedUnit = item?.selectedUnit;
@@ -16,7 +16,6 @@ const CartDropdownProducts = ({ item }: any) => {
     //     : item?.product?.images?.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id));
 
     //to display the offer price if the product has offer
-    const checkOffer = item?.product?.variants?.find((price: any) => price?.hasOffer);
 
     return (
         <div key={item?.productId} className="relative flex gap-4 py-3 border-b border-gray-350">

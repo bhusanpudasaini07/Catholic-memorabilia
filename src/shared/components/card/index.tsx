@@ -7,26 +7,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToCart } from "@/services/cart.service";
 import { ICartData, ICartItem, ICreateCartItem, IUpdateCartItem } from "@/interface/cart.interface";
 import ButtonLoader from "../btn-loading";
-import { useCartsHooks } from "@/hooks/cart.hooks";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import CardHeartIcon from "@/shared/icons/common/CardHeartIcon";
 import { useWishlists } from "@/hooks/wishlist.hooks";
 import { useRouter } from "next/router";
 import { getCookie } from "cookies-next";
+import Tooltip from "@/components/Tooltip";
 
 const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
 
   //Token 
   const [logIn, setLogin] = useState<boolean>(false)
   const loggedIn = getCookie("isLoggedIn")
-  const router = useRouter()
 
   //Use query hook
-  const { data: cart } = useQuery<ICartData>(["getCartList"]);
+  const { data: cart } = useQuery<ICartData>(["getCart"]);
   const queryClient = useQueryClient();
   const stock: any = cartItem?.selectedUnit?.stock
   const { addFavMutation, removeFavMutation, addLoading, removeLoading } = useWishlists() //for adding products for wishlist ->hook
 
+  console.log("cart", cart);
   /*
  * States 
  */
@@ -61,8 +61,6 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
       quantity: quantity,
     }
     addToCartmutation.mutate(payload)
-    setShowProductModal(true)
-    setProductModalId(product?.id?.toString() || '')
   };
 
 
@@ -128,14 +126,14 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
       setLogin(false)
     }
   }, [loggedIn])
-  console.log("product", product);
+  console.log("product", cart);
 
   return (
     <>
-      <div className="relative card plant-card">
+      <div className="relative card catholic-card">
         <Link
           href={`/products/${product?.id}`}
-          className="absolute top-0 bottom-0 left-0 right-0 z-[1]"
+          className="absolute top-0 bottom-0 left-0 right-0 z-5"
         />
         {logIn &&
           <>
@@ -157,20 +155,18 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               </button>}
           </>
         }
-        <figure className="relative">
+        <figure className="relative flex h-[350px] w-full items-center justify-center overflow-hidden bg-white">
           {
-            product && product?.productImageUrl  ? (
-              <Image
+            product && product?.productImageUrl ? (
+              <img
                 src={product?.productImageUrl}
                 alt={product?.productName}
-                width={116}
-                height={170}
-                quality={100}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                  width: '100%',
-                }}
+                className="h-full w-full object-contain p-2"
+              // style={{
+              //   maxWidth: '100%',
+              //   height: 'auto',
+              //   width: '100%',
+              // }}
               />
             ) : (
               <Image
@@ -188,7 +184,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             )
           }
           {
-          ( product?.hasDiscount && product?.discountPercentage && product?.discountPercentage > 0) &&
+            (product?.hasDiscount && product?.discountPercentage && product?.discountPercentage > 0) &&
             <p className="absolute px-2 py-1 text-xs font-medium text-white rounded-md bottom-2 left-3 bg-red-250">Offer</p>
           }
         </figure>
@@ -201,31 +197,16 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             <SearchIcon className="max-w-[15px] h-auto" />
           </Link>
         </div>
-        <div className="card-body px-[15px] py-[20px] gap-[10px]">
+        <div className="card-body px-[15px] py-[15px] gap-[5px] ">
+          <Tooltip text={product?.name}>
+            <h2 className=" catholic-card-title uppercase">{product?.productName}</h2>
+          </Tooltip>
 
-          <p className="text-xs uppercase leading-[12px] text-gray-450">
-            {product?.restaurantName}
-          </p>
-          {/* <div className="static z-[2]"> */}
-          {/* <div className="tooltip tooltip-bottom" data-tip={product?.name}> */}
-          <h2 className="card-title plant-card-title">{product?.productName}</h2>
-          {/* </div> */}
-          {/* </div> */}
-
-
-          <div className="flex justify-between items-center relative z-[3] h-[40px]">
-            {/* config?.gateway?.skuMethod ? (
-               <button
-                className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto"
-                onClick={() => router.push(`/products/${product?.slug}`)}
-              >
-                Add to Cart
-              </button>
-            ) : ( */}
+          <div className="flex justify-between items-center mt-2">
             {
               product?.hasDiscount && product?.discountPercentage && product?.discountPercentage > 0 ? (
                 <div className="flex flex-col ">
-                  <p className="flex-grow-0 mr-2 text-sm text-primary">
+                  <p className="flex-grow-0 mr-2 text-[18px] font-bold text-primary">
                     AUD {product?.productPrice - (product?.productPrice * product?.discountPercentage / 100)}
                   </p>
                   <p className="flex-grow-0 mr-2 text-xs font-semibold line-through text-gray-1450">
@@ -234,26 +215,27 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
                   </p>
                 </div>
               ) : (
-                <p className="text-sm font-semibold text-primary">
+                <p className="text-[18px] font-bold text-primary">
                   AUD {product?.productPrice}
-                  {/* AUD { product?.variants &&product?.variants[0]?.sellingPrice} */}
-                  
                 </p>
               )
             }
-            {(!(cart?.cartProducts?.some((item: any) => item?.product.id === product?.id))) ? (
-              <button
-                className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto"
-                onClick={handleAddToCart}
-              disabled={addToCartmutation.isLoading}
-              >
-                Add to Cart
-                {
+
+            {(!(cart?.cartProducts?.some((item: any) => item?.product.id === product?.id))) ?
+              (
+                <button
+                  className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto relative z-9"
+                  onClick={handleAddToCart}
+                  disabled={addToCartmutation.isLoading}
+                >
+                  Add to Cart
+                  {
                     addToCartmutation.isLoading &&
                     <ButtonLoader />
                   }
-              </button>
-            ) :
+                </button>
+              )
+              :
               cart?.cartProducts?.some((item: any) => item?.product.id === product?.id) && (
                 // <div className="flex items-center gap-3 px-3 border rounded-lg border-primary">
                 //   {

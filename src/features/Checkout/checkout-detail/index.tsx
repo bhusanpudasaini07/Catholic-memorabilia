@@ -12,8 +12,9 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
 
   // const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>(null);
   //Get cart Data
-  const { data: cart } = useQuery<ICartItem>(["getCart"])
-  const { data: cartData } = useQuery<ICartData>(['getCartList'])
+  const { data: cart } = useQuery<any>(["cartList"]);
+
+  console.log("cartData=====>", cart);
   return (
     <>
       <div className="py-[38px] px-[45px] bg-slate-150">
@@ -23,7 +24,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
         </ul>
         <div className="my-[29px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className="">
-            {cartData?.cartProducts?.map((productData: any, index: any) => (
+            {cart?.cartProducts?.map((productData: any, index: any) => (
               <li className="flex justify-between" key={index}>
                 <span> {productData?.product?.name} X {productData?.quantity} </span>
                 <span>AUD {productData.selectedUnit.sellingPrice *
@@ -43,19 +44,19 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
           <li className="font-semibold text-[16px] text-slate-850">
             Cart Subtotal
           </li>
-          <li className="text-[14px]">AUD {cart?.subTotal}</li>
+          <li className="text-[14px]">AUD {cart?.subTotal || 0}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">
             Delivery Charge
           </li>
-          <li className="text-[14px]">AUD {cart?.deliveryCharge
+          <li className="text-[14px]">AUD {cart?.deliveryCharge || 0
           }</li>
         </ul>
         <div className="mt-[18px] mb-[33px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className=" flex justify-between mb-[20px]">
             <li className="font-bold text-[18px]">Total</li>
-            <li className="font-bold text-primary">AUD {cart?.total}</li>
+            <li className="font-bold text-primary">AUD {cart?.totalAmount}</li>
           </ul>
           <ul className="flex justify-between">
             <li className="font-bold text-[18px]">Payment method</li>
