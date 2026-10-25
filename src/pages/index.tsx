@@ -3,9 +3,6 @@ import { NextPageWithLayout } from "./_app";
 import MainLayout from "@/shared/main-layout";
 
 
-import Categories from "@/features/Home/categories";
-
-
 import Head from "next/head";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
 import { useProductsHooks } from "@/hooks/products.hooks";

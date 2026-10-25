@@ -240,7 +240,7 @@
             @apply w-[10px] h-auto fill-slate-850 opacity-80 transition-all delay-100 duration-150;
         }
         &:hover{
-            @apply bg-orange-450;
+            @apply bg-primary;
             svg{
                 @apply fill-white;
             }
