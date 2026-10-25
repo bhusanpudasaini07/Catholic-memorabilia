@@ -1,6 +1,6 @@
-import { addCouponCode, bulkDeleteCart, deleteCartItemById, updateCart } from "@/services/cart.service";
+import { addCouponCode, bulkDeleteCart, deleteCartItemById, getCartData, getCartProduct, updateCart } from "@/services/cart.service";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -9,46 +9,10 @@ export const useCartsHooks = () => {
     const [selectedId, setSelectedId] = useState<number>(0);
     const queryClient = useQueryClient();
     const router = useRouter();
-    const [cartItems, setCartItems] = useState<any>();
-
-   
-
-    // Modify guestCart to allow adding multiple products to cart in localStorage
-    const guestCart = (payload: any) => {
-        let cartItems = [];
-        const existingCart = localStorage.getItem('cart');
-       
-        if (existingCart) {
-            try {
-                cartItems = JSON.parse(existingCart)?.items;
-                if (!Array.isArray(cartItems)) {
-                    cartItems = [];
-                }
-            } catch {
-                cartItems = [];
-            }
-        }
-
-        // Check if product already exists in cart
-        const index = cartItems.findIndex((item: any) => item.product_id === payload.product_id);
-        if (index > -1) {
-            // If it exists, update the cart_quantity
-            cartItems[index].quantity = (cartItems[index].quantity || 1) + (payload.quantity || 1);
-        } else {
-            // If not, add as new
-            cartItems.push({ ...payload, quantity: payload.quantity || 1 });
-        }
-        const localCart = {
-            items: cartItems,
-            totalItems: cartItems.reduce((total: number, item: any) => total + item.quantity, 0),
-            totalAmount: Number(cartItems.reduce((total: number, item: any) => total + Number(item.product?.productPrice * item.quantity), 0).toFixed(2)),
-            userId: 'guest',
-        }
-        setCartItems(localCart);
-        localStorage.setItem('cart', JSON.stringify(localCart));
-    }
-
-    console.log("cartItems", cartItems)
+    const { data: cartList } = useQuery<any>({
+        queryKey: ['cartList'],
+        queryFn: getCartProduct,
+      });
     const cartDelete = useMutation({
         mutationFn: deleteCartItemById,
         onSuccess: () => {
@@ -72,7 +36,7 @@ export const useCartsHooks = () => {
             queryClient.invalidateQueries(['cartList'])
         },
         onError: (error: any) => {
-            showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message);
+            showToast(TOAST_TYPES.error, error?.response?.data?.errors?.[0]?.message || error?.message || "Unable to update cart.");
         }
     })
 
@@ -100,9 +64,7 @@ export const useCartsHooks = () => {
 
 
     return {
-        setCartItems,
-        cartItems,
-        guestCart,
+        cartList,
         handleRemoveFromCart,
         cartDelete,
         selectedId,

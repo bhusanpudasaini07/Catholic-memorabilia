@@ -47,7 +47,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
     },
     onError: (error: any) => {
       setShowProductModal(false)
-      showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
+      showToast(TOAST_TYPES.error, error?.response?.data?.errors?.[0]?.message || error?.message || "Unable to update cart.")
     }
   })
 
@@ -58,6 +58,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
   const handleAddToCart = () => {
     const payload: ICreateCartItem = {
       productId: product?.id,
+      product,
       quantity: quantity,
     }
     addToCartmutation.mutate(payload)

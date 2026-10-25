@@ -7,13 +7,13 @@ import BarsIcon from "@/shared/icons/common/BarsIcon";
 import Drawer from "@/shared/components/drawer";
 import {
   useInfiniteQuery,
+  useQueryClient,
   useMutation,
   useQuery,
 } from "@tanstack/react-query";
 
 import HeartIcon from "@/shared/icons/common/HeartIcon";
 import Link from "next/link";
-import { getProfile } from "@/services/profile.service";
 import { deleteCookie, getCookie } from "cookies-next";
 
 import { logout } from "@/services/auth.service";
@@ -23,13 +23,13 @@ import { useRouter } from "next/router";
 import { getSuggestionResults } from "@/services/search.service";
 import CartDropdown from "@/shared/components/cartDropdown";
 import { useDebounce } from "@/hooks/useDebounce.hooks";
-import { useCart } from "@/store/cart";
 import { setAuthorizationHeader } from "@/axios/axiosInstance";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
 import ProfileDropmenu from "./profile-dropmenu";
 
 const Header = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { categories, loading } = useCategoriesHooks();
 
 
@@ -44,12 +44,6 @@ const Header = () => {
   const debounceSearch = useDebounce(searchValue, 300) //Pass search value here and then this variable to the dependency below
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
 
-
-  const { data: profile } = useQuery({
-    queryKey: ["getProfile", logIn],
-    queryFn: getProfile,
-    enabled: logIn,
-  });
 
   // const { data: favouriteList }: any = useQuery(["wishlistProducts", token], {
   //   enabled: !!token
@@ -79,20 +73,6 @@ const Header = () => {
   //   enabled: !!token
   // })
 
-
-  const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSuccess: async () => {
-      deleteCookie("token");
-      deleteCookie("isLoggedIn");
-      deleteCookie("cart_number");
-      await setAuthorizationHeader();
-
-      showToast(TOAST_TYPES.success, "Logged out successfully");
-      router.push('/')
-      setShowModal(false);
-    },
-  });
 
 
   //suggestion

@@ -53,7 +53,7 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
                     } */}
                     <span className="text-primary font-bold pl-1">
 
-                    { item?.product?.productPrice * item?.quantity}
+                    { (item?.totalPrice ?? item?.unitPrice * item?.quantity)}
                     </span>
                 </p>
                 {

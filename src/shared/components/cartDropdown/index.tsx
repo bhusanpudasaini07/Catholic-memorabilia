@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Badge from '../badge';
 import CartIcon from '@/shared/icons/common/CartIcon';
 import { useRouter } from 'next/router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCartData, getCartProduct } from '@/services/cart.service';
 import { useCart as useCartStores } from '@/store/cart';
 import CartDropdownProducts from './cart-products';
@@ -14,22 +14,22 @@ interface CartDropdownProps {
 }
 const CartDropdown = ({ logIn }: CartDropdownProps) => {
   const router = useRouter();
-  const { cartItems } = useCartsHooks();
-
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    queryClient.invalidateQueries(["cartList"]);
+  }, [logIn, queryClient]);
+  useEffect(() => {
+    const refresh = (event: StorageEvent) => {
+      if (event.key === "cart" || event.key === null) queryClient.invalidateQueries(["cartList"]);
+    };
+    window.addEventListener("storage", refresh);
+    return () => window.removeEventListener("storage", refresh);
+  }, [queryClient]);
   const { coupon, setCoupon, couponData } = useCartStores();
-  const [cartList, setCartList] = useState<any>(null);
-
-  const { data } = useQuery({
+  const { data: cartList } = useQuery<any>({
     queryKey: ['cartList'],
     queryFn: getCartProduct,
-    onSuccess: (data) => {
-      if(logIn && data) {
-        setCartList(data)
-      } 
-    },
-    enabled: !!logIn,
   });
-
 
   //checking if there is any item which is out of stock
   const hasOutOfStock = cartList?.items?.find((item: any) => item?.selectedUnit?.stock === 0) ? true : false
@@ -37,18 +37,7 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
     if (window && localStorage && localStorage.getItem("coupon")) {
       setCoupon(localStorage.getItem("coupon") as string)
     }
-  }, [window, localStorage, coupon])
-
-  useEffect(() => {
-    if (!cartItems || (cartItems && cartItems?.items?.length === 0)) {
-      const cart = JSON.parse(localStorage.getItem("cart") as string)
-      setCartList(cart)
-    }else{
-      setCartList(cartItems)
-    }
-  }, [window, localStorage, cartItems])
-
-  console.log("cartItemspage", cartItems)
+  }, [coupon, setCoupon])
 
   return (
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>
@@ -75,7 +64,7 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
                 {/* pricing list */}
                 <div className="my-[25px]">
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : cartList?.totalAmount}</span>
+                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : (cartList?.subTotal ?? cartList?.totalAmount)}</span>
                   </p>
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
                     Subtotal : <span>AUD {couponData?.subTotal ? couponData?.subTotal : cartList?.totalAmount}</span>

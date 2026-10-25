@@ -1,91 +1,71 @@
 import { IDeliveryAddress } from "@/interface/delivery-address.interface";
-import { getDeliverAddress} from "@/services/delivery-address.service";
 import MainLayout from "@/shared/main-layout";
-import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import { showToast, TOAST_TYPES } from "@/shared/utils/toast-utils/toast.utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
-import { getConfig } from "@/services/home.service";
-import { IPaymentMethod} from "@/interface/home.interface";
-import { checkout } from "@/services/checkout.service";
-import { PaymentMethod } from "@/shared/enum";
+import { IPaymentMethod } from "@/interface/home.interface";
 import { useRouter } from "next/router";
 import ConfirmationModal from "@/shared/components/confirmation-modal";
 import LoginForm from "@/features/Auth/login-form";
-import { IRegister } from "@/interface/register.interface";
-import { registerGuestUser } from "@/services/auth.service";
 import { getCookie, setCookie } from "cookies-next";
-import PersonalInformation from "@/features/Checkout/personal-information";
 import OrderNote from "@/features/Checkout/order-note";
 import CheckoutDetail from "@/features/Checkout/checkout-detail";
-import CheckoutPayment from "@/features/Checkout/checkout-payment";
 import GuestUserAddress from "@/features/Checkout/checkout-address/guest-user-address";
-import DeliveryAddressModal from "@/shared/components/delivery-address-modal";
-import Address from "@/features/Address";
 import ButtonLoader from "@/shared/components/btn-loading";
 import { NextPageWithLayout } from "../_app";
-import { associateCart, getCartProduct } from "@/services/cart.service";
-import { ICartData } from "@/interface/cart.interface";
+import { associateCart } from "@/services/cart.service";
+import { useProfileHooks } from "@/hooks/profile.hooks";
+import { FaCcApplePay, FaEnvelope, FaMapMarkerAlt, FaPhone, FaUser } from "react-icons/fa";
+import { BsCash } from "react-icons/bs";
+import { createOrder } from "@/services/checkout.service";
+import { useCartsHooks } from "@/hooks/cart.hooks";
+import GuestForm from "./guestform/guestform";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 const Checkout: NextPageWithLayout = () => {
+  const { profile } = useProfileHooks();
+  const { cartList } = useCartsHooks();
   const router = useRouter();
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
-  const [showLoginConfirmModal, setShowLoginConfirmModal] = useState<boolean>(false);
-  const [checkoutGuestUserData, setCheckoutGuestUserData] = useState<IRegister | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [personalOpen, setPersonalOpen] = useState<boolean>(true)
-  const [addressOpen, setAddressOpen] = useState<boolean>(false)
-  const [paymentOpen, setPaymentOpen] = useState<boolean>(false)
-  const [placeBtnDisable, setPlaceBtnDisable] = useState<boolean>(false)
-  const [note, setNote] = useState<string>("");
+  const queryClient = useQueryClient();
   const loggedIn = getCookie('isLoggedIn');
 
-  // Get Config Data
-  const { data: config, isInitialLoading } = useQuery({
-    queryKey: ["getConfig"],
-    queryFn: getConfig,
-  });
+  const {
+    register,
+    getValues,
+    setValue,
+    handleSubmit,
+    watch,
+    formState: { errors, isDirty },
+    trigger,
+  } = useForm<any>();
 
-  const setGuestUserData = (data: IRegister | null) => {
-    setCheckoutGuestUserData(data);
-  };
+  // STEPPER STATE
+  const [personalOpen, setPersonalOpen] = useState<boolean>(!loggedIn);
+  const [addressOpen, setAddressOpen] = useState<boolean>(!!loggedIn);
+  const [paymentOpen, setPaymentOpen] = useState<boolean>(false);
 
-  const queryClient = useQueryClient();
-
-  const [personalInfoSubmitted, setPersonalInfoSubmitted] = useState<boolean>(false);
+  // MODAL STATE
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [showLoginConfirmModal, setShowLoginConfirmModal] = useState<boolean>(false);
   const [showAssociateCartModal, setAssociateCartModal] = useState<boolean>(false);
+
+  // DATA/FORM STATE
+  const [personalInfoSubmitted, setPersonalInfoSubmitted] = useState<boolean>(false);
   const [addressFilled, setAddressFilled] = useState<boolean>(false)
   const [addressCollapseDisabled, setAddressCollapseDisabled] = useState<boolean>(true);
   const [addressFormValidated, setAddressFormValidated] = useState<boolean>(false);
-  const [paymentCollapseOpen, setPaymentCollapseOpen] = useState<boolean>(false);
+  const [selectedShipping, setSelectedShipping] = useState<string>("standard");
 
-  const handleAddressSubmitGuest = (e: any) => {
-    e.preventDefault();
-    if (guestformData.lat === 0 || guestformData.lng === 0) {
-      showToast(TOAST_TYPES.error, 'Please select a location');
-      return;
-    }
-    setAddressFormValidated(true);
-    if (guestformData.lat && guestformData.lng && guestformData.title) {
-      setAddressFormValidated(false);
-    } else {
+  // Duplicate accidentally existed in original code, FIX: define only once, clear default
+  const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>({
+    id: 0,
+    title: 'cash on delivery',
 
-      setAddressFormValidated(false);
-    }
+  });
 
-  };
+  const [selectedDeliveryAddress, setSelectedDeliveryAddress] = useState<number | null>(null);
 
-  const handleNextButtonClick = () => {
-    setPaymentCollapseOpen(true);
-    setAddressFilled(true)
-    setAddressOpen(false)
-    setPaymentOpen(true)
-  };
-
-  const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>(null);
-  const [selectedDeliveryAddress, setSelectedDeliveryAddress] = useState(null);
   const [formData, setFormData] = useState<IDeliveryAddress>({
     address: '',
     mobile_number: '',
@@ -95,7 +75,6 @@ const Checkout: NextPageWithLayout = () => {
     lng: 0,
     title: ''
   });
-
   const [guestformData, setGuestFormData] = useState<IDeliveryAddress>({
     address: '',
     mobile_number: '',
@@ -107,124 +86,114 @@ const Checkout: NextPageWithLayout = () => {
     id: 0
   });
 
-  //Open Login Modal
+  const [placeBtnDisable, setPlaceBtnDisable] = useState<boolean>(false);
+  const [note, setNote] = useState<string>("");
+  const [paymentCollapseOpen, setPaymentCollapseOpen] = useState<boolean>(false);
 
-  const openLoginModal = () => {
-    setShowLoginConfirmModal(true);
-  };
 
+  // Modal open/toggle
+  const openLoginModal = () => setShowLoginConfirmModal(true);
   const openLoginFormModal = () => {
     setShowLoginModal(true);
     setShowLoginConfirmModal(false);
   };
+  const toggleLoginModal = () => setShowLoginModal(prev => !prev);
 
-  const associateCartModal = async(value: string) => {
-    const associateCartResponse:any = await associateCart(loggedIn, value);
-    if(associateCartResponse){
-      queryClient.invalidateQueries(['cartList'])
-      queryClient.invalidateQueries(['getProfile'])
-      router.push('/checkout');
-      setAssociateCartModal(false);
-    } else{
-      setAssociateCartModal(false);
+  // Fix: Associate Cart Modal
+  const associateCartModal = async (value: string) => {
+    const associateCartResponse: any = await associateCart(loggedIn, value);
+    queryClient.invalidateQueries(['cartList']);
+    queryClient.invalidateQueries(['getProfile']);
+    router.push('/checkout');
+    setAssociateCartModal(false);
+  };
+
+  // Address submit for guest flow
+  const handleAddressSubmitGuest = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (guestformData.lat === 0 || guestformData.lng === 0) {
+      showToast(TOAST_TYPES.error, 'Please select a location');
+      return;
+    }
+    setAddressFormValidated(true);
+    if (guestformData.lat && guestformData.lng && guestformData.title) {
+      setAddressFormValidated(false);
+      setAddressOpen(false);
+      setPaymentOpen(true);
+      setPaymentCollapseOpen(true);
+      setAddressFilled(true);
+    } else {
+      setAddressFormValidated(false);
     }
   };
 
-  // Function to toggle the login modal
-  const toggleLoginModal = () => {
-    setShowLoginModal((prev) => !prev);
+  const handleNextButtonClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setPaymentCollapseOpen(true);
+    setAddressOpen(false);
+    setPaymentOpen(true);
+    setAddressFilled(true);
   };
 
-
-  const { data: deliveryAddressData, refetch: getDeliveryAddress } = useQuery({
-    queryKey: ["getDeliverAddress", loggedIn],
-    queryFn: getDeliverAddress,
-    enabled: !!loggedIn
+  const oderMutation = useMutation({
+    mutationFn: createOrder,
+    onSuccess: () => {
+      checkoutSuccessfulRedirect();
+      queryClient.invalidateQueries(['cartList']);
+      localStorage.removeItem('cart');
+    },
+    onError: () => {
+      showToast(TOAST_TYPES.error, 'Failed to create order');
+    },
   });
 
-  
-
-
-  // Checkout Place order
+  // Place Order logic
   const handlePlaceOrder = async () => {
-    setPlaceBtnDisable(true)
-    if (loggedIn) {
-      const selectedDeliveryAddressId = selectedDeliveryAddress;
-      const selectedPaymentMethodId = selectedPayment?.id;
-      checkout(selectedDeliveryAddressId, selectedPaymentMethodId, note)
-        .then((res) => {
-          switch (selectedPayment?.title) {
-            case PaymentMethod.CASH_ON_DELIVERY:
-              checkoutSuccessfulRedirect();
-              break;
-          }
-          setPlaceBtnDisable(false)
-        })
-        .catch((error) => {
-          showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
-        });
-    } else {
-      if (checkoutGuestUserData) {
-        const completeGuestUserData = {
-          ...guestformData,
-          ...checkoutGuestUserData,
-        };
-        try {
-          const guestUserRegisterResponse = await registerGuestUser(completeGuestUserData, false);
-          const selectedPaymentMethodId = selectedPayment?.id;
-          setCookie('token', guestUserRegisterResponse?.data?.accessToken);
-          setCookie('isLoggedIn', true)
-          setPlaceBtnDisable(false)
-          checkout(guestUserRegisterResponse?.data?.deliveryAddress?.data?.id, selectedPaymentMethodId, note)
-            .then((res) => {
-              switch (selectedPayment?.title) {
-                case PaymentMethod.CASH_ON_DELIVERY:
-                  checkoutSuccessfulRedirect();
-                  break;
-              }
-            })
-            .catch((error) => {
-              // Handle error
-              showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
-            });
-        } catch (error: any) {
-          showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
-        }
-      }
-    }
-
+    const payload = {
+      userId: profile?.id,
+      guestName: profile?.firstName + " " + profile?.lastName,
+      guestEmail: profile?.email,
+      guestPhone: profile?.contactNumber,
+      addressLine1: profile?.addressLine1,
+      addressLine2: profile?.addressLine2,
+      suburb: profile?.suburb,
+      state: profile?.state,
+      postcode: profile?.postcode,
+      items: cartList?.items.map((item: any) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+      })),
+    };
+    oderMutation.mutate(payload);
   };
 
+  // Redirect on success
   const checkoutSuccessfulRedirect = () => {
     goToCheckoutReviewPage(true);
     showToast(TOAST_TYPES.success, 'Checkout Successful.');
   };
 
-  const goToCheckoutReviewPage = (success: any) => {
+  const goToCheckoutReviewPage = (success: boolean) => {
     router.push({
       pathname: '/checkout/review',
       query: { success: success.toString() },
     });
   };
 
+  // Side effect to set addressOpen state based on login
   useEffect(() => {
-    const defaultPayment = config?.data?.paymentMethods?.find((payment: IPaymentMethod) => payment.isDefault);
-    if (defaultPayment) {
-      setSelectedPayment(defaultPayment);
-    }
-
-    const defaultAddress = deliveryAddressData?.find((address: any) => address.isDefault);
-    if (defaultAddress) {
-      setSelectedDeliveryAddress(defaultAddress.id);
-    }
-  }, [config?.data?.paymentMethods, deliveryAddressData]);
-
+    setAddressOpen(!!loggedIn);
+    setPersonalOpen(!loggedIn);
+    setAddressCollapseDisabled(!loggedIn);
+  }, [loggedIn]);
 
   useEffect(() => {
-    if (loggedIn) {
-      setAddressOpen(true);
+    if (profile) {
+      setAddressFilled(true);
     }
-  }, [loggedIn])
+  }, [profile]);
+
+  // --- MAIN RENDER ---
   return (
     <div>
       <div className="mt-[60px] mb-[40px]">
@@ -236,8 +205,9 @@ const Checkout: NextPageWithLayout = () => {
               Already have an account?
               <a className="ml-3 cursor-pointer text-primary" onClick={openLoginModal}>Log in</a>
             </p>
-
           }
+
+          {/* Login Confirmation Modal */}
           {showLoginConfirmModal && (
             <ConfirmationModal
               confirmHeading="Your previous cart items will be replaced with current cart items."
@@ -251,12 +221,14 @@ const Checkout: NextPageWithLayout = () => {
               <h5 className="mt-3 text-lg font-bold">Are you sure you want to login?</h5>
             </ConfirmationModal>
           )}
+
+          {/* Login Modal */}
           {showLoginModal && (
             <>
               <input type="checkbox" id="new" className="modal-toggle" defaultChecked />
               <div className="modal">
                 <div className="p-4 rounded-lg modal-box">
-                  <LoginForm closeModal={toggleLoginModal} setAssociateCartModal={setAssociateCartModal}/>
+                  <LoginForm closeModal={toggleLoginModal} setAssociateCartModal={setAssociateCartModal} />
                 </div>
                 <label
                   className="modal-backdrop"
@@ -264,12 +236,12 @@ const Checkout: NextPageWithLayout = () => {
                   onClick={() => setShowLoginModal(false)}
                 ></label>
               </div>
-
             </>
           )}
-            {showAssociateCartModal && (
-            <>
-               <ConfirmationModal
+
+          {/* Associate Cart Modal */}
+          {showAssociateCartModal && (
+            <ConfirmationModal
               confirmHeading="You already have items. Do you want to delete your previous items?"
               modalType="delete_account_modal"
               btnName="Merge"
@@ -279,22 +251,23 @@ const Checkout: NextPageWithLayout = () => {
               cancelFuntion={() => associateCartModal('true')}
               isLoading={false}
             />
-
-            </>
           )}
+
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-7">
               {/* Accordion Start */}
               <div>
+                {/* Step 1: Personal Information for Guest */}
                 {
                   !loggedIn &&
                   <div className="collapse collapse-arrow p-4 border-solid border-[1px] border-gray-1200 mb-[16px]">
                     <input
                       type="radio"
-                      name="address"
-                      defaultChecked={personalOpen}
-                      onClick={() => { setAddressOpen(false); setPaymentOpen(false) }}
-                      readOnly />
+                      name="personal"
+                      checked={personalOpen}
+                      onClick={() => { setPersonalOpen(true); setAddressOpen(false); setPaymentOpen(false); }}
+                      readOnly
+                    />
                     <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
                       <div className="text-left col-10">
                         <h5 className="text-[16px] font-semibold">
@@ -311,40 +284,26 @@ const Checkout: NextPageWithLayout = () => {
                       </div>
                     </div>
                     <div className="collapse-content ">
-                      <PersonalInformation
-                        addressCollapseDisabled={addressCollapseDisabled}
-                        setAddressCollapseDisabled={setAddressCollapseDisabled}
-                        personalInfoSubmitted={personalInfoSubmitted}
-                        setPersonalInfoSubmitted={setPersonalInfoSubmitted}
-                        guestUserData={checkoutGuestUserData}
-                        setGuestUserData={setGuestUserData}
-                        setPersonalOpen={setPersonalOpen}
-                        setAddressOpen={setAddressOpen}
-                      />
+                     <GuestForm />
                     </div>
                   </div>
                 }
 
+                {/* Step 2: Shipping Address */}
                 <div className={`collapse collapse-arrow p-4 border-solid border-[1px] border-orange-550 mb-[16px] ${(!loggedIn && addressCollapseDisabled) ? 'pointer-events-none' : ''}`}>
                   <input
                     type="radio"
                     name="address"
-                    onClick={() => { setAddressOpen(true); setPersonalOpen(false); setPaymentOpen(false) }}
                     checked={addressOpen}
-                    readOnly />
+                    onClick={() => { setAddressOpen(true); setPersonalOpen(false); setPaymentOpen(false); }}
+                    readOnly
+                  />
                   <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
                     <div className="text-left col-10">
-                      {loggedIn ? (
-                        <h5 className="text-[16px] font-semibold">
-                          {" "}
-                          1. Address{" "}
-                        </h5>
-                      ) : (
-                        <h5 className="text-[16px] font-semibold">
-                          {" "}
-                          2. Address{" "}
-                        </h5>
-                      )}
+                      <h5 className="text-[16px] font-semibold">
+                        {" "}
+                        1. Shipping Address{" "}
+                      </h5>
                     </div>
                     <div className="text-right col-2">
                       <span className="text-white text">
@@ -359,30 +318,44 @@ const Checkout: NextPageWithLayout = () => {
                     {loggedIn ? (
                       <>
                         <div className="grid grid-cols-12 gap-5 p-4">
-
-
-                          {showModal && (
-                            <>
-                              <DeliveryAddressModal
-                                formData={formData}
-                                setFormData={setFormData}
-                                setShowModal={setShowModal}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                              />
-                            </>
+                          {profile && (
+                            <div className="col-span-12">
+                              <div className="card bg-slate-200 p-4 rounded-lg">
+                                <div className="grid grid-cols-12 ">
+                                  <div className=" name col-span-6 flex items-center gap-2">
+                                    <FaUser className="w-[13px] h-auto me-2" />
+                                    <h5 className="text-[16px] font-semibold">
+                                      {profile.firstName} {profile.lastName}
+                                    </h5>
+                                  </div>
+                                  <div className="email col-span-6 flex items-center gap-2">
+                                    <FaEnvelope className="w-[13px] h-auto me-2" />
+                                    <p className="text-[14px] text-gray-650">
+                                      {profile.email}
+                                    </p>
+                                  </div>
+                                  <div className="phone col-span-6 flex items-center gap-2">
+                                    <FaPhone className="w-[13px] h-auto me-2" />
+                                    <p className="text-[14px] text-gray-650">
+                                      {profile.contactNumber}
+                                    </p>
+                                  </div>
+                                  <div className="address col-span-12 flex  gap-2">
+                                    <FaMapMarkerAlt className="w-[13px] h-auto me-2" />
+                                    <p className="text-[14px] text-gray-650">
+                                      {profile.addressLine1}
+                                      <br />
+                                      {profile.suburb}, {profile.state} {profile.postcode}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           )}
-                          <Address
-                            formData={formData}
-                            setFormData={setFormData}
-                            setShowModal={setShowModal}
-                            showModal={showModal}
-                            setIsEditing={setIsEditing} />
-
                         </div>
                         <div className="text-right">
                           <button
-                            type="submit"
+                            type="button"
                             className="bg-primary text-base-100 font-bold py-[10px] px-[22px] uppercase rounded-full hover:bg-slate-850"
                             onClick={handleNextButtonClick}
                           >
@@ -392,63 +365,154 @@ const Checkout: NextPageWithLayout = () => {
                       </>
                     ) : (
                       // Guest User Address Section
-                      <div>
-
-                        <form className="py-4" onSubmit={handleAddressSubmitGuest}>
-                          <GuestUserAddress guestformData={guestformData} setGuestFormData={setGuestFormData} />
-                        </form>
+                      <form className="py-4" onSubmit={handleAddressSubmitGuest}>
+                        <GuestUserAddress guestformData={guestformData} setGuestFormData={setGuestFormData} />
                         <div className="text-right">
                           <button
                             type="submit"
                             disabled={guestformData.title === ''}
-                            className=" disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-base-100 font-bold py-[10px] px-[22px] uppercase rounded-full hover:bg-slate-850"
-                            onClick={handleNextButtonClick}
+                            className="disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-base-100 font-bold py-[10px] px-[22px] uppercase rounded-full hover:bg-slate-850"
                           >
                             Next
                             {
-                              addressFormValidated &&
-                              <ButtonLoader />
+                              addressFormValidated && <ButtonLoader />
                             }
                           </button>
                         </div>
-                      </div>
+                      </form>
                     )}
-                    {/* Address Section */}
                   </div>
                 </div>
 
+                {/* Step 3: Shipping Options */}
                 <div className={`collapse collapse-arrow p-4 border-solid border-[1px] border-orange-550 mb-[16px] ${paymentCollapseOpen ? '' : 'pointer-events-none'}`}>
                   <input
                     type="radio"
-                    name="address"
-                    checked={paymentOpen}
-                    onClick={() => { setAddressOpen(false); setPersonalOpen(false); setPaymentOpen(true) }}
-                    readOnly />
+                    name="shipping_options"
+                    checked={paymentCollapseOpen}
+                    onClick={() => { setAddressOpen(false); setPersonalOpen(false); setPaymentOpen(false); setPaymentCollapseOpen(true); }}
+                    readOnly
+                  />
                   <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
                     <div className="text-left col-10">
-                      {loggedIn ? (
-                        <h5 className="text-[16px] font-semibold">
-                          {" "}
-                          2. Payment Method{" "}
-                        </h5>
-                      ) : (
-                        <h5 className="text-[16px] font-semibold">
-                          {" "}
-                          3. Payment Method{" "}
-                        </h5>
-                      )}
+                      <h5 className="text-[16px] font-semibold">
+                        3. Choose your shipping options
+                      </h5>
                     </div>
                     <div className="text-right col-2">
                       <span className="text-white text">
                         <TiTick
                           size={20}
-                          className="rounded-full bg-gray-650"
+                          className={`rounded-full ${selectedShipping ? 'bg-primary' : 'bg-gray-650'}`}
                         />
                       </span>
                     </div>
                   </div>
                   <div className="collapse-content">
-                    <CheckoutPayment selectedPayment={selectedPayment} handlePaymentChange={setSelectedPayment} />
+                    <div className="bg-white">
+                      <div className="flex flex-col gap-2">
+                        {/* Standard Shipping Option */}
+                        <label className={`flex items-start gap-3 p-4 border rounded cursor-pointer transition-all duration-100 ${selectedShipping === "standard" ? "border-black shadow-[0_0_0_2px_#000]" : "border-gray-300"}`}
+                          style={{
+                            background: selectedShipping === "standard" ? "rgba(0,0,0,0.03)" : "white"
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            name="shipping"
+                            value="standard"
+                            checked={selectedShipping === "standard"}
+                            onChange={() => setSelectedShipping("standard")}
+                            className="mt-1 accent-black w-5 h-5"
+                          />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-[16px]">Standard Shipping</span>
+                            </div>
+                            <div className="text-[15px] font-normal mt-1">
+                              <span className="font-bold">AU$7.95&nbsp;</span>
+                              <span className="text-gray-600 text-[13px] font-normal">(4-8 business days.)</span>
+                            </div>
+                          </div>
+                        </label>
+
+
+
+
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 4: Payment Options */}
+                <div className={`collapse collapse-arrow p-4 border-solid border-[1px] border-orange-550 mb-[16px] ${paymentCollapseOpen ? '' : 'pointer-events-none'}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentOpen}
+                    onClick={() => { setAddressOpen(false); setPersonalOpen(false); setPaymentOpen(true); setPaymentCollapseOpen(true); }}
+                    readOnly
+                  />
+                  <div className="flex items-center justify-between text-xl font-medium border-none collapse-title">
+                    <div className="text-left col-10">
+                      <h5 className="text-[16px] font-semibold">
+                        4. Choose your payment method
+                      </h5>
+                    </div>
+                    <div className="text-right col-2">
+                      <span className="text-white text">
+                        <TiTick
+                          size={20}
+                          className={`rounded-full ${selectedPayment?.title ? 'bg-primary' : 'bg-gray-650'}`}
+                        />
+                      </span>
+                    </div>
+                  </div>
+                  <div className="collapse-content">
+                    <div className="flex flex-col gap-4">
+                      {/* Cash On Delivery */}
+                      <label className={`flex items-start gap-3 p-4 border rounded cursor-pointer transition-all duration-100 ${selectedPayment?.title === "Cash on Delivery" ? "border-black shadow-[0_0_0_2px_#000]" : "border-gray-300"}`}
+                        onClick={() => setSelectedPayment({ title: "Cash on Delivery", id: 1 })}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="Cash on Delivery"
+                          checked={selectedPayment?.title === "Cash on Delivery"}
+                          onChange={() => setSelectedPayment({ title: "Cash on Delivery", id: 1 })}
+                          className="mt-1 accent-black w-5 h-5"
+                        />
+                        <div className="flex flex-col flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <BsCash className="text-2xl" />
+                            <span className="font-bold text-[16px]">Cash on Delivery</span>
+                          </div>
+                        </div>
+                      </label>
+
+
+                      {/* Apple Pay */}
+                      <label className={`flex items-start gap-3 p-4 border rounded cursor-pointer transition-all duration-100 ${selectedPayment?.title === "Apple Pay" ? "border-black shadow-[0_0_0_2px_#000]" : "border-gray-300"}`}
+                        onClick={() => setSelectedPayment({ title: "Apple Pay", id: 4 })}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="Apple Pay"
+                          checked={selectedPayment?.title === "Apple Pay"}
+                          onChange={() => setSelectedPayment({ title: "Apple Pay", id: 4 })}
+                          className="mt-1 accent-black w-5 h-5"
+                        />
+                        <div className="flex flex-col flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <FaCcApplePay className="text-2xl" />
+                            <span className="font-bold text-[16px]">Apple Pay</span>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -466,8 +530,9 @@ const Checkout: NextPageWithLayout = () => {
               <div className="mt-[25px]">
                 <button
                   disabled={placeBtnDisable}
-                  className="flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-pointer-not-allowed disabled:pointer-events-none font-bold text-base-100 py-[18px] px-[20px] uppercase rounded-full cursor-pointer bg-primary w-full hover:bg-darkBlack"
-                  onClick={() => handlePlaceOrder()}>
+                  className="flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none font-bold text-base-100 py-[18px] px-[20px] uppercase rounded-full cursor-pointer bg-primary w-full hover:bg-darkBlack"
+                  onClick={handlePlaceOrder}
+                >
                   Place Order
                   {
                     placeBtnDisable &&
@@ -487,5 +552,3 @@ export default Checkout;
 Checkout.getLayout = (page: any) => {
   return <MainLayout>{page}</MainLayout>;
 };
-
-

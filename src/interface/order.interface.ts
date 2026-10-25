@@ -17,12 +17,26 @@ export interface IOrders {
   serviceCharge: number;
   subTotal: number;
   taxableAmount: number;
-  total: number;
+  totalAmount: number;
   totalTax: number;
   updatedAt: string;
 }
 
 export interface IOrderDetails {
+  totalAmount: number;
+  unitPrice: number;
+  totalPrice: number;
+  productName: string;
+  quantity: number;
+  items: any;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  addressLine1: string;
+  addressLine2: string;
+  suburb: string;
+  state: string;
+  postcode: string;
   coupon: any;
   couponDiscount: number;
   createdAt: string;
@@ -54,6 +68,7 @@ export interface IOrderDetails {
 }
 
 export interface IOrderProduct {
+  items: any;
   barcode: any;
   createdAt: string;
   id: number;

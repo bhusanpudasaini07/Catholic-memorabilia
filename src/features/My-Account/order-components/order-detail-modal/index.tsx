@@ -57,7 +57,7 @@ const OrderDetailModal = ({
                                                             Order ID :
                                                         </strong>
                                                         <span className="data-desc">
-                                                            {orderDetails?.orderNumber}
+                                                            {orderDetails?.id}
                                                         </span>
                                                     </li>
                                                     <li className='flex items-center'>
@@ -65,7 +65,7 @@ const OrderDetailModal = ({
                                                             Order Date:
                                                         </strong>
                                                         <span className="data-desc">
-                                                            {orderDetails && changeDateFormat(orderDetails?.orderDate)}
+                                                            {orderDetails && changeDateFormat(orderDetails?.createdAt)}
                                                         </span>
                                                     </li>
                                                     <li className='flex items-center'>
@@ -103,14 +103,14 @@ const OrderDetailModal = ({
                                                         <strong className="data-title">
                                                             Name :
                                                         </strong>
-                                                        <span className='data-desc'>{orderDetails?.deliveryAddress?.customerName}</span>
+                                                        <span className='data-desc'>{orderDetails?.guestName}</span>
                                                     </li>
                                                     <li className="flex items-center">
                                                         <strong className="data-title">
                                                             Phone Number :
                                                         </strong>
                                                         <span className='data-desc'>
-                                                            {orderDetails?.deliveryAddress?.mobileNumber}
+                                                            {orderDetails?.guestPhone}
                                                         </span>
                                                     </li>
                                                     <li className="flex items-start">
@@ -118,7 +118,7 @@ const OrderDetailModal = ({
                                                             Address :
                                                         </strong>
                                                         <span className='data-desc'>
-                                                            {orderDetails?.deliveryAddress?.address}
+                                                            {orderDetails?.deliveryAddress}
                                                         </span>
                                                     </li>
                                                 </ul>
@@ -143,16 +143,16 @@ const OrderDetailModal = ({
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {orderDetails?.orderProducts?.map((product: IOrderProduct, index: number) => (
+                                                        {orderDetails?.items?.map((product: any, index: number) => (
                                                             <tr key={index}>
                                                                 <td className="text-sm leading-4 text-light-black">
-                                                                    {product?.productTitle} X {product?.quantity}
+                                                                    {product?.product?.productName} X {product?.quantity}
                                                                 </td>
                                                                 <td className="whitespace-nowrap">
-                                                                    AUD {product?.price}
+                                                                    AUD {product?.unitPrice}
                                                                 </td>
                                                                 <td className="text-right whitespace-nowrap">
-                                                                    AUD {product?.quantity * product?.price}
+                                                                    AUD {Number(product?.quantity) * Number(product?.totalPrice)}
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -174,7 +174,7 @@ const OrderDetailModal = ({
                                                                 Order Amount:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                NRS {orderDetails?.orderAmount}
+                                                               AUD {orderDetails?.unitPrice}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -182,7 +182,7 @@ const OrderDetailModal = ({
                                                                 Discount:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                NRS {orderDetails?.discount}
+                                                                AUD {orderDetails?.discount}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -190,7 +190,7 @@ const OrderDetailModal = ({
                                                                 Subtotal:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                NRS {orderDetails?.subTotal}
+                                                                AUD {orderDetails?.subTotal}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -198,7 +198,7 @@ const OrderDetailModal = ({
                                                                 Delivery Charge:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                NRS {orderDetails?.deliveryCharge}
+                                                                AUD {orderDetails?.deliveryCharge}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -206,7 +206,7 @@ const OrderDetailModal = ({
                                                                 Total Amount:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                NRS {orderDetails?.total}
+                                                                AUD {orderDetails?.totalAmount}
                                                             </span>
                                                         </li>
                                                     </ul>

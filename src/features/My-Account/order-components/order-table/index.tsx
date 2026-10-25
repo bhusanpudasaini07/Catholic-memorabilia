@@ -24,7 +24,7 @@ const OrderTable = () => {
     const mutation = useMutation({
         mutationFn: getOrderDetails,
         onSuccess: (data) => {
-            setOrderDetails(data?.data);
+            setOrderDetails(data);
         }
     })
     const changeDateFormat = (dateString: string) => {
@@ -43,6 +43,7 @@ const OrderTable = () => {
     const handlePageChange = (value: number) => {
         setPageNumber(value)
     }
+    console.log('orderDetails', orderDetails);
     return (
         <>
             <div className="overflow-x-auto min-h-[60%]">
@@ -66,7 +67,7 @@ const OrderTable = () => {
                             </tr>
                         )}
                         {
-                            orders && orders?.data?.length === 0 ? (
+                            orders && orders?.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className='text-center'>
                                         {/* <EmptyOrder /> */}
@@ -75,19 +76,19 @@ const OrderTable = () => {
                                 </tr>
                             ) :
                                 (
-                                    orders?.data.map((order: IOrders) => (
+                                    orders?.map((order: IOrders) => (
                                         <tr key={`app-order-$${order?.id}`}>
                                             <td className="text-[14px] text-light-black px-5 py-5">
-                                                #{order?.orderNumber}
+                                                #{order?.id}
                                             </td>
                                             <td className="px-5 py-5 text-center whitespace-nowrap">
-                                                {changeDateFormat(order?.orderDate)}
+                                                {changeDateFormat(order?.createdAt)}
                                             </td>
                                             <td className="text-center">
                                                 <span className={`py-1.5 px-2.5 text-xs leading-4 text-white rounded-[12px] ${order?.orderStatus === 'Pending' ? 'bg-slate-600' : 'bg-primary'}`}>{order?.orderStatus}</span>
                                             </td>
                                             <td className="px-5 py-5 text-center whitespace-nowrap">
-                                                NRS {order?.total}
+                                                AUD {order?.totalAmount}
                                             </td>
                                             <td className="px-5 py-5 text-center">
                                                 <button

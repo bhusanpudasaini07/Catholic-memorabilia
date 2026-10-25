@@ -58,7 +58,8 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
 
     const handleAddToCart = () => {
         const payload: ICreateCartItem = {
-            productId: Number(productData?.productId),
+            productId: Number(productData?.response?.id),
+            product: productData?.response,
             variant_id: selectedSizeId,
             quantity: value,
         }
@@ -73,7 +74,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
             setProductModalId('')
         },
         onError: (error: any) => {
-            showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
+            showToast(TOAST_TYPES.error, error?.response?.data?.errors?.[0]?.message || error?.message || "Unable to update cart.")
         }
     })
 
@@ -85,7 +86,7 @@ const ProductDetailModal = ({ slug, setProductModalId }: IProductModal) => {
     //         setProductModalId("")
     //     },
     //     onError: (error: any) => {
-    //         showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message);
+    //         showToast(TOAST_TYPES.error, error?.response?.data?.errors?.[0]?.message || error?.message || "Unable to update cart.");
     //     }
     // })
     // //updateCart function

@@ -1,5 +1,5 @@
 import { login } from "@/services/auth.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -19,11 +19,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
   setAssociateCartModal,
 }) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: async (data) => {
       setCookie("token", data?.data?.accessToken);
       setCookie("isLoggedIn", true);
+      queryClient.removeQueries(["cartList"]);
       showToast(TOAST_TYPES.success, "You have been successfully logged in.");
       router.push("/");
     },

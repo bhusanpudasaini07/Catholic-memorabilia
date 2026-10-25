@@ -84,7 +84,7 @@ const CartTableRow = ({ item }: any) => {
                 <button
                     disabled={cartDeleteLoading}
                     className="disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-0 border border-gray-350 flex items-center justify-center m-auto transition-all delay-100 duration-150 w-[40px] h-[36px] hover:bg-slate-850 hover:text-primary"
-                    onClick={() => handleRemoveFromCart(item?.id)}
+                    onClick={() => handleRemoveFromCart(item?.productId)}
                 >
                     {
                         cartDeleteLoading ? (

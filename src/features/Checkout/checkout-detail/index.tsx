@@ -24,10 +24,10 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
         </ul>
         <div className="my-[29px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className="">
-            {cart?.cartProducts?.map((productData: any, index: any) => (
+            {cart?.items?.map((productData: any, index: any) => (
               <li className="flex justify-between" key={index}>
-                <span> {productData?.product?.name} X {productData?.quantity} </span>
-                <span>AUD {productData.selectedUnit.sellingPrice *
+                <span> {productData?.product?.productName} X {productData?.quantity} </span>
+                <span>AUD {productData.originalUnitPrice *
                   productData.quantity} </span>
               </li>
 
@@ -38,7 +38,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
           <li className="font-semibold text-[16px] text-slate-850">
             Order Amount
           </li>
-          <li className="text-[14px]">AUD {cart?.orderAmount}</li>
+          <li className="text-[14px]">AUD {cart?.subTotal || 0}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">
@@ -50,8 +50,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
           <li className="font-semibold text-[16px] text-slate-850">
             Delivery Charge
           </li>
-          <li className="text-[14px]">AUD {cart?.deliveryCharge || 0
-          }</li>
+          <li className="text-[14px]">AUD {cart?.delivery || 0}</li>
         </ul>
         <div className="mt-[18px] mb-[33px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className=" flex justify-between mb-[20px]">

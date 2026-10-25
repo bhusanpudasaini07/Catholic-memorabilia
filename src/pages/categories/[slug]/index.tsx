@@ -195,7 +195,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                                         <EmptyPage />
                                     ) : (
                                         <>
-                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xxs:grid-cols-2 lg:grid-cols-4">
+                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xxs:grid-cols-2 lg:grid-cols-3">
                                                 {initialProductData?.map((product: any, index: any) => (
                                                     <Card
                                                         setProductModalId={setProductModalId}

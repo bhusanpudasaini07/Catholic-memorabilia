@@ -1,4 +1,5 @@
 import { setAuthorizationHeader } from '@/axios/axiosInstance';
+import { useProfileHooks } from '@/hooks/profile.hooks';
 import { logout } from '@/services/auth.service';
 import { getProfile } from '@/services/profile.service';
 import ConfirmationModal from '@/shared/components/confirmation-modal';
@@ -14,15 +15,9 @@ interface IProps {
     logIn: boolean
 }
 const ProfileDropmenu = ({ logIn }: IProps) => {
-const router = useRouter();
-    const { data: profile } = useQuery({
-        queryKey: ["getProfile", logIn],
-        queryFn: getProfile,
-        enabled: logIn,
-    });
-
+    const router = useRouter();
+    const { profile } = useProfileHooks();
     const [showModal, setShowModal] = useState(false);
-
     const logoutMutation = useMutation({
         mutationFn: logout,
         onSuccess: async () => {
@@ -30,7 +25,6 @@ const router = useRouter();
             deleteCookie("isLoggedIn");
             deleteCookie("cart_number");
             await setAuthorizationHeader();
-       
             showToast(TOAST_TYPES.success, "Logged out successfully");
             router.push('/')
             setShowModal(false);
@@ -40,86 +34,85 @@ const router = useRouter();
 
     const logoutHandler = () => {
         logoutMutation.mutate();
-        router.push('/');
     };
 
 
     return (
         <header>
             {/* location header */}
-                        <div className="flex text-primary">
-                            {profile ? (
-                                <>
-                            <FaUser className="w-[13px] h-auto me-2" />
+            <div className="flex text-primary">
+                {logIn ? (
+                    <>
+                        <FaUser className="w-[13px] h-auto me-2" />
 
-                                <div className="dropdown dropdown-hover dropdown-end">
-                                    <label
-                                        tabIndex={0}
-                                        className="text-xs  py-1 m-1 px-0 capitalize bg-transparent border-0 hover:bg-transparent hover:transform hover:scale-[1.1] btn"
-                                    >
-                                        {profile?.firstName}
-                                        <FaChevronDown className="w-[13px] h-auto ms-2" />
-                                    </label>
-                                    <ul
-                                        tabIndex={0}
-                                        className="w-full min-w-[160px] py-2 px-3.5 shadow dropdown-content menu bg-base-100 top-[30px] z-[100]"
-                                    >
-                                        <li className="mx-5">
-                                            <Link
-                                                href={"/account/profile"}
-                                                className="text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center font-semibold dropdown-item hover:transform hover:scale-[1.05] hover:!px-0 focus:!bg-transparent"
-                                            >
-                                                My Account
-                                            </Link>
-                                        </li>
-                                        <li className="mx-5 ">
-                                            <Link
-                                                href={"/checkout"}
-                                                className="text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center font-semibold dropdown-item hover:transform hover:scale-[1.05] hover:!px-0 focus:!bg-transparent"
-                                            >
-                                                Checkout
-                                            </Link>
-                                        </li>
-                                        <li className="mx-5 ">
-                                            <button
-                                                onClick={() => setShowModal(!showModal)}
-                                                className="!border-b-0 dropdown-item font-semibold text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center hover:transform hover:scale-[1.05] hover:!px-0"
-                                            >
-                                                Logout
-                                            </button>
-                                        </li>
-                                    </ul>
-                                    {showModal && (
-                                        <ConfirmationModal
-                                            confirmHeading="Are you sure you want to logout?"
-                                            modalType="logout_modal"
-                                            btnName="Logout"
-                                            showModal={showModal}
-                                            btnFunction={logoutHandler}
-                                            cancelFuntion={() => setShowModal(false)}
-                                            isLoading={logoutMutation.isLoading}
-                                        />
-                                    )}
-                                </div>
-                                </>
-                            ) : (
-                                <div className="flex">
+                        <div className="dropdown dropdown-hover dropdown-end">
+                            <label
+                                tabIndex={0}
+                                className="text-xs  py-1 m-1 px-0 capitalize bg-transparent border-0 hover:bg-transparent hover:transform hover:scale-[1.1] btn"
+                            >
+                                {profile?.firstName}
+                                <FaChevronDown className="w-[13px] h-auto ms-2" />
+                            </label>
+                            <ul
+                                tabIndex={0}
+                                className="w-full min-w-[160px] py-2 px-3.5 shadow dropdown-content menu bg-base-100 top-[30px] z-[100]"
+                            >
+                                <li className="mx-5">
                                     <Link
-                                        href={"/login"}
-                                        className="btn btn-link capitalize text-[12px]  no-underline h-auto min-h-fit p-0 hover:no-underline hover:transform hover:scale-[1.1]"
+                                        href={"/account/profile"}
+                                        className="text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center font-semibold dropdown-item hover:transform hover:scale-[1.05] hover:!px-0 focus:!bg-transparent"
                                     >
-                                        Login
+                                        My Account
                                     </Link>
-                                    <div className="divider divider-horizontal before:bg-white before:w-[1px] after:w-[1px] after:bg-white m-0"></div>
+                                </li>
+                                <li className="mx-5 ">
                                     <Link
-                                        href={"/register"}
-                                        className="btn btn-link capitalize text-[12px] no-underline h-auto min-h-fit p-0 hover:no-underline hover:transform hover:scale-[1.1]"
+                                        href={"/checkout"}
+                                        className="text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center font-semibold dropdown-item hover:transform hover:scale-[1.05] hover:!px-0 focus:!bg-transparent"
                                     >
-                                        Sign Up
+                                        Checkout
                                     </Link>
-                                </div>
+                                </li>
+                                <li className="mx-5 ">
+                                    <button
+                                        onClick={() => setShowModal(!showModal)}
+                                        className="!border-b-0 dropdown-item font-semibold text-xs text-gray-850 focus:bg-none focus:text-primary py-3 px-0 text-center hover:transform hover:scale-[1.05] hover:!px-0"
+                                    >
+                                        Logout
+                                    </button>
+                                </li>
+                            </ul>
+                            {showModal && (
+                                <ConfirmationModal
+                                    confirmHeading="Are you sure you want to logout?"
+                                    modalType="logout_modal"
+                                    btnName="Logout"
+                                    showModal={showModal}
+                                    btnFunction={logoutHandler}
+                                    cancelFuntion={() => setShowModal(false)}
+                                    isLoading={logoutMutation.isLoading}
+                                />
                             )}
                         </div>
+                    </>
+                ) : (
+                    <div className="flex">
+                        <Link
+                            href={"/login"}
+                            className="btn btn-link capitalize text-[12px]  no-underline h-auto min-h-fit p-0 hover:no-underline hover:transform hover:scale-[1.1]"
+                        >
+                            Login
+                        </Link>
+                        <div className="divider divider-horizontal before:bg-white before:w-[1px] after:w-[1px] after:bg-white m-0"></div>
+                        <Link
+                            href={"/register"}
+                            className="btn btn-link capitalize text-[12px] no-underline h-auto min-h-fit p-0 hover:no-underline hover:transform hover:scale-[1.1]"
+                        >
+                            Sign Up
+                        </Link>
+                    </div>
+                )}
+            </div>
         </header>
 
     )

@@ -2,6 +2,14 @@ import axiosInstance from '@/axios/axiosInstance';
 import { CookieKeys } from '@/shared/enum';
 import { getCookie } from 'cookies-next';
 
+export const createOrder = async (payload: any) =>{
+  try {
+    const response = await axiosInstance.post("/orders", payload);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
 export const checkout = async (
   delivery_address_id: any, 
   payment_method_id: any,
@@ -18,6 +26,7 @@ export const checkout = async (
     throw error;
   }
 };
+
 
 
 export const getCartNumber = (): any => {

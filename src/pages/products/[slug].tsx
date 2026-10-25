@@ -73,7 +73,8 @@ const ProductSlug = () => {
   const handleCartAction = () => {
     const payload: any = {
       quantity: value,
-      productId: productData?.productId,
+      productId: Number(productData?.response?.id),
+      product: productData?.response,
     }
     mutation.mutate(payload)
   };
@@ -85,7 +86,7 @@ const ProductSlug = () => {
       queryClient.invalidateQueries(['cartList'])
     },
     onError: (error: any) => {
-      showToast(TOAST_TYPES.error, error?.response?.data?.errors[0]?.message)
+      showToast(TOAST_TYPES.error, error?.response?.data?.errors?.[0]?.message || error?.message || "Unable to update cart.")
     }
   })
 

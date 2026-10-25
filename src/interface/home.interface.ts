@@ -91,9 +91,6 @@ export interface IWareHouse {
 export interface IPaymentMethod {
   id: number;
   title: string;
-  icon: string;
-  webpIcon:string;
-  isDefault: boolean;
 }
 
 export interface PaymentFormProps {

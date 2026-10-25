@@ -3,6 +3,8 @@ import { getConfig } from '@/services/home.service';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import { BsCash } from 'react-icons/bs';
+import { FaCcApplePay } from 'react-icons/fa';
 interface CheckoutPaymentProps {
     selectedPayment: IPaymentMethod | null;
     handlePaymentChange: (payment: IPaymentMethod) => void;
@@ -26,14 +28,7 @@ const CheckoutPayment: React.FC<CheckoutPaymentProps> = ({ selectedPayment, hand
                             onChange={() => handlePaymentChange(payment)}
                         />
                         <div className="flex">
-                            <Image
-                                alt="Checkout Img"
-                                width={50}
-                                height={50}
-                                quality={100}
-                                src={payment?.webpIcon ? payment?.webpIcon :  payment?.icon}
-                                className="w-[30px] mx-3"
-                            />
+                            {payment.title === "Cash on Delivery" ? <BsCash className="text-2xl" /> : <FaCcApplePay className="text-2xl" />}
                             <span className="capitalize">{payment.title}</span>
                         </div>
                     </label>

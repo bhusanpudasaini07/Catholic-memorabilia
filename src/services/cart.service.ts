@@ -1,3 +1,5 @@
+import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
+import { readGuestCart, writeGuestCart, addGuestCartItem, validateQuantity } from "./guest-cart";
 import axiosInstance, {
   setAuthorizationHeader,
   setCouponHeader,
@@ -27,6 +29,7 @@ const apiEndPoint2 = config.gateway.apiEndPoint2;
 // };
 
 export const getCartData = async (params: { coupon?: string }) => {
+  if (!getToken()) return readGuestCart();
   try {
     if (params.coupon) {
       setCouponHeader({
@@ -49,6 +52,8 @@ export const getCartData = async (params: { coupon?: string }) => {
 };
 
 export const getCartProduct = async () => {
+  if (!getToken()) return readGuestCart();
+  setAuthorizationHeader();
   try {
     const response = await axiosInstance.get(`/carts`);
     return response.data;
@@ -58,6 +63,8 @@ export const getCartProduct = async () => {
 };
 
 export const deleteCartItemById = async (productId: number) => {
+  if (!getToken()) return writeGuestCart(readGuestCart().items.filter(item => item.productId !== productId));
+  setAuthorizationHeader();
   try {
     const response = await axiosInstance.delete(
       `/carts/items/${productId}`
@@ -69,10 +76,14 @@ export const deleteCartItemById = async (productId: number) => {
 };
 
 export const addToCart = async (data: ICreateCartItem) => {
+  validateQuantity(data.quantity);
+  if (!getToken()) return addGuestCartItem(data);
+  setAuthorizationHeader();
+  const { product, ...payload } = data;
   try {
     const response = await axiosInstance.post(
       `/carts/items`,
-      data
+      payload
     );
     return response.data;
   } catch (error) {
@@ -81,6 +92,10 @@ export const addToCart = async (data: ICreateCartItem) => {
 };
 
 export const updateCart = async (data: any) => {
+  validateQuantity(data.quantity);
+  if (!getToken()) return writeGuestCart(readGuestCart().items.map(item =>
+    item.productId === data.productId ? { ...item, quantity: data.quantity } : item));
+  setAuthorizationHeader();
   const payload = {
     ...data,
   };
@@ -97,6 +112,8 @@ export const updateCart = async (data: any) => {
 };
 
 export const bulkDeleteCart = async () => {
+  if (!getToken()) return writeGuestCart([]);
+  setAuthorizationHeader();
   try {
     const response = await axiosInstance.delete(`/carts`);
     return response;
@@ -129,6 +146,8 @@ export const associateCart = async (auth: any, status: string) => {
 };
 
 export const addCouponCode = async (code: string) => {
+  if (!getToken()) throw new Error("Please log in to apply a coupon.");
+  setAuthorizationHeader();
   try {
     const response = await axiosInstance.get(
       `/carts/coupon/${code}`

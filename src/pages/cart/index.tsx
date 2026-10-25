@@ -77,7 +77,7 @@ const Cart: NextPageWithLayout = () => {
       setCoupon(localStorage.getItem('coupon') as any)
       setCouponText(COUPON_METHODS.DELETE_COUPON);
     }
-  }, [localStorage, window]);
+  }, []);
 
   /**
    * when coupon api throws error

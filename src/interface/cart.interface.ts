@@ -1,6 +1,8 @@
 import { ICartProduct, IProduct } from "./product.interface";
 
 export interface ICreateCartItem {
+  // Display details for local guest carts; excluded from the API payload.
+  product?: IProduct;
   productId: number;
   quantity: number;
   note?: string;
