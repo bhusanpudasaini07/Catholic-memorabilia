@@ -22,13 +22,3 @@ export const getHomeData = async () => {
   }
 };
 
-export const getConfig = async () => {
-  try {
-    const response = await axiosInstance.get(`/configs`);
-    addWareHouseToStorage(response?.data?.data?.warehouses);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-

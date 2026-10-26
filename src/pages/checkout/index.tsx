@@ -528,8 +528,9 @@ const Checkout: NextPageWithLayout = () => {
             <div className="col-span-12 md:col-span-5">
               <CheckoutDetail selectedPayment={selectedPayment} />
               <div className="mt-[25px]">
-                <button
-                  disabled={placeBtnDisable}
+               {
+                 <button
+                  disabled={placeBtnDisable || !loggedIn}
                   className="flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none font-bold text-base-100 py-[18px] px-[20px] uppercase rounded-full cursor-pointer bg-primary w-full hover:bg-darkBlack"
                   onClick={handlePlaceOrder}
                 >
@@ -539,6 +540,7 @@ const Checkout: NextPageWithLayout = () => {
                     <ButtonLoader className="!block" />
                   }
                 </button>
+                }
               </div>
             </div>
           </div>

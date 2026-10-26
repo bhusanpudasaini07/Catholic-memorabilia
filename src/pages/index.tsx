@@ -13,12 +13,13 @@ import ProductsWithSwiper from "@/features/Home/products-Card";
 import Banner from "@/shared/components/banner";
 import BenefitsBar from "@/shared/components/benefits-bar";
 import ShopByCollection from "@/features/Home/shop-by-collection";
+import { useFavHooks } from "@/hooks/fav.hooks";
 
 const Home: NextPageWithLayout = () => {
 
   const { categories, loading: loadingCategories } = useCategoriesHooks();
   const { products, productsLoading, featuredProducts, featuredProductsLoading, newArrivalProducts, newArrivalProductsLoading } = useProductsHooks();
-
+  
   return (
     <>
       <Head>

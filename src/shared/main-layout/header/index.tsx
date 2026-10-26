@@ -42,9 +42,11 @@ const Header = () => {
 
 
   const { data: favouriteList, isInitialLoading: loadingFavourite } = useQuery(
-    ['wishlistProducts'],
+    ['wishlistProducts', logIn],
     () => getWishlists(1, 10),
-    
+    {
+      enabled: !!logIn, // Only enabled when login is true
+    }
   );
 
   console.log("favouriteList==>", favouriteList);
