@@ -1,12 +1,10 @@
 import axiosInstance, { setAuthorizationHeader } from "@/axios/axiosInstance";
-import { config } from "../../config";
 
-const apiEndPoint1 = config.gateway.apiEndPoint1;
 
 export const getWishlists = async (page: number, perPage: number) => {
   try {
     const response = await axiosInstance.get(
-      `/${apiEndPoint1}/favourite/product`,
+      `/products/favorites`,
       {
         params: {
           page,
@@ -25,7 +23,7 @@ export const getAllWishlistProducts = async (token: any) => {
   if (token) {
     try {
       const response = await axiosInstance.get(
-        `/${apiEndPoint1}/favourite/product/list`
+        `/products/favorite/list`
       );
       return response.data;
     } catch (error) {
@@ -36,12 +34,8 @@ export const getAllWishlistProducts = async (token: any) => {
 
 export const updateProductInWishlist = async (id: number) => {
   try {
-    const produtId = {
-      id: id,
-    };
     const response = await axiosInstance.post(
-      `/${apiEndPoint1}/favourite/product`,
-      produtId
+      `/products/${id}/favorite`,
     );
     return response.data;
   } catch (error) {

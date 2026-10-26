@@ -7,30 +7,25 @@ import BarsIcon from "@/shared/icons/common/BarsIcon";
 import Drawer from "@/shared/components/drawer";
 import {
   useInfiniteQuery,
-  useQueryClient,
-  useMutation,
   useQuery,
 } from "@tanstack/react-query";
 
 import HeartIcon from "@/shared/icons/common/HeartIcon";
 import Link from "next/link";
-import { deleteCookie, getCookie } from "cookies-next";
+import {  getCookie } from "cookies-next";
 
-import { logout } from "@/services/auth.service";
-import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getSuggestionResults } from "@/services/search.service";
 import CartDropdown from "@/shared/components/cartDropdown";
 import { useDebounce } from "@/hooks/useDebounce.hooks";
-import { setAuthorizationHeader } from "@/axios/axiosInstance";
 import { useCategoriesHooks } from "@/hooks/categories.hooks";
 import ProfileDropmenu from "./profile-dropmenu";
+import { getWishlists } from "@/services/wishlist.service";
 
 const Header = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const { categories, loading } = useCategoriesHooks();
+  const { categories } = useCategoriesHooks();
 
 
   const token = getCookie('token');
@@ -38,27 +33,21 @@ const Header = () => {
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("product");
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [logIn, setLogIn] = useState<boolean>(false);
 
   const debounceSearch = useDebounce(searchValue, 300) //Pass search value here and then this variable to the dependency below
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
 
 
-  // const { data: favouriteList }: any = useQuery(["wishlistProducts", token], {
-  //   enabled: !!token
-  // })
 
 
-  // const { data: favouriteList, isInitialLoading: loadingFavourite } = useQuery(
-  //   ['getAllWishlistProducts', token],
-  //   getAllWishlistProducts,
-  //   {
-  //     enabled: !!token, // Only enable the query if the token is available
-  //     retry: false, // Disable automatic retries on query failure
-  //     staleTime: 60000, // Set a time (in milliseconds) before the data is considered stale and a refetch is needed
-  //   }
-  // );
+  const { data: favouriteList, isInitialLoading: loadingFavourite } = useQuery(
+    ['wishlistProducts'],
+    () => getWishlists(1, 10),
+    
+  );
+
+  console.log("favouriteList==>", favouriteList);
 
 
 
@@ -132,19 +121,6 @@ const Header = () => {
     router.push(`/search?${queryString}`);
   }
 
-  //setting input value to empty when page changed
-  // useEffect(() => {
-  //   if (!pathname.includes('/search')) {
-  //     setSearchValue('')
-  //   }
-  // }, [pathname])
-
-
-  // useEffect(() => {
-  //   if (window && localStorage && localStorage.getItem("coupon") || coupon) {
-  //     setCoupon(localStorage.getItem('coupon') as string || coupon)
-  //   }
-  // }, [window, localStorage, coupon])
 
   useEffect(() => {
     if (loggedIn !== undefined) {

@@ -73,7 +73,6 @@ const Address: React.FC<IProps> = ({
       setShowModal(true);
     } else {
       // Handle the case when addressData is not found
-      console.error('Address not found.');
     }
   };
 
@@ -95,7 +94,6 @@ const Address: React.FC<IProps> = ({
     deleteAdddressMutation.mutate(id)
   };
 
-console.log("deliveryAddressData", deliveryAddressData);
   return (
     <>
       {(deliveryAddressData?.length < 3 ||!deliveryAddressData) ? (

@@ -22,7 +22,6 @@ const ProfileForm = () => {
             email: profile && profile?.email,
         }
     })
-    console.log('profile', profile)
 
     const mutation = useMutation({
         mutationFn: updateProfile,

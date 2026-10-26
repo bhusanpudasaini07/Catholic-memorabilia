@@ -43,7 +43,6 @@ const OrderTable = () => {
     const handlePageChange = (value: number) => {
         setPageNumber(value)
     }
-    console.log('orderDetails', orderDetails);
     return (
         <>
             <div className="overflow-x-auto min-h-[60%]">

@@ -50,7 +50,6 @@ const ProfileImage = () => {
       };
     } else {
       setErrorMessage(newErrorMessage);
-      console.error(newErrorMessage);
     }
   };
 

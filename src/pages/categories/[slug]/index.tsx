@@ -9,10 +9,7 @@ import { useState } from 'react';
 import {  getRelatedProductsFromId } from '@/services/product.service';
 import EmptyPage from '@/components/emptyPage';
 import Slider from 'react-slider';
-import { getConfig } from '@/services/home.service';
-import { getTagList } from '@/services/tag.service';
 import CategorySidebar from '@/shared/components/categorySidebar';
-import TagSidebar from '@/shared/components/tagSidebar';
 import Breadcrumb from '@/shared/components/breadcrumb';
 import SortingDropdown from '@/shared/components/sorting-dropdown';
 import SkeletonLoadingCard from '@/shared/components/skeleton/products';
@@ -38,15 +35,12 @@ const CategoryDetail: NextPageWithLayout = () => {
     // const { data: cart } = useQuery<ICartData>(["getCartList"]);
     const { data: cart } = useQuery<ICartData>(["getCartList"]);
   
-    const { data: config } = useQuery({
-        queryKey: ["getConfig"],
-        queryFn: getConfig,
-    });
+
     //For favourite map
     const { data: favList }: any = useQuery<any>(["wishlistProducts", token], { enabled: !!token });
 
-    const minimumPrice = Number(config?.data?.minimumPrice || 0);
-    const maximumPrice = Number(config?.data?.pageData['max-price'] || 3000);
+    const minimumPrice = Number(0);
+    const maximumPrice = Number(3000);
     const isMinimumValid = !isNaN(minimumPrice) && isFinite(minimumPrice);
     const isMaximumValid = !isNaN(maximumPrice) && isFinite(maximumPrice);
     const initialValue = [

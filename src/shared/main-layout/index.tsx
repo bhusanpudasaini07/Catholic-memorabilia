@@ -6,7 +6,6 @@ import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // const { data: config }: any = useQuery(['getConfig']);
   return (
     <>
       <Head>

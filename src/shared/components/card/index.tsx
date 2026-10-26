@@ -26,7 +26,6 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
   const stock: any = cartItem?.selectedUnit?.stock
   const { addFavMutation, removeFavMutation, addLoading, removeLoading } = useWishlists() //for adding products for wishlist ->hook
 
-  console.log("cart", cart);
   /*
  * States 
  */
@@ -127,7 +126,6 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
       setLogin(false)
     }
   }, [loggedIn])
-  console.log("product", cart);
 
   return (
     <>

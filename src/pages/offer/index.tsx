@@ -16,6 +16,7 @@ import ProductDetailModal from "@/shared/components/product-detail-modal";
 const Offer: NextPageWithLayout = () => {
 
   const [query, setQuery] = useState<string>('');
+  const [limit, setLimit] = useState<number>(10);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [selectedValue, setSelectedValue] = useState<string>('')
   const [selectedPriceValue, setSelectedPriceValue] = useState<string>("")
@@ -24,8 +25,8 @@ const Offer: NextPageWithLayout = () => {
   const offer = true
 
   const { data: offers, isLoading, error } = useQuery(
-    ['getOffers', query, pageNumber, offer, selectedValue, selectedPriceValue], () =>
-    getOffers(query, pageNumber, offer, selectedValue, selectedPriceValue)
+    ['getOffers', query, pageNumber, limit, offer, 'alphabet', 'asc'], () =>
+    getOffers(query, pageNumber, limit, offer)
   );
 
   const handlePageChange = (value: number) => {

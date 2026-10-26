@@ -14,7 +14,6 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
   //Get cart Data
   const { data: cart } = useQuery<any>(["cartList"]);
 
-  console.log("cartData=====>", cart);
   return (
     <>
       <div className="py-[38px] px-[45px] bg-slate-150">

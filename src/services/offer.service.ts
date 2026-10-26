@@ -3,20 +3,22 @@ import { config } from "../../config";
 
 
 export const getOffers = async (
-  query: any,
+  search: any,
   page: any,
+  limit: any,
   offer: any,
   sortBy?: string,
-  priceOrder?: string
+  sortOrder?: string,
 ) => {
   try {
     const response = await axiosInstance.get(`/products`, {
       params: {
-        query,
+        search,
         page,
+        limit,
         offer,
         sortBy,
-        priceOrder,
+        sortOrder,
       },
     });
     return response.data;
