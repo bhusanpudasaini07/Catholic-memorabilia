@@ -90,7 +90,7 @@ export const addToCart = async (data: ICreateCartItem) => {
     setAuthorizationHeader();
     try {
       const response = await axiosInstance.post(`/carts/items`, {
-        bundleId: data.bundleId,
+        productId: data.bundleId,
         quantity: data.quantity,
       });
       return response.data;

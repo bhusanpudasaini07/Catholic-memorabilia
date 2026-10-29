@@ -29,6 +29,7 @@ const Wishlist: NextPageWithLayout = () => {
 
     const updatedData = wishlist?.map((item: any) => ({
         ...item,
+        isFav: true,
     }));
 
     /**

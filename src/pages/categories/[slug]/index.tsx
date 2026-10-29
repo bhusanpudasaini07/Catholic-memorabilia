@@ -14,6 +14,7 @@ import Breadcrumb from '@/shared/components/breadcrumb';
 import SortingDropdown from '@/shared/components/sorting-dropdown';
 import SkeletonLoadingCard from '@/shared/components/skeleton/products';
 import Head from 'next/head';
+import { useFavHooks } from '@/hooks/fav.hooks';
 
 
 const CategoryDetail: NextPageWithLayout = () => {
@@ -29,8 +30,11 @@ const CategoryDetail: NextPageWithLayout = () => {
     const [appliedPrice, setAppliedPrice] = useState<[number, number] | null>(null);
     const [categoryTitle, setCategoryTitle] = useState<string>('');
     const boundsSlug = useRef<string | null>(null);
+     const { favouriteList } = useFavHooks();
+
     // const { data: categories, isInitialLoading: loading }: any = useQuery({ queryKey: ['getCategoriesList'] });
 
+   
 
     // Filter button clicked
 
@@ -64,6 +68,12 @@ const CategoryDetail: NextPageWithLayout = () => {
         }
     );
 
+    const updatedProducts = initialProductData?.items?.map((item: any) => ({
+        ...item,
+        isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
+      }));
+
+
     const handlePageChange = (value: number) => {
         setPageNumber(value)
     }
@@ -88,10 +98,10 @@ const CategoryDetail: NextPageWithLayout = () => {
     }, [initialProductData])
 
     useEffect(() => {
-        if (appliedPrice || !slug || !initialProductData?.items?.length) return
+        if (appliedPrice || !slug || !updatedProducts?.length) return
         if (boundsSlug.current === String(slug)) return
 
-        const prices = initialProductData.items
+        const prices = updatedProducts
             .map((item: { productPrice?: string | number }) => Number(item.productPrice))
             .filter((price: number) => Number.isFinite(price))
         if (!prices.length) return
@@ -100,7 +110,7 @@ const CategoryDetail: NextPageWithLayout = () => {
         boundsSlug.current = String(slug)
         setPriceCeiling(nextCeiling)
         setPriceRange([0, nextCeiling])
-    }, [appliedPrice, initialProductData, slug])
+    }, [appliedPrice, updatedProducts, slug])
 
 
     return (
@@ -175,12 +185,12 @@ const CategoryDetail: NextPageWithLayout = () => {
                                             />
                                         ))}
                                     </div> :
-                                    initialProductData?.items?.length === 0 ? (
+                                    updatedProducts?.length === 0 ? (
                                         <EmptyPage />
                                     ) : (
                                         <>
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xxs:grid-cols-2 lg:grid-cols-3">
-                                                {initialProductData?.items?.map((product: any, index: any) => (
+                                                {updatedProducts?.map((product: any, index: any) => (
                                                     <Card
                                                         setProductModalId={setProductModalId}
                                                         product={product}
