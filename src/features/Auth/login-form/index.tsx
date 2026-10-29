@@ -1,0 +1,115 @@
+import { login } from "@/services/auth.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ILogin } from "../../../interface/login.interface";
+import { setCookie } from "cookies-next";
+import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
+import ButtonLoader from "@/shared/components/btn-loading";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
+interface LoginFormProps {
+  closeModal?: () => void;
+  setAssociateCartModal?: any;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({
+  closeModal,
+  setAssociateCartModal,
+}) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
+  const mutation = useMutation({
+    mutationFn: login,
+    onSuccess: async (data) => {
+      setCookie("token", data?.data?.accessToken);
+      setCookie("isLoggedIn", true);
+      queryClient.removeQueries(["cartList"]);
+      showToast(TOAST_TYPES.success, "You have been successfully logged in.");
+      router.push("/");
+    },
+    onError: (error: any) => {
+      const errors = error?.response?.data?.message;
+      showToast(TOAST_TYPES.error, errors);
+    },
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm<ILogin>();
+
+  const loginSubmit: SubmitHandler<ILogin> = (data) => {
+    mutation.mutate(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(loginSubmit)} autoComplete="off">
+      <div className="flex flex-col mb-[20px]">
+        <input
+          type="text"
+          autoComplete="off"
+          placeholder="Email"
+          {...register("email", {
+            required: "Phone Number Or Email is required",
+          })}
+          onBlur={() => trigger("email")}
+          className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.email ? "border-error" : "border-gray-350"}`}
+        />
+        {errors.email && (
+          <p className="text-error text-xs leading-[24px] mt-1">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+      <div className="flex flex-col mb-[20px]">
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            autoComplete="off"
+            {...register("password", { required: "Password is required" })}
+            onBlur={() => trigger("password")}
+            className={`px-3.5 pr-10 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.password ? "border-error" : "border-gray-350"}`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-650"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <FaRegEyeSlash size={16} /> : <FaRegEye size={16} />}
+          </button>
+        </div>
+        {errors.password && (
+          <p className="text-error text-xs leading-[24px] mt-1">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
+      <div className="flex items-center justify-between">
+        <button
+          disabled={mutation.isLoading}
+          type="submit"
+          className="submit-btn"
+        >
+          Login
+          {mutation.isLoading && <ButtonLoader />}
+        </button>
+        <Link
+          href="/forgot-password"
+          className="text-sm transition-all duration-150 delay-100 text-slate-850 hover:text-primary"
+          aria-label="forget-passsword"
+        >
+          Forgot Password?
+        </Link>
+      </div>
+    </form>
+  );
+};
+
+export default LoginForm;
