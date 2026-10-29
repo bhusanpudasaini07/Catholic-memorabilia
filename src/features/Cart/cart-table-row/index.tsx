@@ -20,10 +20,9 @@ const CartTableRow = ({ item }: any) => {
   ** Provides payload to the update api when the value is being increased or decreased.
   */
     const handleUpdateCart = (newQuantity: number, itemId: number) => {
-            const payload: any = {
-                productId: itemId,
-                quantity: newQuantity,
-            }
+            const payload: any = item?.bundleId
+                ? { bundleId: item.bundleId, quantity: newQuantity }
+                : { productId: itemId, quantity: newQuantity }
             updateCartMutation.mutate(payload)
     };
 
@@ -32,7 +31,7 @@ const CartTableRow = ({ item }: any) => {
      */
     const debouncedHandleUpdateCart = useCallback( //debounce callback to call when value changes
         debounce((newQuantity) => {
-            handleUpdateCart(newQuantity, item?.productId!)
+            handleUpdateCart(newQuantity, item?.bundleId ?? item?.productId!)
         }, 300), [item]
     )
 
@@ -62,9 +61,15 @@ const CartTableRow = ({ item }: any) => {
                 />
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium">
+                {item?.bundleId ? (
+                    <span className="text-[15px]" aria-label={item?.product?.productName}>
+                        {item?.product?.productName}
+                    </span>
+                ) : (
                 <Link href={`/products/${item?.product?.id}`} className="text-[15px] hover:text-primary" aria-label={item?.product?.productName} >
                     {item?.product?.productName}{" "}
                 </Link>
+                )}
                 {
                     selectedUnit?.stock === 0 &&
                     <p className='px-2 m-auto mt-2 text-xs border border-red-250 text-red-250 w-fit'>Out Of Stock</p>
@@ -82,9 +87,14 @@ const CartTableRow = ({ item }: any) => {
             </td>
             <td className="w-[100px] text-center py-[30px]">
                 <button
+                    type="button"
                     disabled={cartDeleteLoading}
                     className="disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-0 border border-gray-350 flex items-center justify-center m-auto transition-all delay-100 duration-150 w-[40px] h-[36px] hover:bg-slate-850 hover:text-primary"
-                    onClick={() => handleRemoveFromCart(item?.productId)}
+                    onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleRemoveFromCart(item?.productId ?? item?.product?.id, item?.bundleId);
+                    }}
                 >
                     {
                         cartDeleteLoading ? (

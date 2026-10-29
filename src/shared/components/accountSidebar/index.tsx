@@ -23,7 +23,6 @@ const AccountSidebar = () => {
     { href: `/account/profile`, icon: <FaUserAlt className={iconClass} />, text: "ACCOUNT DETAILS" },
     { href: `/account/order`, icon: <FaShoppingBag className={iconClass} />, text: "ORDER HISTORY" },
     { href: `/account/change-password`, icon: <RiLockPasswordFill className={iconClass} />, text: "CHANGE PASSWORD" },
-    { href: `/account/addresses`, icon: <FaAddressBook className={iconClass} />, text: "MY ADDRESS" },
   ];
 
   const mutation = useMutation({

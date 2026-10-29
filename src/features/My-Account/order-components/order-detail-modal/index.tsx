@@ -1,5 +1,5 @@
 import Loader from '@/components/Loading'
-import { IOrderDetails, IOrderProduct } from '@/interface/order.interface'
+import { IOrderDetails, IOrderItem } from '@/interface/order.interface'
 import React from 'react'
 
 export interface IOrderDetailModal {
@@ -10,6 +10,31 @@ export interface IOrderDetailModal {
     loading: boolean
 }
 
+const SHIPPING_LABELS: Record<string, string> = {
+    standard: 'Standard shipping',
+    express: 'Express shipping',
+}
+
+const formatMoney = (value: unknown) => {
+    const amount = Number(value)
+    if (Number.isNaN(amount)) return 'AUD 0.00'
+    return `AUD ${amount.toFixed(2)}`
+}
+
+const formatStatus = (status?: string) => {
+    if (!status) return '-'
+    return status
+        .toLowerCase()
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}
+
+const getCustomerName = (order?: IOrderDetails) => {
+    const userName = [order?.user?.firstName, order?.user?.lastName].filter(Boolean).join(' ')
+    return userName || order?.guestName || '-'
+}
+
 const OrderDetailModal = ({
     orderDetails,
     changeDateFormat,
@@ -17,6 +42,19 @@ const OrderDetailModal = ({
     showModal,
     loading
 }: IOrderDetailModal) => {
+    const items = orderDetails?.items ?? []
+    const subtotal = items.reduce(
+        (sum, item) => sum + Number(item.originalPrice || 0) * Number(item.quantity || 0),
+        0,
+    )
+    const discount = items.reduce(
+        (sum, item) => sum + Number(item.discountAmount || 0) * Number(item.quantity || 0),
+        0,
+    )
+    const shippingFee = Number(orderDetails?.shippingFee || 0)
+    const total = Number(orderDetails?.totalAmount || 0) + shippingFee
+    const shippingLabel = SHIPPING_LABELS[String(orderDetails?.shippingMethod || '').toLowerCase()] || orderDetails?.shippingMethod || '-'
+
     return (
         <>
             <input
@@ -40,8 +78,6 @@ const OrderDetailModal = ({
                     >
                         ✕
                     </label>
-                    {/* <button onClick={() => setShowModal(false)} >
-                    </button> */}
                     <div className="modal-body">
                         {
                             loading ? (
@@ -70,26 +106,18 @@ const OrderDetailModal = ({
                                                     </li>
                                                     <li className='flex items-center'>
                                                         <strong className="data-title">
-                                                            Payment Method:
-                                                        </strong>
-                                                        <span className="data-desc">
-                                                            {orderDetails?.paymentMethod?.title}
-                                                        </span>
-                                                    </li>
-                                                    <li className='flex items-center'>
-                                                        <strong className="data-title">
-                                                            Payment Status:
-                                                        </strong>
-                                                        <span className="capitalize data-desc">
-                                                            {orderDetails?.paymentStatus}
-                                                        </span>
-                                                    </li>
-                                                    <li className='flex items-center'>
-                                                        <strong className="data-title">
                                                             Order Status:
                                                         </strong>
                                                         <span className="data-desc">
-                                                            {orderDetails?.orderStatus}
+                                                            {formatStatus(orderDetails?.orderStatus)}
+                                                        </span>
+                                                    </li>
+                                                    <li className='flex items-center'>
+                                                        <strong className="data-title">
+                                                            Shipping Method:
+                                                        </strong>
+                                                        <span className="data-desc">
+                                                            {shippingLabel}
                                                         </span>
                                                     </li>
                                                 </ul>
@@ -103,22 +131,38 @@ const OrderDetailModal = ({
                                                         <strong className="data-title">
                                                             Name :
                                                         </strong>
-                                                        <span className='data-desc'>{orderDetails?.guestName}</span>
+                                                        <span className='data-desc'>{getCustomerName(orderDetails)}</span>
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <strong className="data-title">
+                                                            Email :
+                                                        </strong>
+                                                        <span className='data-desc'>
+                                                            {orderDetails?.guestEmail || orderDetails?.user?.email || '-'}
+                                                        </span>
                                                     </li>
                                                     <li className="flex items-center">
                                                         <strong className="data-title">
                                                             Phone Number :
                                                         </strong>
                                                         <span className='data-desc'>
-                                                            {orderDetails?.guestPhone}
+                                                            {orderDetails?.guestPhone || orderDetails?.user?.contactNumber || '-'}
                                                         </span>
                                                     </li>
                                                     <li className="flex items-start">
                                                         <strong className="data-title whitespace-nowrap">
-                                                            Address :
+                                                            Delivery :
                                                         </strong>
                                                         <span className='data-desc'>
-                                                            {orderDetails?.deliveryAddress}
+                                                            {orderDetails?.deliveryAddress || '-'}
+                                                        </span>
+                                                    </li>
+                                                    <li className="flex items-start">
+                                                        <strong className="data-title whitespace-nowrap">
+                                                            Shipping :
+                                                        </strong>
+                                                        <span className='data-desc'>
+                                                            {orderDetails?.shippingAddress || '-'}
                                                         </span>
                                                     </li>
                                                 </ul>
@@ -128,7 +172,6 @@ const OrderDetailModal = ({
                                         <div className="col-span-12">
                                             <div className="overflow-x-auto">
                                                 <table className="table table-zebra">
-                                                    {/* head */}
                                                     <thead>
                                                         <tr>
                                                             <th className="table-header w-[355px]">
@@ -143,16 +186,16 @@ const OrderDetailModal = ({
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {orderDetails?.items?.map((product: any, index: number) => (
-                                                            <tr key={index}>
+                                                        {items.map((product: IOrderItem) => (
+                                                            <tr key={product.id}>
                                                                 <td className="text-sm leading-4 text-light-black">
-                                                                    {product?.product?.productName} X {product?.quantity}
+                                                                    {product?.bundle?.name || product?.product?.productName || 'Product'} X {product?.quantity}
                                                                 </td>
                                                                 <td className="whitespace-nowrap">
-                                                                    AUD {product?.unitPrice}
+                                                                    {formatMoney(product?.unitPrice)}
                                                                 </td>
                                                                 <td className="text-right whitespace-nowrap">
-                                                                    AUD {Number(product?.quantity) * Number(product?.totalPrice)}
+                                                                    {formatMoney(product?.totalPrice)}
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -171,10 +214,10 @@ const OrderDetailModal = ({
                                                     <ul className="flex flex-col pr-[15px] ">
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
                                                             <strong className="data-title">
-                                                                Order Amount:
+                                                                Subtotal:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                               AUD {orderDetails?.unitPrice}
+                                                                {formatMoney(subtotal)}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -182,23 +225,15 @@ const OrderDetailModal = ({
                                                                 Discount:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                AUD {orderDetails?.discount}
+                                                                {formatMoney(discount)}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
                                                             <strong className="data-title">
-                                                                Subtotal:
+                                                                Shipping:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                AUD {orderDetails?.subTotal}
-                                                            </span>
-                                                        </li>
-                                                        <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
-                                                            <strong className="data-title">
-                                                                Delivery Charge:
-                                                            </strong>
-                                                            <span className="data-desc-2">
-                                                                AUD {orderDetails?.deliveryCharge}
+                                                                {formatMoney(shippingFee)}
                                                             </span>
                                                         </li>
                                                         <li className="flex justify-between pb-[6px] mb-[6px] border-solid border-b-[1px] border-orange-550">
@@ -206,7 +241,7 @@ const OrderDetailModal = ({
                                                                 Total Amount:
                                                             </strong>
                                                             <span className="data-desc-2">
-                                                                AUD {orderDetails?.totalAmount}
+                                                                {formatMoney(total)}
                                                             </span>
                                                         </li>
                                                     </ul>

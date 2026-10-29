@@ -141,49 +141,7 @@ const ContactUsForm = () => {
                             <p className="text-error text-xs leading-[24px] mt-1">{errors?.mobile_number?.message}</p>
                         }
                     </div>
-                    <div className="col-span-12">
-                        <Controller
-                            name='department'
-                            control={control}
-                            rules={{ required: 'Department is required.' }}
-                            // onChange={ handleTypeChange(option?.title)}
-                            render={({ field }) => (
-
-                                <div className="block dropdown">
-
-                                    <label
-                                        tabIndex={0}
-                                        htmlFor={field?.name}
-                                        className="flex items-center justify-between min-w-full gap-1 px-4 py-2 text-sm font-normal text-black bg-transparent border border-zinc-450 whitespace-nowrap"
-                                    >
-                                        <span className="capitalize">{field?.value}</span>
-                                        <CaretDownIcon />
-                                    </label>
-                                    <ul
-                                        tabIndex={0}
-                                        className="dropdown-content menu shadow p-0 bg-base-100 rounded-sm w-full z-[60]"
-                                    >
-                                        {options.map((option: any) => (
-                                            <li key={option?.id}
-                                                onClick={() => {
-                                                    field.onChange(option?.title); // Update the form control value
-                                                    handleTypeChange(option?.title); // Update your state or value using handleTypeChange
-                                                }}
-                                                // onClick={() => handleTypeChange(option?.title)}
-                                                className={`hover:!bg-[#f5faff] ${option?.title === selectedType ? 'bg-[#ebf5ff]' : ''}`}>
-                                                <span className='border-0 rounded-none bg-none hover:!bg-none'>{option?.title}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        />
-
-                        {
-                            errors?.department &&
-                            <p className="text-error text-xs leading-[24px] mt-1">{errors?.department?.message}</p>
-                        }
-                    </div>
+                  
                     <div className="col-span-12">
                         <textarea {...register("context", {
                             required: "Message is required.",

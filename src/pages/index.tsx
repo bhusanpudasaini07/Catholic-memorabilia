@@ -18,7 +18,7 @@ import RecommendationsProducts from "@/features/Home/recommendations";
 import { getCookie } from "cookies-next";
 
 const Home: NextPageWithLayout = () => {
- const token = getCookie('isLoggedIn')
+  const token = getCookie('isLoggedIn')
 
   const { categories, loading: loadingCategories } = useCategoriesHooks();
   const { products, productsLoading, newArrivalProducts, newArrivalProductsLoading, recommendations, recommendationsLoading } = useProductsHooks();
@@ -35,7 +35,6 @@ const Home: NextPageWithLayout = () => {
     isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
   }));
 
-  console.log(recommendations);
 
   return (
     <>
@@ -50,7 +49,7 @@ const Home: NextPageWithLayout = () => {
       {/* /Benefits Bar */}
       <BenefitsBar />
       <div className="container">
-       {token && recommendations?.length > 0 && <RecommendationsProducts recommendations={recommendations} recommendationsLoading={recommendationsLoading} />}
+        {token && recommendations?.length > 0 && <RecommendationsProducts recommendations={recommendations} recommendationsLoading={recommendationsLoading} />}
 
         {/* Shop By Collection  */}
         <ShopByCollection

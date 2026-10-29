@@ -140,7 +140,6 @@ const Checkout: NextPageWithLayout = () => {
     onSuccess: () => {
       checkoutSuccessfulRedirect();
       queryClient.invalidateQueries(['cartList']);
-      bulkCartDelete.mutate();
       if (!loggedIn) localStorage.removeItem('cart');
     },
     onError: () => {
@@ -185,10 +184,11 @@ const Checkout: NextPageWithLayout = () => {
       deliveryPostcode: customer?.postcode,
       shippingMethod: selectedShipping,
       shippingFee: deliveryCharge,
-      items: cartList.items.map((item: any) => ({
-        productId: item.productId ?? item.product?.id,
-        quantity: item.quantity,
-      })),
+      items: cartList.items.map((item: any) => (
+        item.bundleId
+          ? { bundleId: item.bundleId, quantity: item.quantity }
+          : { productId: item.productId ?? item.product?.id, quantity: item.quantity }
+      )),
     };
     oderMutation.mutate(payload);
   };
@@ -495,11 +495,6 @@ const Checkout: NextPageWithLayout = () => {
                           </div>
                         </div>
                       </label>
-
-
-
-
-
                     </div>
                   </div>
                 </div>

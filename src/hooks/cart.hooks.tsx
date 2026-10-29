@@ -1,32 +1,67 @@
 import { bulkDeleteCart, deleteCartItemById, getCartProduct, updateCart } from "@/services/cart.service";
+import { readGuestCart } from "@/services/guest-cart";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
+let cartRemovalLocked = false;
+
+const cartFromMutation = (data: any) => {
+    if (Array.isArray(data?.items)) return data;
+    if (Array.isArray(data?.data?.items)) return data.data;
+    return null;
+};
+
 export const useCartsHooks = () => {
     const [selectedId, setSelectedId] = useState<number>(0);
+    const [removalLocked, setRemovalLocked] = useState(false);
     const queryClient = useQueryClient();
     const router = useRouter();
     const { data: cartList } = useQuery<any>({
         queryKey: ['cartList'],
         queryFn: getCartProduct,
+        refetchOnMount: 'always',
+        initialData: () => {
+            if (typeof window === 'undefined' || getCookie('isLoggedIn')) return undefined;
+            return readGuestCart();
+        },
       });
+    const releaseRemovalLock = () => {
+        window.setTimeout(() => {
+            cartRemovalLocked = false;
+            setRemovalLocked(false);
+        }, 400);
+    };
     const cartDelete = useMutation({
-        mutationFn: deleteCartItemById,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['cartList'])
-            // showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
+        mutationFn: (input: number | { productId?: number; bundleId?: number }) =>
+            typeof input === 'number'
+                ? deleteCartItemById(input)
+                : deleteCartItemById(input.productId ?? 0, input.bundleId),
+        onSuccess: (data) => {
+            const cart = cartFromMutation(data);
+            if (cart) queryClient.setQueryData(['cartList'], cart);
+            else queryClient.invalidateQueries(['cartList']);
             if (router.pathname === '/wishlist') {
                 queryClient.invalidateQueries(['wishlistProducts'])
             }
-        }
+        },
+        onSettled: () => {
+            releaseRemovalLock();
+        },
     })
 
-    const handleRemoveFromCart = (id: number) => {
-        setSelectedId(id)
-        cartDelete.mutate(id)
+    const handleRemoveFromCart = (id?: number, bundleId?: number) => {
+        if (cartRemovalLocked) return;
+        const productId = Number(id);
+        const bundle = bundleId === undefined || bundleId === null ? undefined : Number(bundleId);
+        const removingBundle = Number.isInteger(bundle) && (bundle as number) > 0;
+        if (!removingBundle && (!Number.isInteger(productId) || productId < 1)) return;
+        cartRemovalLocked = true;
+        setRemovalLocked(true);
+        setSelectedId(removingBundle ? (bundle as number) : productId);
+        cartDelete.mutate(removingBundle ? { productId, bundleId: bundle } : productId);
     };
 
     const updateCartMutation = useMutation({
@@ -49,18 +84,6 @@ export const useCartsHooks = () => {
         }
     })
 
-    // const addCoupon = useMutation({
-    //     mutationFn: addCouponCode,
-    //     onSuccess: (data) => {
-    //         queryClient.invalidateQueries(['getCart'])
-    //     },
-    //     onError: (error: any) => {
-    //         showToast(TOAST_TYPES.error, error[0]?.title)
-    //         if (localStorage.getItem('coupon')) {
-    //             localStorage.removeItem('coupon')
-    //         }
-    //     }
-    // })
 
 
     return {
@@ -72,6 +95,7 @@ export const useCartsHooks = () => {
         bulkCartDelete,
         bulkDeleteLoading: bulkCartDelete.isLoading,
         updateCartLoading: updateCartMutation.isLoading,
-        cartDeleteLoading: cartDelete.isLoading,
+        removalLocked,
+        cartDeleteLoading: cartDelete.isLoading || removalLocked,
     };
 };

@@ -1,7 +1,8 @@
 // Guest carts stay separate from account carts and are never sent automatically.
 export interface GuestCartItem {
   id: number;
-  productId: number;
+  productId?: number;
+  bundleId?: number;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -29,6 +30,25 @@ export function guestCartTotals(items: GuestCartItem[]): GuestCart {
   let discountCents = 0;
   let totalCents = 0;
   const calculatedItems = items.map(item => {
+    if (item.bundleId) {
+      const price = Number(item.product?.productPrice ?? item.unitPrice);
+      const unitCents = Math.round(price * 100);
+      const lineTotalCents = unitCents * item.quantity;
+      subTotalCents += lineTotalCents;
+      totalCents += lineTotalCents;
+      const unitPrice = unitCents / 100;
+      return {
+        ...item,
+        originalPrice: unitPrice,
+        originalUnitPrice: unitPrice,
+        discountPercentage: 0,
+        unitPrice,
+        priceAfterDiscount: unitPrice,
+        subTotal: lineTotalCents / 100,
+        discountAmount: 0,
+        totalPrice: lineTotalCents / 100,
+      };
+    }
     // Prefer the catalog price. unitPrice may already be a discounted price from a previous save.
     const price = Number(item.product?.productPrice ?? item.originalPrice ?? item.originalUnitPrice ?? item.unitPrice);
     const originalCents = Math.round(price * 100);
@@ -72,22 +92,89 @@ export function guestCartTotals(items: GuestCartItem[]): GuestCart {
   };
 }
 
+function toNumber(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^0-9.-]/g, '');
+    if (!cleaned) return undefined;
+    const parsed = Number(cleaned);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return undefined;
+}
+
+function firstNumber(values: unknown[]): number | undefined {
+  for (const value of values) {
+    const parsed = toNumber(value);
+    if (parsed !== undefined) return parsed;
+  }
+  return undefined;
+}
+
+function normalizeGuestItem(item: any): GuestCartItem | null {
+  const bundleId = toNumber(item?.bundleId);
+  const productId = bundleId
+    ? undefined
+    : firstNumber([item?.productId, item?.product_id, item?.product?.id]);
+  const quantity = toNumber(item?.quantity);
+  const unitPrice = firstNumber([
+    item?.product?.productPrice,
+    item?.originalPrice,
+    item?.originalUnitPrice,
+    item?.unitPrice,
+    item?.product?.netPrice,
+    item?.priceAfterDiscount,
+  ]) ?? 0;
+
+  if (!quantity || !Number.isInteger(quantity) || quantity < 1 || !Number.isFinite(unitPrice) || unitPrice < 0) {
+    return null;
+  }
+  if (bundleId) {
+    if (!Number.isInteger(bundleId) || bundleId < 1) return null;
+  } else if (!productId || !Number.isInteger(productId) || productId < 1) {
+    return null;
+  }
+
+  return {
+    ...item,
+    id: (bundleId ?? productId) as number,
+    productId,
+    bundleId: bundleId && bundleId > 0 ? bundleId : undefined,
+    quantity,
+    unitPrice,
+    totalPrice: Number(item?.totalPrice) || 0,
+    product: item?.product,
+  };
+}
+
 export function readGuestCart(): GuestCart {
   if (typeof window === 'undefined') return guestCartTotals([]);
   try {
     const saved = JSON.parse(window.localStorage.getItem('cart') || 'null');
-    const items = Array.isArray(saved?.items) ? saved.items : [];
-    return guestCartTotals(items.map((item: any) => ({
-      ...item,
-      id: Number(item.productId ?? item.product_id),
-      productId: Number(item.productId ?? item.product_id),
-      quantity: Number(item.quantity),
-      unitPrice: Number(item.product?.productPrice ?? item.originalPrice ?? item.originalUnitPrice ?? item.unitPrice),
-    })).filter((item: GuestCartItem) => Number.isInteger(item.productId) && item.productId > 0 &&
-      Number.isInteger(item.quantity) && item.quantity > 0 && Number.isFinite(item.unitPrice) && item.unitPrice >= 0));
+    const source = Array.isArray(saved) ? saved : Array.isArray(saved?.items) ? saved.items : [];
+    const items: GuestCartItem[] = [];
+    source.forEach((item: any) => {
+      try {
+        const normalized = normalizeGuestItem(item);
+        if (normalized) items.push(normalized);
+      } catch {
+        // Skip one damaged line instead of dropping the whole cart.
+      }
+    });
+    return guestCartTotals(items);
   } catch {
     return guestCartTotals([]);
   }
+}
+
+export function removeGuestCartItem(productId?: number, bundleId?: number): GuestCart {
+  const items = readGuestCart().items;
+  const matchIndex = items.findIndex((item) => {
+    if (bundleId) return Number(item.bundleId) === Number(bundleId);
+    return !item.bundleId && Number(item.productId) === Number(productId);
+  });
+  if (matchIndex < 0) return readGuestCart();
+  return writeGuestCart(items.filter((_, index) => index !== matchIndex));
 }
 
 export function writeGuestCart(items: GuestCartItem[]): GuestCart {
@@ -105,7 +192,7 @@ export function addGuestCartItem(data: { productId: number; quantity: number; pr
   validateQuantity(data.quantity);
   if (!Number.isInteger(data.productId) || data.productId < 1) throw new Error('Please select a valid product.');
   const items = readGuestCart().items;
-  const existing = items.find(item => item.productId === data.productId);
+  const existing = items.find(item => !item.bundleId && item.productId === data.productId);
   if (existing) {
     existing.quantity += data.quantity;
     if (data.product) existing.product = data.product;
@@ -115,6 +202,41 @@ export function addGuestCartItem(data: { productId: number; quantity: number; pr
     if (!data.product || !Number.isFinite(unitPrice) || unitPrice < 0) throw new Error('Product details are unavailable. Please try again.');
     items.push({ id: data.productId, productId: data.productId, quantity: data.quantity,
       unitPrice, totalPrice: 0, product: data.product });
+  }
+  return writeGuestCart(items);
+}
+
+export function addGuestBundleItem(data: {
+  bundleId: number;
+  quantity: number;
+  bundle?: { name?: string; imageUrl?: string; fixedPrice?: number | string };
+}) {
+  validateQuantity(data.quantity);
+  if (!Number.isInteger(data.bundleId) || data.bundleId < 1) throw new Error('Please select a valid bundle.');
+  const unitPrice = Number(data.bundle?.fixedPrice);
+  if (!data.bundle || !Number.isFinite(unitPrice) || unitPrice < 0) throw new Error('Bundle details are unavailable. Please try again.');
+  const items = readGuestCart().items;
+  const product = {
+    id: data.bundleId,
+    productName: data.bundle.name,
+    productImageUrl: data.bundle.imageUrl,
+    productPrice: unitPrice,
+    hasDiscount: false,
+  };
+  const existing = items.find(item => item.bundleId === data.bundleId);
+  if (existing) {
+    existing.quantity += data.quantity;
+    existing.product = product;
+    existing.unitPrice = unitPrice;
+  } else {
+    items.push({
+      id: data.bundleId,
+      bundleId: data.bundleId,
+      quantity: data.quantity,
+      unitPrice,
+      totalPrice: 0,
+      product,
+    });
   }
   return writeGuestCart(items);
 }

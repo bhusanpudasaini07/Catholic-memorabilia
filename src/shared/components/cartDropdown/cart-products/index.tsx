@@ -2,11 +2,9 @@ import Link from 'next/link'
 import React from 'react'
 import Badge from '../../badge'
 import Image from 'next/image'
-import { useCartsHooks } from '@/hooks/cart.hooks'
 import { FaTimes } from 'react-icons/fa'
 
-const CartDropdownProducts = ({ item, logIn }: any) => {
-    const { cartDelete, handleRemoveFromCart, selectedId } = useCartsHooks();
+const CartDropdownProducts = ({ item, onRemove, removing, pending }: any) => {
     //for checking sku units
     const selectedUnit = item?.selectedUnit;
 
@@ -21,7 +19,7 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
     return (
         <div key={item?.productId} className="relative flex gap-4 py-3 border-b border-gray-350">
             <div className="min-w-[85px] min-h-[100px] aspect-auto border border-gray-350 relative">
-                <Link href={`/products/${item?.productId}`} className="absolute w-full h-full" aria-label={`product-item-slug`} />
+                {!item?.bundleId && <Link href={`/products/${item?.productId}`} className="absolute w-full h-full" aria-label={`product-item-slug`} />}
                 {/* <img src={item?.productImageUrl} alt="image" className="object-contain min-w-[93px] max-w-[93px] min-h-[92px]" /> */}
                 <Image
                     width={85}
@@ -40,12 +38,18 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
                 </Badge>
             </div>
             <div className="flex-grow">
+                {item?.bundleId ? (
+                    <span className="overflow-hidden capitalize text-sm font-semibold block text-ellipsis whitespace-nowrap max-w-[80%]">
+                        {item?.product?.productName}
+                    </span>
+                ) : (
                 <Link
                     href={`/products/${item?.productId}`}
                     aria-label={`product-${item?.sId}`}
                     className="overflow-hidden capitalize text-sm font-semibold transition-all delay-150 duration-150 block text-ellipsis whitespace-nowrap max-w-[80%] hover:text-primary ">
                     {item?.product?.productName}
                 </Link>
+                )}
                 <p className="mt-1 text-sm text-primary font-bold">
                     <span className="pr-1">AUD</span>
                     {lineTotal}
@@ -60,10 +64,15 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
                 }
             </div>
             <button
-                className="absolute right-0 w-5 btn-circle btn-error btn aspect-square hover:bg-primary hover:border-primary bg-gray-750 border-gray-750"
-                onClick={() => handleRemoveFromCart(item?.productId)}
-                disabled={selectedId === item?.productId && cartDelete.isLoading}>
-                {selectedId === item?.id && cartDelete.isLoading ? (
+                type="button"
+                className="absolute right-0 z-10 w-5 btn-circle btn-error btn aspect-square hover:bg-primary hover:border-primary bg-gray-750 border-gray-750"
+                onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onRemove();
+                }}
+                disabled={removing}>
+                {pending && removing ? (
                     <span className="w-3 h-3 border-2 border-dotted rounded-full border-primary border-t-transparent animate-spin"></span>
                 ) : (
                     <FaTimes className="w-3 h-3 text-white" />

@@ -1,5 +1,5 @@
 
-import { readGuestCart, writeGuestCart, addGuestCartItem, validateQuantity } from "./guest-cart";
+import { readGuestCart, writeGuestCart, addGuestCartItem, addGuestBundleItem, removeGuestCartItem, validateQuantity } from "./guest-cart";
 import axiosInstance, {
   setAuthorizationHeader,
   setCouponHeader,
@@ -15,7 +15,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { config } from "../../config";
 
 
-const isLoggedIn = getCookie('isLoggedIn');
+const loggedIn = () => Boolean(getCookie('isLoggedIn'));
 // export const setCartNumberCookie = async () => {
 //   try {
 //     const response = await axiosInstance.get(`/cart`);
@@ -29,7 +29,7 @@ const isLoggedIn = getCookie('isLoggedIn');
 // };
 
 export const getCartData = async (params: { coupon?: string }) => {
-  if (!isLoggedIn) return readGuestCart();
+  if (!loggedIn()) return readGuestCart();
   try {
     if (params.coupon) {
       setCouponHeader({
@@ -52,24 +52,32 @@ export const getCartData = async (params: { coupon?: string }) => {
 };
 
 export const getCartProduct = async () => {
-  if (!isLoggedIn) return readGuestCart();
+  if (!loggedIn()) {
+    if (typeof window === 'undefined') {
+      throw new Error('Guest cart is available in the browser');
+    }
+    return readGuestCart();
+  }
   setAuthorizationHeader();
   try {
     const response = await axiosInstance.get(`/carts`);
-    return response.data;
+    const cart = response.data?.items ? response.data : response.data?.data;
+    return cart ?? { items: [] };
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteCartItemById = async (productId: number) => {
-  if (!isLoggedIn) return writeGuestCart(readGuestCart().items.filter(item => item.productId !== productId));
+export const deleteCartItemById = async (productId: number, bundleId?: number) => {
+  if (!loggedIn()) {
+    return removeGuestCartItem(productId, bundleId);
+  }
   setAuthorizationHeader();
   try {
     const response = await axiosInstance.delete(
-      `/carts/items/${productId}`
+      bundleId ? `/carts/items/${bundleId}?itemType=bundle` : `/carts/items/${productId}`
     );
-    return response;
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -77,8 +85,21 @@ export const deleteCartItemById = async (productId: number) => {
 
 export const addToCart = async (data: ICreateCartItem) => {
   validateQuantity(data.quantity);
-  if (!isLoggedIn){
-    return addGuestCartItem(data);
+  if (data.bundleId) {
+    if (!loggedIn()) return addGuestBundleItem(data);
+    setAuthorizationHeader();
+    try {
+      const response = await axiosInstance.post(`/carts/items`, {
+        bundleId: data.bundleId,
+        quantity: data.quantity,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  if (!loggedIn()){
+    return addGuestCartItem(data as { productId: number; quantity: number; product?: any });
   } else {
   setAuthorizationHeader();
   const { product, ...payload } = data;
@@ -96,16 +117,19 @@ export const addToCart = async (data: ICreateCartItem) => {
 
 export const updateCart = async (data: any) => {
   validateQuantity(data.quantity);
-  if (!isLoggedIn) return writeGuestCart(readGuestCart().items.map(item =>
-    item.productId === data.productId ? { ...item, quantity: data.quantity } : item));
+  if (!loggedIn()) return writeGuestCart(readGuestCart().items.map(item => {
+    if (data.bundleId) return item.bundleId === data.bundleId ? { ...item, quantity: data.quantity } : item;
+    return !item.bundleId && item.productId === data.productId ? { ...item, quantity: data.quantity } : item;
+  }));
   setAuthorizationHeader();
   const payload = {
     ...data,
   };
   delete payload.productId;
+  delete payload.bundleId;
   try {
     const response = await axiosInstance.patch(
-      `/carts/items/${data.productId}`,
+      data.bundleId ? `/carts/items/${data.bundleId}?itemType=bundle` : `/carts/items/${data.productId}`,
       payload
     );
     return response.data;
@@ -116,7 +140,7 @@ export const updateCart = async (data: any) => {
 
 export const bulkDeleteCart = async () => {
 
-  if (!isLoggedIn) return writeGuestCart([]);
+  if (!loggedIn()) return writeGuestCart([]);
   setAuthorizationHeader();
   try {
     const response = await axiosInstance.delete(`/carts`);

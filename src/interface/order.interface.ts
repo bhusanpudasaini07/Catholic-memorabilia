@@ -22,48 +22,48 @@ export interface IOrders {
   updatedAt: string;
 }
 
-export interface IOrderDetails {
-  totalAmount: number;
-  unitPrice: number;
-  totalPrice: number;
-  productName: string;
-  quantity: number;
-  items: any;
-  guestName: string;
-  guestEmail: string;
-  guestPhone: string;
-  addressLine1: string;
-  addressLine2: string;
-  suburb: string;
-  state: string;
-  postcode: string;
-  coupon: any;
-  couponDiscount: number;
-  createdAt: string;
-  delivery: boolean;
-  deliveryAddress: any;
-  deliveryCharge: number;
-  discount: number;
+export interface IOrderItem {
   id: number;
-  nonTaxableAmount: number;
-  note: string;
-  orderAmount: number;
-  orderDate: string;
-  orderNumber: string;
-  orderProducts: Array<IOrderProduct>;
+  orderId: number;
+  productId: number;
+  product?: {
+    productName?: string;
+    productImageUrl?: string;
+  };
+  bundle?: {
+    name?: string;
+    imageUrl?: string;
+    fixedPrice?: number | string;
+  };
+  quantity: number;
+  originalPrice: number;
+  unitPrice: number;
+  priceAfterDiscount: number;
+  discountAmount: number;
+  totalPrice: number;
+}
+
+export interface IOrderDetails {
+  id: number;
+  userId?: number | null;
+  user?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    contactNumber?: string;
+  };
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  shippingAddress?: string;
+  deliveryAddress?: string;
   orderStatus: string;
-  paymentMethod: any;
-  paymentStatus: string;
-  pickUp: any;
-  requestedDate: string;
-  scheme: number;
-  serviceCharge: number;
-  serviceChargePercent: number;
-  statusLog: any;
-  subTotal: number;
-  taxableAmount: number;
-  total: number;
-  totalTax: number;
+  totalItems: number;
+  totalAmount: number;
+  shippingMethod?: string;
+  shippingFee: number;
+  items: IOrderItem[];
+  createdAt: string;
   updatedAt: string;
 }
 

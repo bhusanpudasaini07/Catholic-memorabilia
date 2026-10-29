@@ -29,7 +29,7 @@ const OrderTable = () => {
     })
     const changeDateFormat = (dateString: string) => {
         const date = parseISO(dateString);
-        return <span>{format(date, 'yyyy MMMM d hh:MM a')}</span>
+        return <span>{format(date, 'yyyy MMMM d hh:mm a')}</span>
     }
 
     const handleOrderDetail = (showOrder: boolean, orderId: number) => {
@@ -84,7 +84,7 @@ const OrderTable = () => {
                                                 {changeDateFormat(order?.createdAt)}
                                             </td>
                                             <td className="text-center">
-                                                <span className={`py-1.5 px-2.5 text-xs leading-4 text-white rounded-[12px] ${order?.orderStatus === 'Pending' ? 'bg-slate-600' : 'bg-primary'}`}>{order?.orderStatus}</span>
+                                                <span className={`py-1.5 px-2.5 text-xs leading-4 text-white rounded-[12px] capitalize ${String(order?.orderStatus).toUpperCase() === 'PENDING' ? 'bg-slate-600' : 'bg-primary'}`}>{String(order?.orderStatus || '').toLowerCase()}</span>
                                             </td>
                                             <td className="px-5 py-5 text-center whitespace-nowrap">
                                                 AUD {order?.totalAmount}

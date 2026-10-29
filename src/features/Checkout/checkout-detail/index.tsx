@@ -1,4 +1,3 @@
-import { ICartData, ICartItem } from '@/interface/cart.interface';
 import { IPaymentMethod, PaymentFormProps } from '@/interface/home.interface';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
@@ -15,6 +14,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment, delive
   //Get cart Data
   const { data: cart } = useQuery<any>(["cartList"]);
 
+
   return (
     <>
       <div className="py-[38px] px-[45px] bg-slate-150">
@@ -27,8 +27,7 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment, delive
             {cart?.items?.map((productData: any, index: any) => (
               <li className="flex justify-between" key={index}>
                 <span> {productData?.product?.productName} X {productData?.quantity} </span>
-                <span>AUD {productData.originalUnitPrice *
-                  productData.quantity} </span>
+                <span>AUD {productData?.totalPrice || 0} </span>
               </li>
 
             ))}
@@ -38,13 +37,20 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment, delive
           <li className="font-semibold text-[16px] text-slate-850">
             Order Amount
           </li>
-          <li className="text-[14px]">AUD {cart?.subTotal || 0}</li>
+          <li className="text-[14px]">AUD {cart?.totalAmount || 0}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">
             Cart Subtotal
           </li>
           <li className="text-[14px]">AUD {cart?.subTotal || 0}</li>
+        </ul>
+
+        <ul className="flex justify-between">
+          <li className="font-semibold text-[16px] text-slate-850">
+            Discount 
+          </li>
+          <li className="text-[14px]">AUD {cart?.totalDiscountAmount || 0}</li>
         </ul>
         <ul className="flex justify-between">
           <li className="font-semibold text-[16px] text-slate-850">

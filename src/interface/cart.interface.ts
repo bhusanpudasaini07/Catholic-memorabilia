@@ -3,7 +3,13 @@ import { ICartProduct, IProduct } from "./product.interface";
 export interface ICreateCartItem {
   // Display details for local guest carts; excluded from the API payload.
   product?: IProduct;
-  productId: number;
+  productId?: number;
+  bundleId?: number;
+  bundle?: {
+    name?: string;
+    imageUrl?: string;
+    fixedPrice?: number | string;
+  };
   quantity: number;
   note?: string;
   variant_id?: number | undefined;

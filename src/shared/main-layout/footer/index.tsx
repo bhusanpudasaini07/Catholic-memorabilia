@@ -12,14 +12,10 @@ const shopLinks = [
 
 const helpLinks = [
   { label: "Contact Us", href: "/page/contact-us" },
-  { label: "Shipping", href: "/page/shipping" },
-  { label: "Returns", href: "/page/returns" },
+  // { label: "Shipping", href: "/page/shipping" },
+  // { label: "Returns", href: "/page/returns" },
 ];
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-});
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -67,7 +63,7 @@ const Footer = () => {
         <div className="mt-12 border-t border-[#e6d4b6] md:mt-14" />
 
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-5 text-center text-[13px] text-[#8f8f8f]">
-          <span>© 2024 That&apos;s the Spirit. All rights reserved.</span>
+          <span>© 2026 That&apos;s the Spirit. All rights reserved.</span>
           <span className="inline-block h-3.5 w-px bg-[#e6d4b6]" aria-hidden="true" />
           <Link href="/page/privacy-policy" className="transition-colors hover:text-primary">
             Privacy Policy

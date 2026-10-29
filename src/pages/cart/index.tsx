@@ -13,17 +13,14 @@ import ButtonLoader from '@/shared/components/btn-loading';
 import { getCartProduct } from '@/services/cart.service';
 import { useRouter } from 'next/router';
 import BreadcumbsBanner from '@/shared/components/breadcumbs-banner';
-import { getCookie } from 'cookies-next';
 
 
 
 const Cart: NextPageWithLayout = () => {
-  const token = getCookie('isLoggedIn')
   const router = useRouter()
 
   const { data: cartData } = useQuery({
     queryKey: ['cartList'],
-    enabled: !!token,
     queryFn: getCartProduct,
   });
 

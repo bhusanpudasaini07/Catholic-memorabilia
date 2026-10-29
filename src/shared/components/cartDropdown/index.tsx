@@ -1,11 +1,9 @@
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Badge from '../badge';
 import CartIcon from '@/shared/icons/common/CartIcon';
 import { useRouter } from 'next/router';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCartData, getCartProduct } from '@/services/cart.service';
-import { useCart as useCartStores } from '@/store/cart';
+import { useQueryClient } from '@tanstack/react-query';
 import CartDropdownProducts from './cart-products';
 import { useCartsHooks } from '@/hooks/cart.hooks';
 
@@ -15,10 +13,7 @@ interface CartDropdownProps {
 const CartDropdown = ({ logIn }: CartDropdownProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: cartList } = useQuery<any>({
-    queryKey: ['cartList'],
-    queryFn: getCartProduct,
-  });
+  const { cartList, handleRemoveFromCart, cartDeleteLoading, selectedId } = useCartsHooks();
  
 
   useEffect(() => {
@@ -41,7 +36,7 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>
       <div className="relative z-40 py-3 bg-gray-350 btn-circle shrink-0">
         <CartIcon className="mx-auto" />
-        <Badge className="badge-accent" badgePosition="top-right">
+        <Badge className="badge-primary" badgePosition="top-right">
           {cartList?.items?.length || 0}
         </Badge>
         {/* Total Price */}
@@ -55,8 +50,14 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
             ) : (
               <>
                 <div className="overflow-y-scroll max-h-[350px]">
-                  {cartList && cartList?.items?.map((item: any, index: number) => (
-                    <CartDropdownProducts item={item} key={index} logIn={logIn} />
+                  {cartList && cartList?.items?.map((item: any) => (
+                    <CartDropdownProducts
+                      item={item}
+                      key={item?.bundleId ? `bundle-${item.bundleId}` : `product-${item?.productId ?? item?.product?.id ?? item?.id}`}
+                      removing={cartDeleteLoading}
+                      pending={selectedId === (item?.bundleId ?? item?.productId ?? item?.product?.id)}
+                      onRemove={() => handleRemoveFromCart(item?.productId ?? item?.product?.id, item?.bundleId)}
+                    />
                   ))}
                 </div>
                 {/* pricing list */}
