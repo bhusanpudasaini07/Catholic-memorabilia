@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react';
 
 interface CheckoutDetailProps {
   selectedPayment: IPaymentMethod | null;
+  deliveryCharge?: number;
 }
 
-const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
+const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment, deliveryCharge }) => {
   // Selected payment method
 
   // const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>(null);
@@ -49,12 +50,12 @@ const CheckoutDetail: React.FC<CheckoutDetailProps> = ({ selectedPayment }) => {
           <li className="font-semibold text-[16px] text-slate-850">
             Delivery Charge
           </li>
-          <li className="text-[14px]">AUD {cart?.delivery || 0}</li>
+          <li className="text-[14px]">AUD {deliveryCharge || cart?.delivery || 0}</li>
         </ul>
         <div className="mt-[18px] mb-[33px] py-[18px] border-t-[1px]  border-b-[1px] border-light-gray border-solid">
           <ul className=" flex justify-between mb-[20px]">
             <li className="font-bold text-[18px]">Total</li>
-            <li className="font-bold text-primary">AUD {cart?.totalAmount}</li>
+            <li className="font-bold text-primary">AUD {deliveryCharge ? (cart?.totalAmount + Number(deliveryCharge)).toFixed(2) : cart?.totalAmount || 0}</li>
           </ul>
           <ul className="flex justify-between">
             <li className="font-bold text-[18px]">Payment method</li>

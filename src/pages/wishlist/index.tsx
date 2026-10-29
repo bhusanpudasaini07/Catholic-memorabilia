@@ -2,7 +2,6 @@ import MainLayout from "@/shared/main-layout";
 import { NextPageWithLayout } from "../_app";
 import { useQuery } from "@tanstack/react-query";
 import { getWishlists } from "@/services/wishlist.service";
-import Loader from "@/components/Loading";
 import EmptyPage from "@/components/emptyPage";
 import Card from "@/shared/components/card";
 import { useState } from "react";
@@ -15,7 +14,6 @@ import SkeletonLoadingCard from "@/shared/components/skeleton/products";
 import ProductDetailModal from "@/shared/components/product-detail-modal";
 
 const Wishlist: NextPageWithLayout = () => {
-    const token = getToken()
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [productModalId, setProductModalId] = useState<string>("")
 
@@ -23,22 +21,16 @@ const Wishlist: NextPageWithLayout = () => {
 
     const { data: wishlist, isLoading } = useQuery(
         ['getWishlists', pageNumber, perPage], () =>
-        getWishlists(pageNumber, perPage)
+        getWishlists()
             .then((response) => {
                 return response
             })
     )
     const { data: cart } = useQuery<ICartData>(["getCartList"]);
 
-    const { data: favList }: any = useQuery<any>(["wishlistProducts", token], { enabled: !!token });
 
-    const updatedData = wishlist?.data?.map((item: any) => ({
+    const updatedData = wishlist?.map((item: any) => ({
         ...item,
-        product: {
-            ...item.product,
-            isFav: favList && favList?.data?.length > 0 ? favList?.data?.some((favItem: any) => favItem?.product_id === item?.product?.id) : false,
-            favId: favList && favList.data.length > 0 ? favList?.data.find((favItem: any) => favItem.product_id === item?.product?.id)?.id : 0
-        },
     }));
 
     /**
@@ -47,6 +39,7 @@ const Wishlist: NextPageWithLayout = () => {
     const handlePageChange = (value: number) => {
         setPageNumber(value)
     }
+
     return (
         <div>
             <Head>
@@ -75,7 +68,7 @@ const Wishlist: NextPageWithLayout = () => {
                                                 {updatedData?.map((favProduct: any, index: any) =>
                                                     <Card
                                                         setProductModalId={setProductModalId}
-                                                        product={favProduct?.product}
+                                                        product={favProduct}
                                                         key={`app-cat-products-${index}`}
                                                         cartItem={cart?.cartProducts?.find((item) => item?.product?.id === favProduct?.product?.id)}
                                                     />

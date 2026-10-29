@@ -17,11 +17,13 @@ import CardHeartIcon from '@/shared/icons/common/CardHeartIcon';
 import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 import { useWishlists } from '@/hooks/wishlist.hooks';
 import SkeletonDescription from '@/shared/components/skeleton/description';
+import ProductInfoTabs from '@/features/Product/product-info-tabs';
 import RelatedProducts from '@/features/Product/related-products';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Thumbs } from 'swiper';
 import { useCartsHooks } from '@/hooks/cart.hooks';
 import { debounce } from 'lodash';
+import { getCookie } from 'cookies-next';
 
 const COLOR_SWATCHES: Record<string, string> = {
   Black: "#111827",
@@ -38,11 +40,9 @@ const COLOR_SWATCHES: Record<string, string> = {
 const ProductSlug = () => {
   const router = useRouter()
   const { slug } = router.query;
-  const token = getToken()
+  const token = getCookie('isLoggedIn')
   const queryClient = useQueryClient();
   const { updateCartMutation } = useCartsHooks();
-  const [moreInfoContent, setMoreInfoContent] = useState<string>('');
-
   const [value, setValue] = useState<number>(1);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -76,7 +76,7 @@ const ProductSlug = () => {
     ['relatedProducts', !!productData?.response?.categoryId],
     async () => {
       if (productData?.response?.categoryId) {
-        const response = await getRelatedProductsFromId(productData?.response?.categoryId);
+        const response = await getRelatedProductsFromId(productData?.response?.categoryId, 'asc', 'alphabet');
         return response;
       }
     }
@@ -144,18 +144,7 @@ const ProductSlug = () => {
     }
   }
 
-  /**
-   * To generate the fav id in order to implement remove from fav
-   */
-  const genFavId = () => {
-    if (favList && favList?.data?.length > 0) {
-      const favId = favList?.data.find((favItem: any) => (
-        favItem.product_id === productData?.productId));
-      return favId?.id || 0;
-    }
 
-  }
-  const favId = genFavId() //setting generated fav id.
 
   // useEffect(() => {
   //   if (cartData) {
@@ -176,7 +165,6 @@ const ProductSlug = () => {
 
   useEffect(() => {
     if (productData) {
-      setMoreInfoContent(productData?.response?.productDescription || '');
       setSelectedSize(productData?.response?.sizes?.[0] ?? "");
       setSelectedColor(productData?.response?.colors?.[0] ?? "");
     }
@@ -343,18 +331,18 @@ const ProductSlug = () => {
                     <h2 className="mb-2 text-2xl font-semibold text-slate-850">
                       {productData?.response?.productName}
                     </h2>
-                  {stock > 0 ? (
+                    {stock > 0 ? (
                       <div className="my-3">
-                      <span className="mt-5 mb-3 text-sm font-bold bg-success text-white px-2 py-1 rounded">
-                        In Stock
-                      </span>
+                        <span className="mt-5 mb-3 text-sm font-bold bg-success text-white px-2 py-1 rounded">
+                          In Stock
+                        </span>
                       </div>
                     ) : (
                       <div className="my-3">
-                      <span className="text-sm font-bold bg-error text-white px-2 py-1 rounded">
-                        Out of Stock                     
+                        <span className="text-sm font-bold bg-error text-white px-2 py-1 rounded">
+                          Out of Stock
                         </span>
-                        </div>
+                      </div>
                     )}
 
 
@@ -394,11 +382,10 @@ const ProductSlug = () => {
                               type="button"
                               aria-pressed={selectedSize === size}
                               onClick={() => setSelectedSize(size)}
-                              className={`min-w-[44px] rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
-                                selectedSize === size
+                              className={`min-w-[44px] rounded-md border px-3 py-2 text-sm font-medium transition-colors ${selectedSize === size
                                   ? "border-primary bg-primary text-white"
                                   : "border-gray-350 bg-white text-slate-850 hover:border-primary"
-                              }`}
+                                }`}
                             >
                               {size}
                             </button>
@@ -421,18 +408,17 @@ const ProductSlug = () => {
                               title={color}
                               aria-pressed={selectedColor === color}
                               onClick={() => setSelectedColor(color)}
-                              className={`h-8 w-8 rounded-full border-2 ${
-                                selectedColor === color
+                              className={`h-8 w-8 rounded-full border-2 ${selectedColor === color
                                   ? "border-primary ring-2 ring-primary ring-offset-2"
                                   : "border-gray-350"
-                              }`}
+                                }`}
                               style={{ backgroundColor: COLOR_SWATCHES[color] ?? color }}
                             />
                           ))}
                         </div>
                       </div>
                     )}
-                   
+
 
                     {/* Add to Cart Button */}
                     <div className="w-100 flex my-[30px]">
@@ -508,29 +494,16 @@ const ProductSlug = () => {
         </div >
       </section >
 
-      {
-        moreInfoContent !== '' &&
-        <div className="mb-[60px]">
-          <div className="container">
-            <a data-toggle="tab" className="active relative flex justify-center uppercase pb-3 text-lg font-bold text-center after:h-[2px] after:absolute after:left-0 after:right-0 after:bottom-[-1px] after:transition-all after:duration-300 after:ease-linear after:bg-primary text-slate-850 after:w-[250px] after:text-center after:m-auto">
-              Product Description
-            </a>
-            <div className="px-8 py-10 overflow-hidden text-base leading-6 text-left bg-white border border-gray-200 tab-content">
-              <div id="productDetail" className="tab-pane active">
-                <div className="product-anotherinfo-wrapper">
-                  <div className="text-justify description__text">
-                    <p dangerouslySetInnerHTML={{ __html: moreInfoContent, }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
+      {productData?.response && (
+        <ProductInfoTabs
+          productId={productData.response.id}
+          description={productData.response.productDescription || ""}
+        />
+      )}
 
       {/* Related Products */}
       {
-        relatedProducts && relatedProducts?.data?.length !== 0 &&
+        relatedProducts && relatedProducts?.data?.items?.length !== 0 &&
         <RelatedProducts relatedProductsLoading={relatedProductsLoading} relatedProducts={relatedProducts} />
       }
     </>

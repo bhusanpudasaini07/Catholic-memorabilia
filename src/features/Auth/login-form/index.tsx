@@ -27,6 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     onSuccess: async (data) => {
       setCookie("token", data?.data?.accessToken);
       setCookie("isLoggedIn", true);
+      // localStorage.removeItem("cart");
       queryClient.removeQueries(["cartList"]);
       showToast(TOAST_TYPES.success, "You have been successfully logged in.");
       router.push("/");

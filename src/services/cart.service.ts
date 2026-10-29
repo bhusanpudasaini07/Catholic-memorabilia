@@ -14,8 +14,8 @@ import axios from "axios";
 import { getCookie, setCookie } from "cookies-next";
 import { config } from "../../config";
 
-const apiEndPoint2 = config.gateway.apiEndPoint2;
 
+const isLoggedIn = getCookie('isLoggedIn');
 // export const setCartNumberCookie = async () => {
 //   try {
 //     const response = await axiosInstance.get(`/cart`);
@@ -29,7 +29,7 @@ const apiEndPoint2 = config.gateway.apiEndPoint2;
 // };
 
 export const getCartData = async (params: { coupon?: string }) => {
-  if (!getToken()) return readGuestCart();
+  if (!isLoggedIn) return readGuestCart();
   try {
     if (params.coupon) {
       setCouponHeader({
@@ -52,7 +52,7 @@ export const getCartData = async (params: { coupon?: string }) => {
 };
 
 export const getCartProduct = async () => {
-  if (!getToken()) return readGuestCart();
+  if (!isLoggedIn) return readGuestCart();
   setAuthorizationHeader();
   try {
     const response = await axiosInstance.get(`/carts`);
@@ -63,7 +63,7 @@ export const getCartProduct = async () => {
 };
 
 export const deleteCartItemById = async (productId: number) => {
-  if (!getToken()) return writeGuestCart(readGuestCart().items.filter(item => item.productId !== productId));
+  if (!isLoggedIn) return writeGuestCart(readGuestCart().items.filter(item => item.productId !== productId));
   setAuthorizationHeader();
   try {
     const response = await axiosInstance.delete(
@@ -77,17 +77,20 @@ export const deleteCartItemById = async (productId: number) => {
 
 export const addToCart = async (data: ICreateCartItem) => {
   validateQuantity(data.quantity);
-  if (!getToken()) return addGuestCartItem(data);
+  if (!isLoggedIn){
+    return addGuestCartItem(data);
+  } else {
   setAuthorizationHeader();
   const { product, ...payload } = data;
   try {
-    const response = await axiosInstance.post(
-      `/carts/items`,
-      payload
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
+      const response = await axiosInstance.post(
+        `/carts/items`,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 

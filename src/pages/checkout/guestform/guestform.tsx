@@ -150,7 +150,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               maxLength={20}
               onKeyUp={() => trigger("firstName")}
               onKeyDown={handleKeyDownAlphabet}
-              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.firstName ? "border-error" : "border-gray-350"}`}
+              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.firstName ? "border-error" : "border-[#ced4da]"}`}
             />
             {errors.firstName && (
               <p className="text-error text-xs leading-[24px] mt-1">
@@ -176,7 +176,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               onKeyDown={() => {
                 handleKeyDownAlphabet;
               }}
-              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.lastName ? "border-error" : "border-gray-350"}`}
+              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.lastName ? "border-error" : "border-[#ced4da]"}`}
             />
             {errors.lastName && (
               <p className="text-error text-xs leading-[24px] mt-1">
@@ -200,7 +200,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               maxLength={12}
               inputMode="tel"
               placeholder="+61412345678"
-              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.contactNumber ? "border-error" : "border-gray-350"}`}
+              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.contactNumber ? "border-error" : "border-[#ced4da]"}`}
             />
             {errors.contactNumber && (
               <p className="text-error text-xs leading-[24px] mt-1">
@@ -222,7 +222,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               })}
               onKeyUp={() => trigger("email")}
               placeholder="Enter Your Email"
-              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.email ? "border-error" : "border-gray-350"}`}
+              className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.email ? "border-error" : "border-[#ced4da]"}`}
             />
             {errors.email && (
               <p className="text-error text-xs leading-[24px] mt-1">
@@ -249,13 +249,13 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
           }}
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-          className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border border-gray-350"
+          className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border border-[#ced4da]"
         />
         {addressLoading && (
           <p className="text-xs text-gray-400 mt-1">Searching addresses…</p>
         )}
         {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute top-[45px] left-0 w-full bg-white border border-gray-350 z-10 max-h-[220px] overflow-y-auto shadow-md">
+          <ul className="absolute top-[45px] left-0 w-full bg-white border border-[#ced4da] z-10 max-h-[220px] overflow-y-auto shadow-md">
             {suggestions.map((s, idx) => (
               <li
                 key={idx}
@@ -282,7 +282,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
             validate: (value: string) => !!value.trim() || "Street address is required",
           })}
           onKeyUp={() => trigger("addressLine1")}
-          className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.addressLine1 ? "border-error" : "border-gray-350"}`}
+          className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.addressLine1 ? "border-error" : "border-[#ced4da]"}`}
         />
         {errors.addressLine1 && (
           <p className="text-error text-xs leading-[24px] mt-1">
@@ -296,7 +296,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
           type="text"
           placeholder="Apartment, Unit, Suite (optional)"
           {...register("addressLine2")}
-          className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border border-gray-350"
+          className="px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border border-[#ced4da]"
         />
       </div>
 
@@ -310,7 +310,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               validate: (value: string) => !!value.trim() || "Suburb is required",
             })}
             onKeyUp={() => trigger("suburb")}
-            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.suburb ? "border-error" : "border-gray-350"}`}
+            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.suburb ? "border-error" : "border-[#ced4da]"}`}
           />
           {errors.suburb && (
             <p className="text-error text-xs leading-[24px] mt-1">
@@ -325,7 +325,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
               required: "State is required",
             })}
             defaultValue=""
-            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border bg-white ${errors.state ? "border-error" : "border-gray-350"}`}
+            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border bg-white ${errors.state ? "border-error" : "border-[#ced4da]"}`}
           >
             <option value="" disabled>
               State
@@ -358,7 +358,7 @@ const GuestForm = ({ register, errors, handleSubmit, setValue, getValues, trigge
             maxLength={4}
             inputMode="numeric"
             onKeyDown={handleKeyDownNumber}
-            className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.postcode ? "border-error" : "border-gray-350"}`}
+                    className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border ${errors.postcode ? "border-error" : "border-[#ced4da]"}`}
           />
           {errors.postcode && (
             <p className="text-error text-xs leading-[24px] mt-1">

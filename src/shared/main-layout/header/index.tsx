@@ -28,7 +28,6 @@ const Header = () => {
   const { categories } = useCategoriesHooks();
 
 
-  const token = getCookie('token');
   const loggedIn = getCookie('isLoggedIn');
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -48,10 +47,6 @@ const Header = () => {
       enabled: !!logIn, // Only enabled when login is true
     }
   );
-
-  console.log("favouriteList==>", favouriteList);
-
-
 
 
   //suggestion
@@ -224,7 +219,7 @@ const Header = () => {
           <div className="flex items-center gap-3">
             {/* Heart Button */}
             {
-              token &&
+              logIn &&
               <Link href="/wishlist" aria-label="header-wishlist" className="relative hidden py-3 btn btn-circle md:flex">
                 <HeartIcon className="text-black" />
                 <Badge
@@ -232,7 +227,7 @@ const Header = () => {
                   type="primary"
                   badgePosition="top-right"
                 >
-                  {/* {favouriteList ? favouriteList.data?.length : 0} */}
+                  {favouriteList ? favouriteList?.length : 0}
                 </Badge>
               </Link>
             }

@@ -18,28 +18,6 @@ interface IProps {
 
 const NewArrival: React.FC<IProps> = ({ loading, products }) => {
 
-    const [productModalId, setProductModalId] = useState<string>('');
-    const [swiperRef, setSwiperRef] = useState<any>();
-    const [nextDisable, setNextDisable] = useState<boolean>(false)
-    const [prevDisable, setPrevDisable] = useState<boolean>(false)
-
-    //handling prev and next of swiper category
-    const handlePrevious = useCallback(() => {
-        setNextDisable(false)
-        if (swiperRef) {
-            swiperRef?.slidePrev();
-        }
-    }, [swiperRef]);
-
-
-    const handleNext = useCallback(() => {
-        setPrevDisable(false)
-        if (swiperRef) {
-            swiperRef?.slideNext();
-        }
-    }, [swiperRef]);
-
-
     return (
         <section className="mb-[60px] relative">
             <div className="flex items-center">
@@ -72,7 +50,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
                     {products && products.length > 0 && products.slice(0, 4).map((item: any, index: number) => (
                         <Card
-                            setProductModalId={setProductModalId}
+                            setProductModalId={() => { return; }}
                             product={item}
                             key={`app-cat-products-${index}`}
                         />
@@ -82,10 +60,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
 
             }
 
-            {
-                productModalId !== '' &&
-                <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId.toString()} />
-            }
+        
         </section>
     )
 }

@@ -220,7 +220,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               )
             }
 
-            {(!(cart?.cartProducts?.some((item: any) => item?.product.id === product?.id))) ?
+            {(!(cart?.cartProducts?.some((item: any) => item?.product.id === product?.id))) &&
               (
                 <button
                   className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto relative z-9"
@@ -234,53 +234,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
                   }
                 </button>
               )
-              :
-              cart?.cartProducts?.some((item: any) => item?.product.id === product?.id) && (
-                // <div className="flex items-center gap-3 px-3 border rounded-lg border-primary">
-                //   {
-                //     quantity === 1 ?
-                //       <button onClick={() => handleRemoveFromCart(cartItem?.id!)} disabled={cartDeleteLoading}>
-                //         {
-                //           cartDeleteLoading ? (
-                //             <ButtonLoader className="!border-primary !block max-w-[18px] h-[18px]" />
-                //           ) : (
-                //             <TrashIcon className="max-w-[14px] h-auto" />
-                //           )
-                //         }
-                //       </button>
-                //       :
-                //       <button
-                //         className="text-primary py-1 text-sm w-[14px]"
-                //         onClick={() => { updateCartCall(quantity - 1) }}
-                //       > - </button>
-                //   }
-                //   <input
-                //     type="text"
-                //     className="text-center max-w-[35px] h-full font-bold text-sm border-0 focus:outline-0 text-primary"
-                //     value={quantity}
-                //     readOnly
-                //     maxLength={3}
-                //   />
-                //   <button
-                //     className="text-primary py-1 w-[14px] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none"
-                //     onClick={() => { updateCartCall(quantity + 1) }}
-                //     disabled={quantity === stock ? true : false}
-                //   >
-                //     +
-                //   </button>
-                // </div>
-                <button
-                  className="btn btn-primary btn-outline p-2 h-auto !min-h-0 text-xs leading-auto"
-                  onClick={handleAddToCart}
-                // disabled={mutation.isLoading}
-                >
-                  Update Cart
-                  {/* {
-                    mutation.isLoading &&
-                    <ButtonLoader />
-                  } */}
-                </button>
-              )}
+            }
             {/* ) */}
           </div>
         </div>

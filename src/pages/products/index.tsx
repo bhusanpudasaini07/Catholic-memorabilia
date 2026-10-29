@@ -5,14 +5,14 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Card from '@/shared/components/card'
 import axiosInstance from '@/axios/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
-import { IProduct } from '@/interface/product.interface'
+import { useFavHooks } from '@/hooks/fav.hooks'
 
 const PAGE_SIZE = 10;
 
 const Products: NextPageWithLayout = () => {
     const [searchInput, setSearchInput] = useState(''); 
     const [filters, setFilters] = useState({ search: '', page: 1 });
-
+    const { favouriteList } = useFavHooks();
     useEffect(() => {
         const timeout = setTimeout(() => {
             setFilters(current => current.search === searchInput.trim()
@@ -33,16 +33,14 @@ const Products: NextPageWithLayout = () => {
         },
     });
 
-    const items: IProduct[] = products?.items ?? [];
+    const updatedProducts = products?.items?.map((item: any) => ({
+        ...item,
+        isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
+    }));
     // Support pagination metadata when supplied; otherwise use Previous/Next.
-    const pagination = {
-        total: products?.pagination?.total,
-        totalItems: products?.pagination?.total_items,
-        totalPages: products?.pagination?.total_pages,
-        hasNextPage: products?.pagination?.has_next_page,
-    }
-    const totalValue =  pagination?.totalItems ;
-    const pagesValue = pagination?.totalPages;
+   
+    const totalValue =  products?.totalItems ?? products?.total;
+    const pagesValue = products?.totalPages ?? products?.totalPages;
     const totalPages = pagesValue != null && Number.isFinite(Number(pagesValue))
         ? Math.max(1, Number(pagesValue))
         : totalValue != null && Number.isFinite(Number(totalValue))
@@ -50,7 +48,7 @@ const Products: NextPageWithLayout = () => {
             : null;
     const hasNextPage = totalPages !== null
         ? filters.page < totalPages
-        : pagination?.hasNextPage ?? items.length === PAGE_SIZE;
+        : products?.hasNextPage ?? products?.items?.length === PAGE_SIZE;
     const searchPending = searchInput.trim() !== filters.search;
 
     return (
@@ -81,7 +79,7 @@ const Products: NextPageWithLayout = () => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-12 gap-6">
-                                {items.length > 0 ? items.map(item => (
+                                {updatedProducts?.length > 0 ? updatedProducts?.map((item: any) => (
                                     <div className="col-span-6 md:col-span-3" key={item.id}>
                                         <Card setProductModalId={() => 'hi'} product={item} />
                                     </div>

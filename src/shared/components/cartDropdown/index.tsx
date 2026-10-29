@@ -15,9 +15,12 @@ interface CartDropdownProps {
 const CartDropdown = ({ logIn }: CartDropdownProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  useEffect(() => {
-    queryClient.invalidateQueries(["cartList"]);
-  }, [logIn, queryClient]);
+  const { data: cartList } = useQuery<any>({
+    queryKey: ['cartList'],
+    queryFn: getCartProduct,
+  });
+ 
+
   useEffect(() => {
     const refresh = (event: StorageEvent) => {
       if (event.key === "cart" || event.key === null) queryClient.invalidateQueries(["cartList"]);
@@ -25,19 +28,14 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
     window.addEventListener("storage", refresh);
     return () => window.removeEventListener("storage", refresh);
   }, [queryClient]);
-  const { coupon, setCoupon, couponData } = useCartStores();
-  const { data: cartList } = useQuery<any>({
-    queryKey: ['cartList'],
-    queryFn: getCartProduct,
-  });
+
+  useEffect(() => {
+    queryClient.invalidateQueries(["cartList"]);
+  }, [logIn, queryClient]);
 
   //checking if there is any item which is out of stock
-  const hasOutOfStock = cartList?.items?.find((item: any) => item?.selectedUnit?.stock === 0) ? true : false
-  useEffect(() => {
-    if (window && localStorage && localStorage.getItem("coupon")) {
-      setCoupon(localStorage.getItem("coupon") as string)
-    }
-  }, [coupon, setCoupon])
+  const hasOutOfStock = cartList?.items?.find((item: any) => item?.quantity === 0) ? true : false
+  
 
   return (
     <div className='flex items-center gap-4 cursor-pointer dropdown dropdown-hover'>
@@ -64,22 +62,18 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
                 {/* pricing list */}
                 <div className="my-[25px]">
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Order Amount : <span>AUD {couponData?.orderAmount ? couponData?.orderAmount : (cartList?.subTotal ?? cartList?.totalAmount)}</span>
+                    Order Amount : <span>AUD {cartList?.subTotal ?? cartList?.totalAmount}</span>
                   </p>
                   <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Subtotal : <span>AUD {couponData?.subTotal ? couponData?.subTotal : cartList?.totalAmount}</span>
+                    Subtotal : <span>AUD {cartList?.totalAmount}</span>
                   </p>
-                  {/* {
-                    couponData?.couponDiscount &&
-                    <p className="flex justify-between mb-1 font-medium text-gray-450">
-                      Coupon Discount : <span>AUD {couponData?.couponDiscount}</span>
-                    </p>
-                  } */}
-                  {/* <p className="flex justify-between mb-1 font-medium text-gray-450">
-                    Delivery charge : <span>AUD {couponData?.deliveryCharge ? couponData?.deliveryCharge : cartList?.deliveryCharge}</span>
-                  </p> */}
+                  
+                  <p className="flex justify-between mb-1 font-medium text-gray-450">
+                    Delivery charge : <span>AUD {cartList?.shippingCharge || 0}</span>
+                  </p> 
+                 
                   <p className="flex justify-between text-slate-850">
-                    Total : <span>AUD {couponData?.total ? couponData?.total : cartList?.totalAmount}</span>
+                    Total : <span>AUD {cartList?.netPayableAmount || cartList?.totalAmount}</span>
                   </p>
                 </div>
                 <div className=" [&>*:first-child]:mb-4">
@@ -110,7 +104,7 @@ const CartDropdown = ({ logIn }: CartDropdownProps) => {
           TOTAL PRICE
         </p>
         <p className="text-[#222222] text-sm font-bold hidden xs:block whitespace-nowrap">
-          AUD {couponData?.total ? couponData?.total : cartList?.totalAmount || 0}
+          AUD {cartList?.totalAmount || 0}
         </p>
       </div>
     </div>

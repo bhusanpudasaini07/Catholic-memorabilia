@@ -2,16 +2,35 @@ import CaretDownIcon from '@/shared/icons/common/CaretDownIcon';
 import React, { useState } from 'react';
 
 export interface ISortDropdown {
-    sortChange: (arg0: string) => void;
+    sortChange: (sortBy: string, sortOrder: string) => void;
 
 }
 
 const SortingDropdown: React.FC<ISortDropdown> = ({ sortChange }) => {
     const options = [
-        { label: 'A to Z', value: 'asc' },
-        { label: 'Z to A', value: 'desc' },
-        { label: 'Price (Low > High)', value: 'low' },
-        { label: 'Price (High > Low)', value: 'high' }
+        {
+            label: 'A to Z',
+            value: 'name_asc',
+            sortBy: 'name',
+            sortOrder: 'asc'
+        },
+        {
+            label: 'Z to A',
+            value: 'name_desc',
+            sortBy: 'name',
+            sortOrder: 'desc'
+        },
+        {
+            label: 'Price (Low > High)', 
+            value: 'price_asc',
+            sortBy: 'price',
+            sortOrder: 'asc'
+        },
+        { label: 'Price (High > Low)', 
+            value: 'price_desc',
+            sortBy: 'price',
+            sortOrder: 'desc'
+         }
     ];
 
     const [selectedType, setSelectedType] = useState("Please Select");
@@ -37,7 +56,10 @@ const SortingDropdown: React.FC<ISortDropdown> = ({ sortChange }) => {
                     <span className='border-0 rounded-none bg-none hover:!bg-none opacity-25'>Please Select</span>
                 </li>
                 {options.map((option) => (
-                    <li key={option.value} onClick={() => { handleTypeChange(option.label); sortChange(option.value) }} className={`hover:!bg-[#f5faff] ${option.label === selectedType ? 'bg-[#f5faff]' : ''}`}>
+                    <li key={option.value} onClick={() => { 
+                        handleTypeChange(option.label); 
+                        sortChange(option.sortOrder, option.sortBy) }}
+                         className={`hover:!bg-[#f5faff] ${option.label === selectedType ? 'bg-[#f5faff]' : ''}`}>
                         <span className='border-0 rounded-none bg-none hover:!bg-transparent'>{option.label}</span>
                     </li>
                 ))}

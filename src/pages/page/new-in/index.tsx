@@ -1,14 +1,10 @@
 
 
+import Card from '@/shared/components/card';
+import Pagination from '@/shared/components/pagination';
 import CategorySkeletonLoading from '@/shared/components/skeleton/category'
 import Title from '@/shared/components/title'
-import React, { useCallback, useState } from 'react'
-import { Grid } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Card from '@/shared/components/card';
-import ProductDetailModal from '@/shared/components/product-detail-modal';
-import { tr } from 'date-fns/locale';
+import { useState } from 'react';
 
 interface IProps {
     loading: boolean;
@@ -18,27 +14,13 @@ interface IProps {
 
 const NewInPage: React.FC<IProps> = ({ loading, products }) => {
 
-    const [productModalId, setProductModalId] = useState<string>('');
-    const [swiperRef, setSwiperRef] = useState<any>();
-    const [nextDisable, setNextDisable] = useState<boolean>(false)
-    const [prevDisable, setPrevDisable] = useState<boolean>(false)
-
-    //handling prev and next of swiper category
-    const handlePrevious = useCallback(() => {
-        setNextDisable(false)
-        if (swiperRef) {
-            swiperRef?.slidePrev();
-        }
-    }, [swiperRef]);
    
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const perPage = 10;
 
-    const handleNext = useCallback(() => {
-        setPrevDisable(false)
-        if (swiperRef) {
-            swiperRef?.slideNext();
-        }
-    }, [swiperRef]);
-
+    const handlePageChange = (value: number) => {
+        setCurrentPage(value);
+    }
 
     return (
         <section className="mb-[60px] relative">
@@ -58,75 +40,28 @@ const NewInPage: React.FC<IProps> = ({ loading, products }) => {
                 </div>
 
                 :
-                <Swiper
-                    slidesPerView={4}
-                    grid={{
-                        fill: "row",
-                    }}
-                    pagination={false}
-                    modules={[Grid]}
-                    className="productSwiper"
-                    onSwiper={setSwiperRef}
-                    onBeforeInit={() => setPrevDisable(true)}
-                    onReachBeginning={() => setPrevDisable(true)}
-                    onReachEnd={() => setNextDisable(true)}
-                    breakpoints={{
-                        0: {
-                            slidesPerView: 1,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        },
-                        768: {
-                            slidesPerView: 2,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        },
-                        1050: {
-                            slidesPerView: 5,
-                            grid: {
-                                rows: 1
-                            },
-                            spaceBetween: 20
-                        }
-                    }}
-                >
-                    {products && products?.length > 0 && products?.map((item: any, index: number) => (
-                        <SwiperSlide key={`categories-${index}`}>
+                <>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-12">
+                {products && products?.length > 0 && products?.map((item: any, index: number) => (
+                    <div className='col-span-3' key={`app-cat-products-${index}`}>
 
-                            <Card
-                                setProductModalId={setProductModalId}
-                                product={item}
-                                key={`app-cat-products-${index}`}
-                            />
-                        </SwiperSlide>
+                        <Card
+                            setProductModalId={() => { return; }}
+                            product={item}
+                            key={`app-cat-products-${index}`}
+                        />
+                        </div>
                     ))}
-                </Swiper>
+                    
+                </div>
+                </>
             }
-              {
-                products?.length > 6 && (
-                    <div className='productSwiper-navigation'>
-                        <button
-                            disabled={prevDisable}
-                            onClick={handlePrevious}>
-                            <FaChevronLeft />
-                        </button>
-                        <button
-                            disabled={nextDisable}
-                            onClick={handleNext}>
-                            <FaChevronRight />
-                        </button>
-                    </div>
-                )
-            }
+              <Pagination
+                        totalPages={products?.totalPages}
+                        currentPage={currentPage}
+                        pageChange={handlePageChange}
+                    />
 
-{
-                    productModalId !== '' &&
-                    <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId.toString()} />
-                  }
         </section>
     )
 }

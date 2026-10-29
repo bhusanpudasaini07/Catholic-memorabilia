@@ -1,58 +1,44 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { NextPageWithLayout } from '@/pages/_app';
 import MainLayout from '@/shared/main-layout';
 import Card from '@/shared/components/card';
 import Pagination from '@/shared/components/pagination';
 import { useState } from 'react';
-import {  getRelatedProductsFromId } from '@/services/product.service';
+import { getRelatedProductsFromId } from '@/services/product.service';
 import EmptyPage from '@/components/emptyPage';
 import Slider from 'react-slider';
 import CategorySidebar from '@/shared/components/categorySidebar';
 import Breadcrumb from '@/shared/components/breadcrumb';
 import SortingDropdown from '@/shared/components/sorting-dropdown';
 import SkeletonLoadingCard from '@/shared/components/skeleton/products';
-import { ICartData, ICartItem } from '@/interface/cart.interface';
 import Head from 'next/head';
-import { getToken } from '@/shared/utils/cookies-utils/cookies.utils';
 import ProductDetailModal from '@/shared/components/product-detail-modal';
 
 
 const CategoryDetail: NextPageWithLayout = () => {
     const router = useRouter()
     const { slug } = router.query
-    const token = getToken()
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [setFiltered, setSetFiltered] = useState(false);
-    const [productData, setProductData] = useState(null);
-    const [selectedValue, setSelectedValue] = useState<string>('')
-    const [selectedPriceValue, setSelectedPriceValue] = useState<string>('')
+    const [selectedValue, setSelectedValue] = useState<string>('asc')
+    const [selectedPriceValue, setSelectedPriceValue] = useState<string>('alphabet')
     const [productModalId, setProductModalId] = useState<string>("")
-    const [enableFilter, setEnableFilter] = useState<boolean>(false)
+    const [priceCeiling, setPriceCeiling] = useState<number>(3000);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 3000]);
+    const [appliedPrice, setAppliedPrice] = useState<[number, number] | null>(null);
+    const [categoryTitle, setCategoryTitle] = useState<string>('');
+    const boundsSlug = useRef<string | null>(null);
     // const { data: categories, isInitialLoading: loading }: any = useQuery({ queryKey: ['getCategoriesList'] });
-    // const { data: cart } = useQuery<ICartData>(["getCartList"]);
-    const { data: cart } = useQuery<ICartData>(["getCartList"]);
-  
 
-    //For favourite map
-    const { data: favList }: any = useQuery<any>(["wishlistProducts", token], { enabled: !!token });
-
-    const minimumPrice = Number(0);
-    const maximumPrice = Number(3000);
-    const isMinimumValid = !isNaN(minimumPrice) && isFinite(minimumPrice);
-    const isMaximumValid = !isNaN(maximumPrice) && isFinite(maximumPrice);
-    const initialValue = [
-        isMinimumValid ? minimumPrice : 0,
-        isMaximumValid ? maximumPrice : 3000
-    ];
-    const [value, setValue] = useState(initialValue);
 
     // Filter button clicked
 
-    const handleFilterButtonClick = async () => {
-        setSetFiltered(true); // Toggle the value of setFiltered
-        setEnableFilter(!enableFilter)
+    const handleFilterButtonClick = () => {
+        setSetFiltered(true);
+        setPageNumber(1);
+        setAppliedPrice(priceRange);
     };
 
     // Handle categories link click
@@ -65,23 +51,15 @@ const CategoryDetail: NextPageWithLayout = () => {
     //     setSelectedValue(value)
     // }
 
-    const handleSortingChange = (value: string) => {
-        if (value === 'asc' || value === 'desc') {
-            setSelectedValue(value);
-            setSelectedPriceValue('');
-        } else if (value === 'low' || value === 'high') {
-            setSelectedPriceValue(value);
-            setSelectedValue('');
-        }
-    };
   
 
+
     const { data: initialProductData, isLoading } = useQuery(
-        ['productByCategoryId', slug],
+        ['productByCategoryId', slug, appliedPrice?.[0] ?? null, appliedPrice?.[1] ?? null, selectedValue, selectedPriceValue],
         {
             enabled: !!slug,
             queryFn: async () => {
-                const response = await getRelatedProductsFromId(slug);
+                const response = await getRelatedProductsFromId(slug,  selectedValue, selectedPriceValue, appliedPrice?.[0] ?? undefined, appliedPrice?.[1] ?? undefined);
                 return response;
             },
         }
@@ -91,31 +69,48 @@ const CategoryDetail: NextPageWithLayout = () => {
         setPageNumber(value)
     }
 
-    useEffect(() => {
-        if (initialProductData) {
-            setProductData(initialProductData);
-        }
-    }, [initialProductData]);
-
-    // Reset productData when setFiltered changes
-    useEffect(() => {
-        if (!setFiltered) {
-            setProductData(initialProductData);
-        }
-    }, [setFiltered, initialProductData]);
+    const handleSortingChange = (sortBy: string, sortOrder: string) => {
+        setSelectedValue(sortBy);
+        setSelectedPriceValue(sortOrder);
+    };
 
     useEffect(() => {
         handlePageChange(1)
+        setAppliedPrice(null)
+        setPriceCeiling(3000)
+        setPriceRange([0, 3000])
+        boundsSlug.current = null
+        setCategoryTitle('')
     }, [slug])
+
+    useEffect(() => {
+        const name = initialProductData?.items?.[0]?.category?.categoryName
+        if (name) setCategoryTitle(name)
+    }, [initialProductData])
+
+    useEffect(() => {
+        if (appliedPrice || !slug || !initialProductData?.items?.length) return
+        if (boundsSlug.current === String(slug)) return
+
+        const prices = initialProductData.items
+            .map((item: { productPrice?: string | number }) => Number(item.productPrice))
+            .filter((price: number) => Number.isFinite(price))
+        if (!prices.length) return
+
+        const nextCeiling = Math.max(1, Math.ceil(Math.max(...prices)))
+        boundsSlug.current = String(slug)
+        setPriceCeiling(nextCeiling)
+        setPriceRange([0, nextCeiling])
+    }, [appliedPrice, initialProductData, slug])
 
 
     return (
         <>
             <Head>
-                <title>{initialProductData &&initialProductData[0]?.category?.categoryName}</title>
+                <title>{categoryTitle}</title>
             </Head>
-            <Breadcrumb title={initialProductData &&initialProductData[0]?.category?.categoryName} />
-            <div className='container my-[60px]'>
+            <Breadcrumb title={categoryTitle} />
+            <div className='container my-[40px]'>
                 <div className="grid grid-cols-12 md:gap-[30px]">
                     <div className='order-last col-span-12 md:order-first md:col-span-3 right-sidebar'>
                         <div className='mb-[20px]'>
@@ -125,32 +120,26 @@ const CategoryDetail: NextPageWithLayout = () => {
                             <div>
                                 <h4 className='text-slate-850 font-semibold font-base mb-3.5'>Categories</h4>
                                 <CategorySidebar />
-                                {/* <ul className='pl-4'>
-                                    {
-                                        categories?.data?.map((item: any, index: number) => (
-                                            <li key={`categories-${index}`} className='pb-2'>
-                                                <Link href={`/categories/${item?.slug}`}
-                                                    className={`block text-gray-550 font-semibold text-[15px] leading-[22px] transition-all delay-100 duration-300 hover:text-primary pb-2 capitalize ${item?.slug == slug && 'text-primary'}`}
-                                                    onClick={handleCategoriesClick}
-                                                >
-                                                    {item?.title}
-                                                </Link>
-                                            </li>
-                                        ))
-                                    }
-                                </ul> */}
                             </div>
                             <div className='mt-3.5'>
                                 <h4 className='mb-4 font-semibold text-slate-850 font-base'>Price</h4>
-                                <p className='text-sm leading-6 text-slate-850  mb-[20px] pricevalue'>AUD {value[0]} - AUD {value[1]}</p>
+                                <p className='text-sm leading-6 text-slate-850  mb-[20px] pricevalue'>AUD {priceRange[0]} - AUD {priceRange[1]}</p>
                                 <div>
                                     <div>
                                         <Slider
                                             className='slider'
-                                            onChange={setValue}
-                                            value={value}
-                                            min={minimumPrice}
-                                            max={maximumPrice}
+                                            value={priceRange}
+                                            min={0}
+                                            max={priceCeiling}
+                                            step={1}
+                                            minDistance={0}
+                                            pearling
+                                            ariaLabel={['Minimum price', 'Maximum price']}
+                                            onChange={(value) => {
+                                                if (Array.isArray(value)) {
+                                                    setPriceRange([value[0], value[1]])
+                                                }
+                                            }}
                                         />
                                     </div>
 
@@ -170,7 +159,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                     <div className='col-span-12 md:col-span-9'>
                         <div className='flex flex-col sm:flex-row px-[30px] py-[10px] mb-[30px] bg-slate-150'>
                             <div className='flex-1 flex items-center mb-4 sm:mb-0 gap-[15px]'>
-                                <p className='text-gray-750 text-sm leading-[20px]'>There Are {initialProductData?.data?.length} Products.</p>
+                                <p className='text-gray-750 text-sm leading-[20px]'>There Are {initialProductData?.total ?? initialProductData?.items?.length ?? 0} Products.</p>
                             </div>
                             <div className='flex items-center gap-[10px]'>
                                 <p className='text-gray-750 text-sm leading-[20px] p-2'>Sort By:</p>
@@ -187,23 +176,22 @@ const CategoryDetail: NextPageWithLayout = () => {
                                             />
                                         ))}
                                     </div> :
-                                    initialProductData?.data?.length === 0 ? (
+                                    initialProductData?.items?.length === 0 ? (
                                         <EmptyPage />
                                     ) : (
                                         <>
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xxs:grid-cols-2 lg:grid-cols-3">
-                                                {initialProductData?.map((product: any, index: any) => (
+                                                {initialProductData?.items?.map((product: any, index: any) => (
                                                     <Card
                                                         setProductModalId={setProductModalId}
                                                         product={product}
                                                         key={`app-cat-products-${index}`}
-                                                        cartItem={cart?.cartProducts.find((item) => item?.product?.id === product?.id)}
                                                     />
                                                 ))}
                                             </div>
                                             <Pagination
-                                                totalPages={initialProductData?.meta?.pagination?.total_pages}
-                                                currentPage={initialProductData?.meta?.pagination?.current_page}
+                                                totalPages={initialProductData?.total_pages}
+                                                currentPage={initialProductData?.page}
                                                 pageChange={handlePageChange}
                                             />
                                         </>

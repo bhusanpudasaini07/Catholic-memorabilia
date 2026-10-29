@@ -16,11 +16,22 @@ import { useFavHooks } from "@/hooks/fav.hooks";
 import Bundles from "@/features/Home/bundles";
 
 const Home: NextPageWithLayout = () => {
+ 
 
   const { categories, loading: loadingCategories } = useCategoriesHooks();
   const { products, productsLoading, newArrivalProducts, newArrivalProductsLoading } = useProductsHooks();
-  const { favouriteList, loadingFavourite } = useFavHooks();
-  console.log("favouriteList", favouriteList)
+  const { favouriteList } = useFavHooks();
+
+  const updatedProducts = products?.items?.map((item: any) => ({
+    ...item,
+    isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
+  }));
+
+
+  const updatedNewArrivalProducts = newArrivalProducts?.map((item: any) => ({
+    ...item,
+    isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
+  }));
 
   return (
     <>
@@ -45,7 +56,7 @@ const Home: NextPageWithLayout = () => {
         {/* New Arrival  */}
         <NewArrival
           loading={newArrivalProductsLoading}
-          products={newArrivalProducts}
+          products={updatedNewArrivalProducts}
         />
 
         {/* Bundles  */}
@@ -61,7 +72,7 @@ const Home: NextPageWithLayout = () => {
           <ProductsWithSwiper
             title="All Products"
             subtitle="Browse our all products"
-            products={[...(products?.items || [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())}
+            products={[...(updatedProducts || [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())}
             loading={productsLoading}
           />
         </section>

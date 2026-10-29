@@ -10,12 +10,13 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
     //for checking sku units
     const selectedUnit = item?.selectedUnit;
 
-    //used for finding the correct image to display according to selected id
-    // const selectedImg = item?.product?.webpImages ?
-    //     item?.product?.webpImages.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id))
-    //     : item?.product?.images?.find((img: any) => img?.unit_price_id === JSON.parse(selectedUnit?.id));
-
-    //to display the offer price if the product has offer
+    const quantity = Number(item?.quantity) || 0;
+    const unitOriginal = Number(item?.originalPrice ?? item?.product?.originalPrice ?? item?.product?.productPrice ?? item?.unitPrice);
+    const parsedSale = Number(item?.product?.priceAfterDiscount ?? item?.priceAfterDiscount);
+    const unitSale = Number.isFinite(parsedSale) ? parsedSale : unitOriginal;
+    const onSale = Boolean(item?.product?.hasDiscount || item?.product?.hasOffer) && Number.isFinite(unitOriginal) && unitSale < unitOriginal;
+    const payableUnit = onSale ? unitSale : unitOriginal;
+    const lineTotal = Number.isFinite(payableUnit) ? payableUnit * quantity : Number(item?.totalPrice) || 0;
 
     return (
         <div key={item?.productId} className="relative flex gap-4 py-3 border-b border-gray-350">
@@ -46,16 +47,13 @@ const CartDropdownProducts = ({ item, logIn }: any) => {
                     {item?.product?.productName}
                 </Link>
                 <p className="mt-1 text-sm text-primary font-bold">
-                    {/* <span>AUD</span> {item?.product?.unitPrice[0].hasOffer ? item.product?.unitPrice[0]?.newPrice * item?.quantity : item.product?.unitPrice[0]?.sellingPrice * item?.quantity} */}
-                    <span>AUD</span>
-                    {/* {
-                        checkOffer ? (checkOffer?.newPrice * item?.quantity) : (item?.productPrice * item?.quantity)
-                    } */}
-                    <span className="text-primary font-bold pl-1">
-
-                    { (item?.totalPrice ?? item?.unitPrice * item?.quantity)}
-                    </span>
+                    <span className="pr-1">AUD</span>
+                    {lineTotal}
+                   {onSale && <span className=" text-gray-450 line-through pl-4">
+                        {unitOriginal * quantity}
+                    </span>}
                 </p>
+                
                 {
                     selectedUnit?.stock === 0 &&
                     <p className='mt-1 text-xs text-red-250'>Out Of Stock</p>

@@ -9,7 +9,7 @@ import { Grid } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 export interface IRelatedProducts {
-    relatedProducts: IProduct[],
+    relatedProducts: any,
     relatedProductsLoading: boolean
 }
 
@@ -42,7 +42,7 @@ const RelatedProducts = ({ relatedProducts, relatedProductsLoading }: IRelatedPr
                 <div className='flex items-center justify-between'>
                     <Title type="title-section" text="You Might Also Like" />
                     {
-                        relatedProducts?.length > 5 && (
+                        relatedProducts?.items?.length > 5 && (
                             <div className='!static productSwiper-navigation mb-[45px]'>
                                 <button
                                     disabled={prevDisable}
@@ -110,7 +110,7 @@ const RelatedProducts = ({ relatedProducts, relatedProductsLoading }: IRelatedPr
                                 }
                             }}
                         >
-                            {relatedProducts?.map((product: any, index: any) => (
+                            {relatedProducts?.items?.map((product: any, index: any) => (
                                 <SwiperSlide key={`related-products-${index}`}>
                                     <Card
                                         setProductModalId={setProductModalId}
