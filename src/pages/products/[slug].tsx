@@ -443,7 +443,7 @@ const ProductSlug = () => {
                                 type='button'
                                 onClick={handleCartAction}
                                 disabled={mutation.isLoading}
-                                className={`${mutation.isLoading && 'opacity-70 '} disabled:cursor-not-allowed flex items-center gap-4 relative px-[55px] font-bold uppercase rounded-[30px] bg-accent text-base-100  h-[48px] text-normal hover:bg-orange-250 hover:text-base-100`}>
+                                className={`${mutation.isLoading && 'opacity-70 '} disabled:cursor-not-allowed flex items-center gap-4 relative px-[55px] font-bold uppercase rounded-[30px] bg-accent text-base-100  h-[48px] text-normal  hover:text-base-100 hover:bg-[#441b27] hover:border-[#441b27] transition-all duration-300`}>
 
                                 + Add To Cart
                                 {
@@ -456,10 +456,10 @@ const ProductSlug = () => {
 
                       </div>
                     </div>
-                    {
+                    {/* {
                       token && (
                         isFavGen() ?
-                          <button onClick={() => removeFromFav(productData?.productId)} className='flex items-center gap-3 font-normal'>
+                          <button onClick={() => removeFromFav(productData?.response?.id)} className='flex items-center gap-3 font-normal'>
                             {
                               removeLoading ? (
                                 <ButtonLoader className='!border-primary' />
@@ -471,7 +471,7 @@ const ProductSlug = () => {
                               )
                             }
                           </button> :
-                          <button onClick={() => addToFav(productData?.productId)} className='flex items-center gap-3 font-normal'>
+                          <button onClick={() => addToFav(productData?.response?.id)} className='flex items-center gap-3 font-normal'>
                             {
                               addLoading ? (
                                 <ButtonLoader className='!border-primary' />
@@ -484,7 +484,7 @@ const ProductSlug = () => {
                             }
                           </button>
                       )
-                    }
+                    } */}
                   </>
                 )
               }

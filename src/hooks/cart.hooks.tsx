@@ -1,4 +1,4 @@
-import { addCouponCode, bulkDeleteCart, deleteCartItemById, getCartData, getCartProduct, updateCart } from "@/services/cart.service";
+import { bulkDeleteCart, deleteCartItemById, getCartProduct, updateCart } from "@/services/cart.service";
 import { TOAST_TYPES, showToast } from "@/shared/utils/toast-utils/toast.utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteCookie } from "cookies-next";
@@ -17,7 +17,7 @@ export const useCartsHooks = () => {
         mutationFn: deleteCartItemById,
         onSuccess: () => {
             queryClient.invalidateQueries(['cartList'])
-            showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
+            // showToast(TOAST_TYPES.success, 'Item Deleted From Cart Successfully');
             if (router.pathname === '/wishlist') {
                 queryClient.invalidateQueries(['wishlistProducts'])
             }

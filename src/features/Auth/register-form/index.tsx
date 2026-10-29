@@ -11,7 +11,7 @@ import {
   handleKeyDownNumber,
 } from "@/shared/utils/form-validation-utils";
 
-const AU_STATES = [
+export const AU_STATES = [
   { label: "Australian Capital Territory", value: "ACT" },
   { label: "New South Wales", value: "NSW" },
   { label: "Northern Territory", value: "NT" },
@@ -22,7 +22,7 @@ const AU_STATES = [
   { label: "Western Australia", value: "WA" },
 ];
 
-interface AddressSuggestion {
+export interface AddressSuggestion {
   label: string;
   addressLine1: string;
   suburb: string;
@@ -30,7 +30,7 @@ interface AddressSuggestion {
   postcode: string;
 }
 
-const useAddressAutocomplete = () => {
+export const useAddressAutocomplete = () => {
   const [query, setQuery] = useState("");
 
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
@@ -408,7 +408,6 @@ const RegisterForm = () => {
             {...register("state", {
               required: "State is required",
             })}
-            onChange={() => trigger("state")}
             defaultValue=""
             className={`px-3.5 text-gray-650 h-[45px] w-full outline-0 text-sm border bg-white ${errors.state ? "border-error" : "border-gray-350"}`}
           >
