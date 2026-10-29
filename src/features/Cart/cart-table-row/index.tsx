@@ -62,7 +62,7 @@ const CartTableRow = ({ item }: any) => {
                 />
             </td>
             <td className="w-[435px] text-gray-650 text-center py-[30px] font-medium">
-                <Link href={`/products/${item?.product?.id}`} className="text-[15px] hover:text-primary" aria-label="indoor-plants" >
+                <Link href={`/products/${item?.product?.id}`} className="text-[15px] hover:text-primary" aria-label={item?.product?.productName} >
                     {item?.product?.productName}{" "}
                 </Link>
                 {

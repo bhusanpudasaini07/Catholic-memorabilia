@@ -2,12 +2,9 @@
 
 import CategorySkeletonLoading from '@/shared/components/skeleton/category'
 import Title from '@/shared/components/title'
-import React, { useCallback, useState } from 'react'
-import { Grid } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import React from 'react'
+import { FaArrowRight  } from 'react-icons/fa';
 import Card from '@/shared/components/card';
-import ProductDetailModal from '@/shared/components/product-detail-modal';
 import Link from 'next/link';
 
 interface IProps {
@@ -33,10 +30,7 @@ const NewArrival: React.FC<IProps> = ({ loading, products }) => {
                         <FaArrowRight className="text-primary transition-transform group-hover:translate-x-1" />
                     </Link>
                 </div>
-
             </div>
-
-
             {loading ?
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
                     {[1, 2, 3, 4, 5, 6]?.map((index: number) => (

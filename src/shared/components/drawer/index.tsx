@@ -67,10 +67,7 @@ const Drawer = () => {
           </div>
           {/* Sidebar content here */}
           <li>
-            <a className="mb-3 text-white rounded-md bg-primary">
-              <LocationIcon />
-              Location: Durbarmarg
-            </a>
+            
           </li>
           <li>
             <div className="p-0 border border-primary rounded-box !bg-white mb-3 w-full flex">
@@ -91,10 +88,7 @@ const Drawer = () => {
                 <div className="collapse-title font-normal leading-[25px] after:!top-0 after:!right-1 pe-4 after:text-lg">
                   Our Services
                 </div>
-                {/* <div className="collapse-content">
-                  <p className="font-normal collapse-text"><Link href="/plant-consultation" aria-label="plant-consultant">Plant Consultant</Link></p>
-                  <p className="font-normal collapse-text"><Link href="/gift-a-plant" aria-label="gift a plant">Gift a Plant</Link></p>
-                </div> */}
+               
               </div>
               <Link href={'/our-outlets'} className="block font-normal collapse-title leading-[25px]" aria-label="our outlets">Our Outlets</Link>
               <div className="collapse collapse-plus">
@@ -102,24 +96,12 @@ const Drawer = () => {
                 <div className="collapse-title font-normal leading-[25px] after:!top-0 after:!right-1 pe-4 after:text-lg">
                   About Us
                 </div>
-                {/* <div className="collapse-content">
-                  <p className="font-normal collapse-text"><Link href="/tree-installation" aria-label="tree intsallations">Tree Installation</Link></p>
-                  <p className="font-normal collapse-text"><Link href="/about-us" aria-label="our story">Our Story</Link></p>
-                  <p className="font-normal collapse-text">
-                    <Link href="/our-values">
-                      Values that make us who we are{" "}
-                    </Link>
-                  </p>
-                  <p className="font-normal collapse-text"><Link href="/csr-projects" aria-label="cssr-project">Our CSR Projects</Link> </p>
-                </div> */}
+                
               </div>
               <Link href={'/blogs'} className="block font-normal collapse-title leading-[25px]">Blog</Link>
               <div className="mt-6">
                 <p className="mb-2 text-base font-bold">Our Services</p>
-                {/* <Link href="/why-plants" className="flex items-center justify-start gap-3 p-0 text-base font-medium capitalize btn btn-ghost text-start" aria-label="why plants">
-                  <FlowerIcon className="text-primary" />
-                  Why Plants
-                </Link> */}
+                
               </div>
               <div className="mt-6">
                 <p className="mb-2 text-base font-bold">My Account</p>

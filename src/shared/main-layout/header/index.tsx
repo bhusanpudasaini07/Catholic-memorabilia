@@ -237,7 +237,9 @@ const Header = () => {
 
 
             {/* md:drawer */}
-            <Drawer />
+            <div className="flex items-center gap-2 ms-auto justify-end md:hidden">
+            <ProfileDropmenu logIn={logIn} />
+          </div>
           </div>
         </div>
       </div>
@@ -302,7 +304,7 @@ const Header = () => {
             </div>
           </div>
           {/* Move ProfileDropmenu to the far right */}
-          <div className="flex items-center gap-2 ms-auto justify-end">
+          <div className="md:flex items-center gap-2 ms-auto justify-end hidden">
             <ProfileDropmenu logIn={logIn} />
           </div>
         </div>

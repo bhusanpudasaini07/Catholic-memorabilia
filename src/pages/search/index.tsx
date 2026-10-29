@@ -13,7 +13,6 @@ import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import SortingDropdown from "@/shared/components/sorting-dropdown";
 import SkeletonLoadingCard from "@/shared/components/skeleton/products";
 import Pagination from "@/shared/components/pagination";
-import ProductDetailModal from "@/shared/components/product-detail-modal";
 
 const SearchPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -113,10 +112,6 @@ const SearchPage: NextPageWithLayout = () => {
                         )
                       }
                     </section>
-                    {
-                      productModalId !== '' &&
-                      <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-                    }
                   </div>
                 )}
                 {/* Show the category data */}

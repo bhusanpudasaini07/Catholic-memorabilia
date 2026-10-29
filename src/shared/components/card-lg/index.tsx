@@ -30,14 +30,9 @@ const CardLg: React.FC<Props> = ({ type, title, price, image, link, availability
                     <div className='w-full md:max-w-[259px] relative'>
                         <Link href={link} aria-label={`blog-${link}-0`}>
                             <figure>
-                                <Image src={image} alt="Plant" className='w-full h-auto' width={100} height={0} />
+                                <Image src={image} alt={title} className='w-full h-auto' width={100} height={0} />
                             </figure>
                         </Link>
-                        <div className='plant-card_preview-icon'>
-                            <Link href={link} className='flex items-center justify-center' aria-label={`1-${title}-search`}>
-                                <SearchIcon className='max-w-[15px] h-auto' />
-                            </Link>
-                        </div>
                     </div>
                 </div>
                 <div className='col-span-12 md:col-span-8'>
@@ -79,9 +74,6 @@ const CardLg: React.FC<Props> = ({ type, title, price, image, link, availability
                             }
                         </div>
                     </div>
-                    {/* <div className='plant-card_cartBtn'>
-                <Link href={'/'} className='text-slate-850 bg-white uppercase font-bold underline underline-offset-4 hover:textprimary'>Add to Cart</Link>
-            </div> */}
                 </div>
             </div>
         </div>

@@ -14,7 +14,6 @@ import Breadcrumb from '@/shared/components/breadcrumb';
 import SortingDropdown from '@/shared/components/sorting-dropdown';
 import SkeletonLoadingCard from '@/shared/components/skeleton/products';
 import Head from 'next/head';
-import ProductDetailModal from '@/shared/components/product-detail-modal';
 
 
 const CategoryDetail: NextPageWithLayout = () => {
@@ -198,10 +197,7 @@ const CategoryDetail: NextPageWithLayout = () => {
                                     )
                             }
                         </div>
-                        {
-                            productModalId !== '' &&
-                            <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-                        }
+                        
                     </div>
                 </div>
             </div>

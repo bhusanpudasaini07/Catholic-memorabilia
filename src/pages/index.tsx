@@ -14,12 +14,14 @@ import BenefitsBar from "@/shared/components/benefits-bar";
 import ShopByCollection from "@/features/Home/shop-by-collection";
 import { useFavHooks } from "@/hooks/fav.hooks";
 import Bundles from "@/features/Home/bundles";
+import RecommendationsProducts from "@/features/Home/recommendations";
+import { getCookie } from "cookies-next";
 
 const Home: NextPageWithLayout = () => {
- 
+ const token = getCookie('isLoggedIn')
 
   const { categories, loading: loadingCategories } = useCategoriesHooks();
-  const { products, productsLoading, newArrivalProducts, newArrivalProductsLoading } = useProductsHooks();
+  const { products, productsLoading, newArrivalProducts, newArrivalProductsLoading, recommendations, recommendationsLoading } = useProductsHooks();
   const { favouriteList } = useFavHooks();
 
   const updatedProducts = products?.items?.map((item: any) => ({
@@ -32,6 +34,8 @@ const Home: NextPageWithLayout = () => {
     ...item,
     isFav: favouriteList?.some((favItem: any) => favItem?.id === item?.id)
   }));
+
+  console.log(recommendations);
 
   return (
     <>
@@ -46,6 +50,7 @@ const Home: NextPageWithLayout = () => {
       {/* /Benefits Bar */}
       <BenefitsBar />
       <div className="container">
+       {token && recommendations?.length > 0 && <RecommendationsProducts recommendations={recommendations} recommendationsLoading={recommendationsLoading} />}
 
         {/* Shop By Collection  */}
         <ShopByCollection

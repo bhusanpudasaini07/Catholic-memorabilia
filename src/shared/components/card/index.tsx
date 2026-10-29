@@ -129,7 +129,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
 
   return (
     <>
-      <div className="relative card catholic-card">
+      <div className="relative card catholic-card group cursor-pointer">
         <Link
           href={`/products/${product?.id}`}
           className="absolute top-0 bottom-0 left-0 right-0 z-5"
@@ -154,19 +154,14 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
               </button>}
           </>
         }
-        <figure className="relative flex h-[350px] w-full items-center justify-center overflow-hidden bg-white">
+        <figure className="relative flex h-[350px] w-full items-center justify-center overflow-hidden bg-white ">
           {
             product && product?.productImageUrl ? (
               <img
                 src={product?.productImageUrl}
                 alt={product?.productName}
-                className="h-full w-full object-contain p-2"
-              // style={{
-              //   maxWidth: '100%',
-              //   height: 'auto',
-              //   width: '100%',
-              // }}
-              />
+                className="h-full w-full object-contain p-2 group-hover:scale-105 transition-all duration-300"
+            />
             ) : (
               <Image
                 src={'/images/no-image.png'}
@@ -188,18 +183,9 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
           }
         </figure>
 
-        <div className="plant-card_preview-icon">
-          <Link
-            href={`/products/${product?.id}`}
-            className="flex items-center justify-center"
-          >
-            <SearchIcon className="max-w-[15px] h-auto" />
-          </Link>
-        </div>
+        
         <div className="card-body px-[15px] py-[15px] gap-[5px] ">
-          <Tooltip text={product?.name}>
             <h2 className=" catholic-card-title uppercase">{product?.productName}</h2>
-          </Tooltip>
 
           <div className="flex justify-between items-center mt-2">
             {
@@ -238,14 +224,7 @@ const Card: React.FC<Props> = ({ product, cartItem, setProductModalId }) => {
             {/* ) */}
           </div>
         </div>
-        {/* <div className='plant-card_cartBtn'>
-                <Link href={'/'} className='font-bold underline uppercase bg-white text-slate-850 underline-offset-4 hover:textprimary'>Add to Cart</Link>
-            </div> */}
-
       </div>
-      {/* {showProductModal &&
-        <ProductDetailModal setShowProductModal={setShowProductModal} slug={product?.slug} />
-      } */}
     </>
   );
 };

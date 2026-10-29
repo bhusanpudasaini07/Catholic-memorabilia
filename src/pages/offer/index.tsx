@@ -11,7 +11,6 @@ import Head from "next/head";
 import Pagination from "@/shared/components/pagination";
 import SortingDropdown from "@/shared/components/sorting-dropdown";
 import SkeletonLoadingCard from "@/shared/components/skeleton/products";
-import ProductDetailModal from "@/shared/components/product-detail-modal";
 
 const Offer: NextPageWithLayout = () => {
 
@@ -107,10 +106,7 @@ const Offer: NextPageWithLayout = () => {
 
               )}
             </div>
-            {
-              productModalId !== '' &&
-              <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-            }
+           
           </section>
         </div >
       </div >

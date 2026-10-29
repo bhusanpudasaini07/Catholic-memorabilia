@@ -1,4 +1,4 @@
-import { getAllProducts, getFeaturedProducts, getNewArrivalProducts } from "@/services/product.service";
+import { getAllProducts, getAllRecommendations, getFeaturedProducts, getNewArrivalProducts } from "@/services/product.service";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProductsHooks = () => {
@@ -6,6 +6,10 @@ export const useProductsHooks = () => {
     const getProducts = useQuery({
         queryKey: ["getProducts"],
         queryFn: getAllProducts,
+    });
+    const getRecommendations = useQuery({
+        queryKey: ["recommendations"],
+        queryFn: getAllRecommendations,
     });
     const getFeaturedProductsQuery = useQuery({
         queryKey: ["allfeaturedProducts"],
@@ -19,6 +23,8 @@ export const useProductsHooks = () => {
 
 
     return {
+        recommendations: getRecommendations.data,
+        recommendationsLoading: getRecommendations.isLoading,
         products: getProducts.data,
         productsLoading: getProducts.isLoading,
         featuredProducts: getFeaturedProductsQuery.data,

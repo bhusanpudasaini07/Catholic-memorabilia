@@ -7,11 +7,9 @@ import { getProductByTagId, getTagList } from "@/services/tag.service";
 import Loader from "@/components/Loading";
 import EmptyPage from "@/components/emptyPage";
 import Card from "@/shared/components/card";
-import Link from "next/link";
 import { ITag } from "@/interface/tag.interface";
 import TagSidebar from "@/shared/components/tagSidebar";
 import Breadcrumb from "@/shared/components/breadcrumb";
-import ProductDetailModal from "@/shared/components/product-detail-modal";
 import SortingDropdown from "@/shared/components/sorting-dropdown";
 
 
@@ -121,10 +119,6 @@ const Tag: NextPageWithLayout = () => {
                 )}
               </div>
             </section>
-            {
-              productModalId !== '' &&
-              <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-            }
           </div>
         </div>
       </div>

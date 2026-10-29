@@ -1,6 +1,4 @@
-import { IProduct } from '@/interface/product.interface'
 import Card from '@/shared/components/card'
-import ProductDetailModal from '@/shared/components/product-detail-modal'
 import SkeletonLoadingCard from '@/shared/components/skeleton/products'
 import Title from '@/shared/components/title'
 import React, { useCallback, useState } from 'react'
@@ -121,10 +119,6 @@ const RelatedProducts = ({ relatedProducts, relatedProductsLoading }: IRelatedPr
                             ))}
                         </Swiper>
                     )
-                }
-                {
-                    productModalId !== '' &&
-                    <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
                 }
             </div>
         </section >

@@ -9,7 +9,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Grid } from 'swiper';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import HalfLeftCard from "./half-left-card";
-import ProductDetailModal from "@/shared/components/product-detail-modal";
 interface IProps {
   prev: IAppCategories;
 }
@@ -129,10 +128,7 @@ const AppCategories: React.FC<IProps> = ({ prev }) => {
                       ))}
                     </Swiper>
                   </>
-                  {
-                    productModalId !== '' &&
-                    <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-                  }
+                  
                 </section>
               </div>
 

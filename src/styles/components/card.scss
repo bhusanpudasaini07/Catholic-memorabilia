@@ -50,11 +50,7 @@
         transform: scaleX(1);
       }
     }
-    .plant-card_cartBtn {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) translateZ(0);
-    }
+    
   }
   .desc {
     @apply text-sm leading-[24px] text-zinc-250;
@@ -126,11 +122,6 @@
         @apply opacity-100;
         transform: scaleX(1);
       }
-    }
-    .plant-card_cartBtn {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) translateZ(0);
     }
   }
 }

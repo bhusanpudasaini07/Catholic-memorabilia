@@ -6,12 +6,10 @@ import EmptyPage from "@/components/emptyPage";
 import Card from "@/shared/components/card";
 import { useState } from "react";
 import Breadcrumb from "@/shared/components/breadcrumb";
-import { getToken } from "@/shared/utils/cookies-utils/cookies.utils";
 import Head from "next/head";
-import { ICartData, ICartItem } from "@/interface/cart.interface";
+import { ICartData } from "@/interface/cart.interface";
 import Pagination from "@/shared/components/pagination";
 import SkeletonLoadingCard from "@/shared/components/skeleton/products";
-import ProductDetailModal from "@/shared/components/product-detail-modal";
 
 const Wishlist: NextPageWithLayout = () => {
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -88,10 +86,6 @@ const Wishlist: NextPageWithLayout = () => {
                         </>
                     )}
                 </div>
-                {
-                    productModalId !== '' &&
-                    <ProductDetailModal setProductModalId={setProductModalId} slug={productModalId} />
-                }
             </div>
 
         </div>
